@@ -9,7 +9,8 @@ import Button from "./Button";
 
 const navItems = [
   { name: "Home", path: "/" },
-  { name: "Cav Guide", path: "/cav-guide" }
+  { name: "Cav Guide", path: "/cav-guide" },
+  { name: "ROW League", path: "/row-league" }
 ];
 
 const NavBar = () => {

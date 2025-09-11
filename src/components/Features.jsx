@@ -221,8 +221,8 @@ const Features = () => {
               </>
             }
             description="Root of War Tournament - Compete in epic battles and climb the leaderboards."
-            ctaText="join tournament"
-            onClick={() => console.log('ROW League clicked')}
+            ctaText="join tournament" 
+            onClick={() => navigate('/row-league')}
           />
         </BentoTilt>
 

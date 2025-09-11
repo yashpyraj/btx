@@ -7,6 +7,7 @@ import Story from "./components/Story";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import CavGuideScreen from "./components/CavGuideScreen";
+import RowLeagueScreen from "./components/RowLeagueScreen";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         </main>
       } />
       <Route path="/cav-guide" element={<CavGuideScreen />} />
+      <Route path="/row-league" element={<RowLeagueScreen />} />
     </Routes>
   );
 }
