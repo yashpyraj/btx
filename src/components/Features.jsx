@@ -44,6 +44,7 @@ export const BentoCard = ({
   title,
   description,
   isComingSoon,
+  ctaText,
   alt = "bento image",
   poster,
   mediaType,
@@ -99,6 +100,29 @@ export const BentoCard = ({
             <p className="mt-3 max-w-64 text-xs md:text-base">{description}</p>
           ) : null}
         </div>
+
+        {ctaText && (
+          <button
+            type="button"
+            ref={hoverButtonRef}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setHoverOpacity(1)}
+            onMouseLeave={() => setHoverOpacity(0)}
+            className="border-hsla relative flex w-fit cursor-pointer items-center gap-1 overflow-hidden rounded-full bg-violet-600 hover:bg-violet-500 px-5 py-2 text-xs uppercase text-white font-semibold transition-all duration-300 hover:scale-105"
+          >
+            {/* Radial gradient hover effect */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
+              style={{
+                opacity: hoverOpacity,
+                background: `radial-gradient(100px circle at ${cursorPosition.x}px ${cursorPosition.y}px, #8b5cf6aa, #7c3aed44)`,
+              }}
+            />
+            <TiLocationArrow className="relative z-20" />
+            <span className="relative z-20">{ctaText}</span>
+          </button>
+        )}
 
         {isComingSoon && (
           <button
@@ -156,7 +180,7 @@ const Features = () => {
               </>
             }
             description="Exclusive guide of cavs from Face of Blade."
-            isComingSoon
+            ctaText="explore guide"
             onClick={() => navigate('/cav-guide')}
           />
         </BentoTilt>
@@ -170,7 +194,7 @@ const Features = () => {
               </>
             }
             description="Track progress, compare stats, and unlock a complete overview of yours with gamified insights."
-            isComingSoon
+            ctaText="view dashboard"
             onClick={() => window.open('https://yammydashboard.netlify.app/alliance/98ae3d53-0787-4bc8-8b75-38527eac3796', '_blank')}
           />
         </BentoTilt>
