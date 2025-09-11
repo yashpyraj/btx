@@ -102,9 +102,9 @@ const CavGuideScreen = ({ onClose }) => {
     },
     {
       id: 'sync-cav',
-      title: '~51% Sync Cav Build (5 Cavalry)',
-      subtitle: 'Overview',
-      description: 'Delivers high damage, synchronized speeds, and no overlapping heroes, so you get maximum value from your stamina. ⚔️🏇 Use this when you need reliable flanks, strong bursts, and precise march sync',
+      title: '~51% Sync Cav Build (5 Cavalry) My personal Talent',
+      subtitle: 'G1/G2/G3/G4 Cavalry',
+      description: 'A flexible 5-Cav build balancing speed + damage, ideal for bursting + syncing without sacrificing retreat control. This is the setup I personally use.',
       icon: <GiShield className="text-3xl text-blue-400" />,
       heroData: [
         {
@@ -120,62 +120,54 @@ const CavGuideScreen = ({ onClose }) => {
         {
           id: 2,
           position: "2️⃣",
-          heroes: ["Forondil", "Kinnara"],
+          heroes: ["Forondil", "Theodore"],
           speed: "51% Speed",
           pet: "Berserk Faedrake",
           artifact: "Oath of Stormpeak",
           heroImage: "/img/hero-pair-2.png",
-          talentImage: "/img/talent-tree-2.png",
-          notes: [
-            "🔸 Mu Hsiang is ideal here — she boosts Berserk's damage significantly",
-            "🔸 If Mu Hsiang is used elsewhere, Kinnara still fits great",
-            "🔸 Alternative picks: Nika, Mu Hsiang, Mogro (if not used elsewhere)"
-          ]
+          talentImage: "/img/talent-tree-2.png"
         },
         {
           id: 3,
           position: "3️⃣",
-          heroes: ["Theodore", "Alistair", "OR Alistar", "Theodore"],
-          speed: "49% Speed",
-          pet: "Blade Manticore (or Golden Roc)",
-          artifact: "Depends on playstyle",
-          heroImage: "/img/hero-pair-3.png",
-          talentImage: "/img/talent-tree-3.png",
-          notes: [
-            "🔸 Note: Don't expect much from this march. They won't provide strong value on their own, but their role is to support with the artifact and rage cycle.",
-            "🔸 Alternatively, make Alistair the main commander and swap the Sorland Blade for Blink artifact to create more utility with mobility."
-          ]
-        },
-        {
-          id: 4,
-          position: "4️⃣",
           heroes: ["Urag", "Tobin"],
           speed: "51% Speed",
           pet: "Blade Manticore",
           artifact: "Wolf-Howl Horn",
+          heroImage: "/img/hero-pair-3.png",
+          talentImage: "/img/talent-tree-3.png"
+        },
+        {
+          id: 4,
+          position: "4️⃣",
+          heroes: ["Lieh-Shan", "Nëya"],
+          speed: "52% out of battle, 12% in battle",
+          pet: "Auric Warhound",
+          artifact: "Lunaris",
           heroImage: "/img/hero-pair-4.png",
           talentImage: "/img/talent-tree-4.png"
         },
         {
           id: 5,
           position: "5️⃣",
-          heroes: ["Lieh-Shan", "Nëya"],
-          speed: "~51% Speed (up to 56%)",
+          heroes: ["Mardok", "Mogrog"],
+          speed: "~50% Speed",
           pet: "Auric Warhound",
-          artifact: "Lunaris",
+          artifact: "KingSlayer (burst) OR Blink Artifacts (reposition)",
           heroImage: "/img/niya.png",
-          talentImage: "/img/talent-tree-5.png",
-          notes: [
-            "🔹 Camouflage makes the march harder to spot, but Lunaris complicates speed. It grants 20% to 40% speed while camouflaged (depends on level), but vanishes once battle begins.",
-            "🔸 Note: Speed drops from ~52% (40% artifact + 10% hero + 2% talent) to ~12% once battle starts.",
-            "🔸 This makes retreating difficult",
-            "• Be sure of securing kills, or",
-            "• Protect the march and avoid exposing it",
-            "🔸 To stabilize and sync:",
-            "• I made it 52% to line up with the other marches,",
-            "• If retreating feels hard, put all 3 points on Movement for better speed stabilization",
-            "🔹 Keeps speed around 51–52%, syncing with Theodore's 49%",
-            "🔹 Prevents overlap, lag, or delayed recall issues"
+          talentImage: "/img/talent-tree-5.png"
+        }
+      ],
+      specialNotes: [
+        {
+          title: "🪶 Note on Camouflage:",
+          content: [
+            "Boosts speed by 20–40% only while hidden",
+            "Speed drops from ~52% → ~12% once battle starts",
+            "Retreat is difficult — either secure kills or protect the march",
+            "To stabilize speed:",
+            "‣ Set to ~52% for syncing",
+            "‣ Use 3 Movement points if retreat feels hard"
           ]
         }
       ]
