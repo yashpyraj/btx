@@ -212,6 +212,20 @@ const Features = () => {
           />
         </BentoTilt>
 
+        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1">
+          <BentoCard
+            src="img/tournament.png"
+            title={
+              <>
+                <b>ROW league</b>
+              </>
+            }
+            description="Root of War Tournament - Compete in epic battles and climb the leaderboards."
+            ctaText="join tournament"
+            onClick={() => console.log('ROW League clicked')}
+          />
+        </BentoTilt>
+
         {/* <BentoTilt className="bento-tilt_2">
           <div className="flex size-full flex-col justify-between bg-violet-300 p-5">
             <h1 className="bento-title special-font max-w-64 text-black">
