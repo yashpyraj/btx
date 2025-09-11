@@ -171,6 +171,7 @@ const Features = () => {
             }
             description="Track progress, compare stats, and unlock a complete overview of yours with gamified insights."
             isComingSoon
+            onClick={() => window.open('https://yammydashboard.netlify.app/alliance/98ae3d53-0787-4bc8-8b75-38527eac3796', '_blank')}
           />
         </BentoTilt>
 
