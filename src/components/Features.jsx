@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { TiLocationArrow } from "react-icons/ti";
+import CavGuideScreen from "./CavGuideScreen";
 
 export const BentoTilt = ({ children, className = "" }) => {
   const [transformStyle, setTransformStyle] = useState("");
@@ -46,6 +47,7 @@ export const BentoCard = ({
   alt = "bento image",
   poster,
   mediaType,
+  onClick,
 }) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [hoverOpacity, setHoverOpacity] = useState(0);
@@ -66,7 +68,7 @@ export const BentoCard = ({
   };
 
   return (
-    <div className="relative size-full">
+    <div className="relative size-full" onClick={onClick}>
       {/* Background media */}
       {isVideo ? (
         <video
@@ -125,8 +127,16 @@ export const BentoCard = ({
   );
 };
 
-const Features = () => (
+const Features = () => {
+  const [isCavGuideOpen, setIsCavGuideOpen] = useState(false);
+
+  return (
   <section className="bg-black pb-52">
+    <CavGuideScreen 
+      isOpen={isCavGuideOpen} 
+      onClose={() => setIsCavGuideOpen(false)} 
+    />
+    
     <div className="container mx-auto px-3 md:px-10">
       {/* <BentoTilt className="border-hsla relative mb-7 h-96 w-full overflow-hidden rounded-md md:h-[65vh]">
         <BentoCard
@@ -152,6 +162,7 @@ const Features = () => (
             }
             description="Exclusive guide of cavs from Face of Blade."
             isComingSoon
+            onClick={() => setIsCavGuideOpen(true)}
           />
         </BentoTilt>
 
@@ -203,6 +214,7 @@ const Features = () => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default Features;
