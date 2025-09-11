@@ -177,7 +177,8 @@ const CavGuideScreen = ({ onClose }) => {
         }
       ],
       specialNotes: []
-    }
+    }, // <-- FIXED: comma added here
+
     {
       id: 'sync-cav',
       title: '~51% Sync Cav Build (5 Cavalry) My personal Talent',
@@ -379,8 +380,9 @@ const CavGuideScreen = ({ onClose }) => {
                                       alt={`${hero.heroes.join('/')} heroes`}
                                       className="w-full h-full object-cover rounded-xl"
                                       onError={(e) => {
+                                        // simple fallback: hide broken image and show the icon fallback sibling
                                         e.target.style.display = 'none';
-                                        e.target.nextSibling.style.display = 'flex';
+                                        if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                                       }}
                                     />
                                     <div className="w-full h-full hidden items-center justify-center">
@@ -401,7 +403,7 @@ const CavGuideScreen = ({ onClose }) => {
                                       className="w-full h-full object-cover rounded-xl"
                                       onError={(e) => {
                                         e.target.style.display = 'none';
-                                        e.target.nextSibling.style.display = 'flex';
+                                        if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                                       }}
                                     />
                                     <div className="w-full h-full hidden items-center justify-center">
@@ -466,7 +468,7 @@ const CavGuideScreen = ({ onClose }) => {
                 className="w-full h-auto max-h-[70vh] object-contain rounded-xl"
                 onError={(e) => {
                   e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
+                  if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                 }}
               />
               <div className="w-full h-64 hidden items-center justify-center text-white/60">
