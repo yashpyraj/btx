@@ -92,7 +92,7 @@ const CavGuideScreen = ({ onClose }) => {
           <div className="mb-12 p-8 bg-gradient-to-r from-violet-900/30 to-blue-900/30 rounded-2xl border border-white/20 backdrop-blur-sm">
             <div className="flex items-center gap-3 mb-4">
               <GiHorseHead className="text-3xl text-violet-400" />
-              <h2 className="text-2xl font-zentry font-black text-white tracking-wide">
+              <h2 className="text-2xl font-robert-medium font-black text-white tracking-wide">
                 ~51% Sync Cav Build (5 Cavalry)
               </h2>
             </div>
