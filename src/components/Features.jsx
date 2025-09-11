@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { TiLocationArrow } from "react-icons/ti";
-import CavGuideScreen from "./CavGuideScreen";
+import { useNavigate } from "react-router-dom";
 
 export const BentoTilt = ({ children, className = "" }) => {
   const [transformStyle, setTransformStyle] = useState("");
@@ -127,7 +127,8 @@ export const BentoCard = ({
   );
 };
 
-const Features = ({ onOpenCavGuide }) => {
+const Features = () => {
+  const navigate = useNavigate();
 
   return (
   <section className="bg-black pb-52">
@@ -156,7 +157,7 @@ const Features = ({ onOpenCavGuide }) => {
             }
             description="Exclusive guide of cavs from Face of Blade."
             isComingSoon
-            onClick={onOpenCavGuide}
+            onClick={() => navigate('/cav-guide')}
           />
         </BentoTilt>
 

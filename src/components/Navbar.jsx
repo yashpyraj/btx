@@ -3,12 +3,19 @@ import gsap from "gsap";
 import { useWindowScroll } from "react-use";
 import { useEffect, useRef, useState } from "react";
 import { TiLocationArrow } from "react-icons/ti";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import Button from "./Button";
 
-const navItems = ["ROW", "About"];
+const navItems = [
+  { name: "Home", path: "/" },
+  { name: "Cav Guide", path: "/cav-guide" }
+];
 
 const NavBar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   // State for toggling audio and visual indicator
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isIndicatorActive, setIsIndicatorActive] = useState(false);
@@ -85,10 +92,13 @@ const NavBar = () => {
               {navItems.map((item, index) => (
                 <a
                   key={index}
-                  href={`#${item.toLowerCase()}`}
-                  className="nav-hover-btn"
+                  onClick={() => navigate(item.path)}
+                  className={clsx(
+                    "nav-hover-btn cursor-pointer",
+                    location.pathname === item.path && "text-violet-400"
+                  )}
                 >
-                  {item}
+                  {item.name}
                 </a>
               ))}
             </div>

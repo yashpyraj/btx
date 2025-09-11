@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { IoClose, IoArrowBack, IoChevronDown, IoChevronUp } from "react-icons/io5";
 import { GiSwordman, GiHorseHead, GiTreasureMap, GiCrossedSwords, GiShield } from "react-icons/gi";
+import { useNavigate } from "react-router-dom";
 
-const CavGuideScreen = ({ onClose }) => {
+const CavGuideScreen = () => {
+  const navigate = useNavigate();
   const [selectedHero, setSelectedHero] = useState(null);
   const [expandedSections, setExpandedSections] = useState({});
 
@@ -261,7 +263,7 @@ const CavGuideScreen = ({ onClose }) => {
           <div className="flex items-center justify-between p-6">
             <div className="flex items-center gap-4">
               <button
-                onClick={onClose}
+                onClick={() => navigate('/')}
                 className="flex items-center gap-2 text-white/70 hover:text-white transition-all duration-300 hover:scale-105"
               >
                 <IoArrowBack className="text-xl" />
@@ -273,7 +275,7 @@ const CavGuideScreen = ({ onClose }) => {
               </h1>
             </div>
             <button
-              onClick={onClose}
+              onClick={() => navigate('/')}
               className="text-white/70 hover:text-white transition-all duration-300 hover:scale-110"
             >
               <IoClose className="text-2xl" />
