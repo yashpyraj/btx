@@ -2,7 +2,7 @@ import { useState } from "react";
 import { IoClose, IoArrowBack } from "react-icons/io5";
 import { GiSwordman, GiHorseHead, GiTreasureMap } from "react-icons/gi";
 
-const CavGuideScreen = ({ isOpen, onClose }) => {
+const CavGuideScreen = ({ onClose }) => {
   const [selectedHero, setSelectedHero] = useState(null);
 
   const heroData = [
@@ -58,13 +58,11 @@ const CavGuideScreen = ({ isOpen, onClose }) => {
     }
   ];
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm">
+    <div className="min-h-screen bg-black text-white">
       <div className="h-full overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-black/80 backdrop-blur-md border-b border-white/10">
+        <div className="sticky top-0 z-10 bg-black border-b border-white/10">
           <div className="flex items-center justify-between p-6">
             <div className="flex items-center gap-4">
               <button
@@ -214,7 +212,7 @@ const CavGuideScreen = ({ isOpen, onClose }) => {
 
       {/* Image Modal */}
       {selectedHero && (
-        <div className="fixed inset-0 z-[110] bg-black/90 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
           <div className="relative max-w-4xl max-h-[90vh] bg-black/80 rounded-xl border border-white/20 overflow-hidden">
             <div className="flex items-center justify-between p-4 border-b border-white/10">
               <h3 className="text-lg font-zentry font-black text-white">

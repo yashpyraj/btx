@@ -127,16 +127,10 @@ export const BentoCard = ({
   );
 };
 
-const Features = () => {
-  const [isCavGuideOpen, setIsCavGuideOpen] = useState(false);
+const Features = ({ onOpenCavGuide }) => {
 
   return (
   <section className="bg-black pb-52">
-    <CavGuideScreen 
-      isOpen={isCavGuideOpen} 
-      onClose={() => setIsCavGuideOpen(false)} 
-    />
-    
     <div className="container mx-auto px-3 md:px-10">
       {/* <BentoTilt className="border-hsla relative mb-7 h-96 w-full overflow-hidden rounded-md md:h-[65vh]">
         <BentoCard
@@ -162,7 +156,7 @@ const Features = () => {
             }
             description="Exclusive guide of cavs from Face of Blade."
             isComingSoon
-            onClick={() => setIsCavGuideOpen(true)}
+            onClick={onOpenCavGuide}
           />
         </BentoTilt>
 
