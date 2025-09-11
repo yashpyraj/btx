@@ -74,7 +74,9 @@ const CavGuideScreen = ({ onClose }) => {
               </button>
               <div className="h-6 w-px bg-white/20" />
               <h1 className="text-3xl font-zentry font-black text-white tracking-wider">
-                <b>CAV GUIDE</b>
+              <span className="font-circular-web font-black text-transparent bg-gradient-to-r from-violet-400 via-blue-400 to-purple-400 bg-clip-text">
+                CAV GUIDE
+              </span>
               </h1>
             </div>
             <button
@@ -92,11 +94,11 @@ const CavGuideScreen = ({ onClose }) => {
           <div className="mb-12 p-8 bg-gradient-to-r from-violet-900/30 to-blue-900/30 rounded-2xl border border-white/20 backdrop-blur-sm">
             <div className="flex items-center gap-3 mb-4">
               <GiHorseHead className="text-3xl text-violet-400" />
-              <h2 className="text-2xl font-robert-medium font-black text-white tracking-wide">
+              <h2 className="text-3xl font-circular-web font-black text-transparent bg-gradient-to-r from-violet-400 via-blue-400 to-purple-400 bg-clip-text tracking-wide">
                 ~51% Sync Cav Build (5 Cavalry)
               </h2>
             </div>
-            <p className="text-violet-300 mb-4 font-medium text-lg">
+            <p className="text-violet-300 mb-4 font-circular-web font-semibold text-xl tracking-wide">
               My personal Talent G1/G2/G3/G4 Cavalry
             </p>
             <p className="text-blue-50/90 leading-relaxed text-base font-circular-web">
@@ -107,7 +109,7 @@ const CavGuideScreen = ({ onClose }) => {
 
           {/* Formation & Setup */}
           <div className="mb-8">
-            <h3 className="text-2xl font-zentry font-black text-white mb-8 flex items-center gap-3 tracking-wide">
+            <h3 className="text-3xl font-circular-web font-black text-transparent bg-gradient-to-r from-violet-400 via-blue-400 to-purple-400 bg-clip-text mb-8 flex items-center gap-3 tracking-wide">
               <GiTreasureMap className="text-violet-400" />
               Formation & Setup:
             </h3>
@@ -122,25 +124,25 @@ const CavGuideScreen = ({ onClose }) => {
                     {/* Hero Info */}
                     <div className="flex-1">
                       <div className="flex items-center gap-4 mb-6">
-                        <span className="text-3xl font-bold bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
+                        <span className="text-4xl font-circular-web font-black bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
                           {hero.position}
                         </span>
-                        <h4 className="text-xl font-zentry font-black text-white tracking-wide">
+                        <h4 className="text-2xl font-circular-web font-black text-white tracking-wide">
                           {hero.heroes.join(" / ")}
                         </h4>
-                        <span className="text-violet-300 text-base font-medium px-3 py-1 bg-violet-500/20 rounded-full border border-violet-400/30">
+                        <span className="text-violet-300 text-lg font-circular-web font-semibold px-4 py-2 bg-violet-500/20 rounded-full border border-violet-400/30">
                           {hero.speed}
                         </span>
                       </div>
                       
                       <div className="space-y-4">
                         <div className="flex items-center gap-3 p-3 bg-blue-500/10 rounded-lg border border-blue-400/20">
-                          <span className="text-blue-300 font-semibold text-sm uppercase tracking-wider">Pet:</span>
-                          <span className="text-blue-50 font-medium">{hero.pet}</span>
+                          <span className="text-blue-300 font-circular-web font-bold text-base uppercase tracking-wider">Pet:</span>
+                          <span className="text-blue-50 font-circular-web font-semibold text-lg">{hero.pet}</span>
                         </div>
                         <div className="flex items-center gap-3 p-3 bg-yellow-500/10 rounded-lg border border-yellow-400/20">
-                          <span className="text-yellow-300 font-semibold text-sm uppercase tracking-wider">Artifact:</span>
-                          <span className="text-yellow-50 font-medium">{hero.artifact}</span>
+                          <span className="text-yellow-300 font-circular-web font-bold text-base uppercase tracking-wider">Artifact:</span>
+                          <span className="text-yellow-50 font-circular-web font-semibold text-lg">{hero.artifact}</span>
                         </div>
                       </div>
                     </div>
@@ -165,7 +167,7 @@ const CavGuideScreen = ({ onClose }) => {
                             <GiSwordman className="text-2xl text-violet-400" />
                           </div>
                         </div>
-                        <span className="text-sm text-white/70 mt-2 block font-medium">Heroes</span>
+                        <span className="text-base text-white/70 mt-3 block font-circular-web font-semibold">Heroes</span>
                       </div>
                       
                       <div className="text-center">
@@ -186,7 +188,7 @@ const CavGuideScreen = ({ onClose }) => {
                             <GiTreasureMap className="text-2xl text-green-400" />
                           </div>
                         </div>
-                        <span className="text-sm text-white/70 mt-2 block font-medium">Talents</span>
+                        <span className="text-base text-white/70 mt-3 block font-circular-web font-semibold">Talents</span>
                       </div>
                     </div>
                   </div>
@@ -197,10 +199,10 @@ const CavGuideScreen = ({ onClose }) => {
 
           {/* Camouflage Note */}
           <div className="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-500/40 rounded-2xl p-8 backdrop-blur-sm">
-            <h4 className="text-xl font-zentry font-black text-yellow-300 mb-4 flex items-center gap-3 tracking-wide">
+            <h4 className="text-2xl font-circular-web font-black text-yellow-300 mb-6 flex items-center gap-3 tracking-wide">
               🪶 Note on Camouflage:
             </h4>
-            <div className="space-y-3 text-base text-yellow-50/90 font-circular-web">
+            <div className="space-y-4 text-lg text-yellow-50/90 font-circular-web font-medium">
               <p className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>
                 Boosts speed by 20–40% only while hidden
@@ -214,7 +216,7 @@ const CavGuideScreen = ({ onClose }) => {
                 Retreat is difficult — either secure kills or protect the march
               </p>
               <div className="mt-6 p-4 bg-yellow-500/10 rounded-lg border border-yellow-400/20">
-                <p className="font-semibold text-yellow-300 mb-2 text-lg">To stabilize speed:</p>
+                <p className="font-circular-web font-bold text-yellow-300 mb-3 text-xl">To stabilize speed:</p>
                 <p className="flex items-center gap-2 mb-1">
                   <span className="text-yellow-400">‣</span>
                   Set to ~52% for syncing
@@ -234,7 +236,7 @@ const CavGuideScreen = ({ onClose }) => {
         <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
           <div className="relative max-w-4xl max-h-[90vh] bg-gradient-to-br from-black/90 to-gray-900/90 rounded-2xl border border-white/30 overflow-hidden backdrop-blur-sm">
             <div className="flex items-center justify-between p-6 border-b border-white/20">
-              <h3 className="text-xl font-zentry font-black text-white tracking-wide">
+              <h3 className="text-2xl font-circular-web font-black text-white tracking-wide">
                 {selectedHero.heroes.join(" / ")} - {selectedHero.type === 'hero' ? 'Heroes' : 'Talent Tree'}
               </h3>
               <button
