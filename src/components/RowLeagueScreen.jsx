@@ -1,14 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IoClose, IoArrowBack } from "react-icons/io5";
 import { GiCrown, GiSwordman, GiShield, GiTrophy } from "react-icons/gi";
 import { TiLocationArrow } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
+import { motion, useScroll, useTransform } from "framer-motion";
+import Lenis from "lenis";
 import AnimatedTitle from "./AnimatedTitle";
 import Button from "./Button";
 
 const RowLeagueScreen = () => {
   const navigate = useNavigate();
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  // Initialize smooth scrolling
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smooth: true,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
 
   const teamMembers = [
     {
@@ -62,8 +89,17 @@ const RowLeagueScreen = () => {
     }
   ];
 
+  // Scroll-based transforms for the leader card
+  const leaderScale = useTransform(scrollYProgress, [0.3, 0.5, 0.7], [1, 1.1, 1]);
+  const leaderY = useTransform(scrollYProgress, [0.3, 0.5, 0.7], [0, -20, 0]);
+  const leaderRotate = useTransform(scrollYProgress, [0.3, 0.5, 0.7], [0, 2, 0]);
+
+  // Scroll-based transforms for other cards
+  const cardScale = useTransform(scrollYProgress, [0.4, 0.6], [0.95, 1]);
+  const cardOpacity = useTransform(scrollYProgress, [0.3, 0.6], [0.7, 1]);
+
   return (
-    <div className="min-h-screen bg-[#dfdff0] text-black font-general overflow-x-hidden">
+    <div ref={containerRef} className="min-h-screen bg-[#dfdff0] text-black font-general overflow-x-hidden">
       {/* Header */}
       <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
         <div className="flex items-center justify-between p-6">
@@ -137,8 +173,8 @@ const RowLeagueScreen = () => {
         </div>
       </section>
 
-      {/* Team Members Section */}
-      <section className="py-20 px-4">
+      {/* Team Members Section with Scroll Effects */}
+      <section className="py-20 px-4 min-h-screen">
         <div className="max-w-7xl mx-auto">
           <AnimatedTitle
             title="Meet the <b>Champions</b>"
@@ -146,53 +182,92 @@ const RowLeagueScreen = () => {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member) => (
-              <div
-                key={member.id}
-                className="group relative bg-black rounded-3xl overflow-hidden hover:scale-105 transition-all duration-500 cursor-pointer"
-                onClick={() => setSelectedPlayer(member)}
-              >
-                {member.isLeader && (
-                  <div className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-zentry font-black">
-                    <GiCrown className="text-sm" />
-                    CAPTAIN
+            {teamMembers.map((member, index) => {
+              const isLeader = member.isLeader;
+              
+              return (
+                <motion.div
+                  key={member.id}
+                  className="group relative bg-black rounded-3xl overflow-hidden cursor-pointer"
+                  onClick={() => setSelectedPlayer(member)}
+                  style={isLeader ? {
+                    scale: leaderScale,
+                    y: leaderY,
+                    rotate: leaderRotate,
+                  } : {
+                    scale: cardScale,
+                    opacity: cardOpacity,
+                  }}
+                  whileHover={{ 
+                    scale: isLeader ? 1.15 : 1.05,
+                    transition: { duration: 0.3 }
+                  }}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ 
+                    opacity: 1, 
+                    y: 0,
+                    transition: { 
+                      duration: 0.6,
+                      delay: index * 0.1
+                    }
+                  }}
+                  viewport={{ once: true }}
+                >
+                  {member.isLeader && (
+                    <motion.div 
+                      className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-zentry font-black"
+                      animate={{ 
+                        scale: [1, 1.1, 1],
+                        rotate: [0, 5, -5, 0]
+                      }}
+                      transition={{ 
+                        duration: 2,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                    >
+                      <GiCrown className="text-sm" />
+                      CAPTAIN
+                    </motion.div>
+                  )}
+
+                  <div className="aspect-square overflow-hidden">
+                    <motion.img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.5 }}
+                      onError={(e) => {
+                        e.target.src = "/img/placeholder.webp";
+                      }}
+                    />
                   </div>
-                )}
 
-                <div className="aspect-square overflow-hidden">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    onError={(e) => {
-                      e.target.src = "/img/placeholder.webp";
-                    }}
-                  />
-                </div>
-
-                <div className="p-6 text-white">
-                  <h3 className="text-2xl font-zentry font-black mb-2">{member.name}</h3>
-                  <p className="text-violet-300 font-circular-web font-semibold mb-4">{member.role}</p>
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-white/70">Wins:</span>
-                      <span className="font-zentry font-black text-yellow-300">{member.stats.wins}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-white/70">K/D:</span>
-                      <span className="font-zentry font-black text-green-300">{member.stats.kdr}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-white/70">Rank:</span>
-                      <span className="font-zentry font-black text-violet-300">{member.stats.rank}</span>
+                  <div className="p-6 text-white">
+                    <h3 className="text-2xl font-zentry font-black mb-2">{member.name}</h3>
+                    <p className="text-violet-300 font-circular-web font-semibold mb-4">{member.role}</p>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-white/70">Wins:</span>
+                        <span className="font-zentry font-black text-yellow-300">{member.stats.wins}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-white/70">K/D:</span>
+                        <span className="font-zentry font-black text-green-300">{member.stats.kdr}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-white/70">Rank:</span>
+                        <span className="font-zentry font-black text-violet-300">{member.stats.rank}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
-            ))}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -228,8 +303,19 @@ const RowLeagueScreen = () => {
 
       {/* Player Detail Modal */}
       {selectedPlayer && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative max-w-2xl w-full bg-gradient-to-br from-black to-gray-900 rounded-3xl border border-white/20 overflow-hidden">
+        <motion.div 
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div 
+            className="relative max-w-2xl w-full bg-gradient-to-br from-black to-gray-900 rounded-3xl border border-white/20 overflow-hidden"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
             <button
               onClick={() => setSelectedPlayer(null)}
               className="absolute top-6 right-6 z-10 text-white/70 hover:text-white transition-colors"
@@ -288,8 +374,8 @@ const RowLeagueScreen = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );
