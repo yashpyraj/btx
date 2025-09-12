@@ -106,7 +106,7 @@ const AnimatedText = ({ text = "Welcome to our ROW League showcase" }) => {
   return (
     <div
       ref={targetRef}
-      className="relative box-border flex h-[210vh] items-center justify-center gap-[2vw] overflow-hidden p-[2vw]"
+      className="relative box-border flex h-[120vh] items-center justify-center gap-[2vw] overflow-hidden p-[2vw]"
     >
       <div
         className="w-full max-w-4xl text-center text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter text-white"
@@ -153,7 +153,7 @@ const CardStack = ({ projectsList, leaderIndex: leaderIndexProp }) => {
   return (
     <section
       ref={container}
-      className="relative flex w-full flex-col items-center justify-center min-h-[60vh] pb-[90vh] pt-[40vh]"
+      className="relative flex w-full flex-col items-center justify-center min-h-[60vh] pb-[60vh] pt-[20vh]"
     >
       <div className="absolute left-1/2 top-[8%] -translate-x-1/2 text-center">
         <span className="relative max-w-[14ch] text-xs uppercase leading-tight opacity-40 text-white">
