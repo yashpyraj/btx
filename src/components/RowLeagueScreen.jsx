@@ -48,7 +48,7 @@ const StickyCard_001 = ({
   const topOffset = `calc(-8vh + ${i * 18 + 180}px)`;
   const [imgSrc, onImgError] = useImageFallback(src);
 
-  // bump leader slightly more and add subtle pulse using spring transition
+  // leader visual tweaks
   const leaderMultiplier = isLeader ? 1.06 : 1;
   const finalScale = shouldReduceMotion ? 1 : scale;
   const styleScale = isLeader ? finalScale : finalScale;
@@ -61,8 +61,9 @@ const StickyCard_001 = ({
       <motion.div
         style={{ scale: styleScale, top: topOffset, zIndex: z }}
         transition={{ type: "spring", stiffness: 160, damping: 20 }}
-        className={`relative -top-1/4 w-[min(86vw,640px)] max-w-[640px] origin-top rounded-3xl overflow-hidden shadow-2xl pointer-events-auto
-          ${isLeader ? "ring-2 ring-white/12 backdrop-blur-sm" : ""}`}
+        className={`relative -top-1/4 w-[min(86vw,640px)] max-w-[640px] origin-top rounded-3xl overflow-hidden shadow-2xl pointer-events-auto ${
+          isLeader ? "ring-2 ring-white/12 backdrop-blur-sm" : ""
+        }`}
         aria-label={`project-card-${i}`}
       >
         <img
@@ -138,7 +139,6 @@ const Skiper16 = ({ projectsList, leaderIndex: leaderIndexProp }) => {
             0.55,
             1 - (projects.length - i - 1) * 0.08
           );
-          // the leader gets a slightly larger target
           const targetScale =
             i === leaderIndex ? baseTarget * 1.06 : baseTarget;
           const rangeStart = Math.max(
@@ -166,27 +166,124 @@ const Skiper16 = ({ projectsList, leaderIndex: leaderIndexProp }) => {
 };
 
 /* ------------------------------
-   DemoSkiper16 - showcase, highlight center leader by default
-   - change leaderIndex to highlight different card
+   Character / Skiper31 components (integrated)
+   - lightweight, optimized to avoid repeated hooks
    ------------------------------ */
-const DemoSkiper16 = ({ leaderIndex } = {}) => {
-  const demoProjects = useMemo(
-    () => [
-      { title: "Project 1", src: "/img/gallery-2.webp" },
-      { title: "Project 2", src: "/img/gallery-3.webp" },
-      { title: "Project 3", src: "/img/gallery-4.webp" },
-      { title: "Project 4", src: "/img/gallery-5.webp" },
-      { title: "Project 5", src: "/img/gallery-6.webp" },
-    ],
-    []
+
+const cn = (...args) => args.filter(Boolean).join(" ");
+
+const Character = ({
+  char,
+  index,
+  centerIndex,
+  scrollYProgress,
+  variant = 1,
+}) => {
+  const isSpace = char === " ";
+  const distanceFromCenter = index - centerIndex;
+
+  // shared transforms
+  const x = useTransform(
+    scrollYProgress,
+    [0, 0.5],
+    [distanceFromCenter * (variant === 3 ? 90 : 50), 0]
+  );
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.5],
+    [variant === 2 || variant === 3 ? 0.75 : 1, 1]
+  );
+  const y = useTransform(
+    scrollYProgress,
+    [0, 0.5],
+    [
+      variant === 2
+        ? Math.abs(distanceFromCenter) * 50
+        : variant === 3
+          ? -Math.abs(distanceFromCenter) * 20
+          : 0,
+      0,
+    ]
+  );
+  const rotate = useTransform(
+    scrollYProgress,
+    [0, 0.5],
+    [distanceFromCenter * (variant === 3 ? 50 : 50), 0]
   );
 
-  return <Skiper16 projectsList={demoProjects} leaderIndex={leaderIndex} />;
+  const commonStyle = { x, scale, y, transformOrigin: "center" };
+
+  if (variant === 1) {
+    return (
+      <motion.span
+        className={cn("inline-block text-orange-500", isSpace && "w-4")}
+        style={{ x, rotate }}
+      >
+        {char}
+      </motion.span>
+    );
+  }
+
+  // variants 2 & 3 use <img> to show icons
+  return (
+    <motion.img
+      src={char}
+      className={cn("inline-block", isSpace && "w-4")}
+      style={variant === 3 ? { ...commonStyle, rotate } : commonStyle}
+    />
+  );
 };
 
-/* ------------------------------
-   RowLeagueScreen - showcase page
-   ------------------------------ */
+const Skiper31Demo = ({ text = "see more from gxuri", icons = undefined }) => {
+  const targetRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: targetRef });
+
+  const characters = useMemo(() => text.split(""), [text]);
+  const centerIndex = Math.floor(characters.length / 2);
+
+  return (
+    <ReactLenis root>
+      <main className="w-full bg-transparent">
+        <div
+          ref={targetRef}
+          className="relative box-border flex h-[210vh] items-center justify-center gap-[2vw] overflow-hidden p-[2vw]"
+        >
+          <div
+            className="font-geist w-full max-w-4xl text-center text-6xl font-bold uppercase tracking-tighter text-black"
+            style={{ perspective: "500px" }}
+          >
+            {characters.map((char, index) => (
+              <Character
+                key={index}
+                char={char}
+                index={index}
+                centerIndex={centerIndex}
+                scrollYProgress={scrollYProgress}
+                variant={1}
+              />
+            ))}
+          </div>
+        </div>
+      </main>
+    </ReactLenis>
+  );
+};
+
+const Bracket = ({ className }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 27 78"
+    className={className}
+  >
+    <path
+      fill="#000"
+      d="M26.52 77.21h-5.75c-6.83 0-12.38-5.56-12.38-12.38V48.38C8.39 43.76 4.63 40 .01 40v-4c4.62 0 8.38-3.76 8.38-8.38V12.4C8.38 5.56 13.94 0 20.77 0h5.75v4h-5.75c-4.62 0-8.38 3.76-8.38 8.38V27.6c0 4.34-2.25 8.17-5.64 10.38 3.39 2.21 5.64 6.04 5.64 10.38v16.45c0 4.62 3.76 8.38 8.38 8.38h5.75v4.02Z"
+    ></path>
+  </svg>
+);
+
+
 const RowLeagueScreen = () => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("overview");
@@ -208,49 +305,15 @@ const RowLeagueScreen = () => {
             <p className="text-xs opacity-60">Showcase • Season 2025</p>
           </div>
         </div>
-
-        <div className="flex items-center gap-3">
-          <button className="rounded-md px-3 py-1 text-xs hover:bg-white/5">
-            <IoTrophy className="inline-block mr-1" /> Leaderboard
-          </button>
-          <button className="rounded-md px-3 py-1 text-xs hover:bg-white/5">
-            <IoCalendar className="inline-block mr-1" /> Schedule
-          </button>
-        </div>
       </header>
 
       <main className="mx-auto max-w-6xl space-y-8 p-6">
-        <section className="grid gap-6 lg:grid-cols-3">
-          <div className="col-span-2 rounded-2xl border border-white/6 p-6">
-            <h2 className="mb-2 text-2xl font-semibold">Row League Showcase</h2>
-            <p className="mb-4 text-sm opacity-70">
-              A small showcase section for Row League — highlights, featured
-              projects, and the interactive card stack demo below. The centered
-              card is highlighted as the current lead of the row.
-            </p>
-
-            <div className="mb-4 flex flex-wrap gap-3">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/6 px-3 py-1 text-xs">
-                <GiCrown /> Top Division
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/6 px-3 py-1 text-xs">
-                <GiTreasureMap /> Next Match: Sep 20, 2025
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/6 px-3 py-1 text-xs">
-                <IoSparkles /> Featured
-              </span>
-            </div>
-
-            <div className="rounded-xl border border-white/5 p-4">
-              {/* default: leader = center card */}
-              <DemoSkiper16 />
-            </div>
-          </div>
-        </section>
+        <Skiper31Demo text={"see more from gxuri"} />
+        <Skiper16 />
       </main>
     </div>
   );
 };
 
-export { Skiper16, StickyCard_001, DemoSkiper16 };
+export { Skiper16, StickyCard_001, Skiper31Demo };
 export default RowLeagueScreen;
