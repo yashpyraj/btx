@@ -264,7 +264,7 @@ const CavGuideScreen = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#dfdff0] text-black font-general overflow-x-hidden">
+    <div className="min-h-screen bg-black text-white font-general overflow-x-hidden">
       {/* Header */}
       <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
         <div className="flex items-center justify-between p-6">
@@ -313,7 +313,7 @@ const CavGuideScreen = () => {
             containerClass="!text-white mb-8 drop-shadow-2xl"
           />
           
-          <p className="text-xl font-circular-web text-white/90 mb-8 max-w-2xl mx-auto drop-shadow-lg">
+          <p className="text-xl font-circular-web text-blue-50 mb-8 max-w-2xl mx-auto drop-shadow-lg">
             Comprehensive guides for dominating the battlefield with strategic cavalry formations
           </p>
 
@@ -347,33 +347,33 @@ const CavGuideScreen = () => {
       </section>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-6xl mx-auto p-6 bg-black">
         {/* Build Sections */}
         <div className="space-y-8">
           {buildData.map((build) => (
-            <div key={build.id} className={`bg-gradient-to-r ${build.color} rounded-3xl border ${build.borderColor} backdrop-blur-sm overflow-hidden shadow-xl`}>
+            <div key={build.id} className={`bg-gradient-to-r from-gray-900/90 via-gray-800/90 to-gray-900/90 rounded-3xl border border-gray-700 backdrop-blur-sm overflow-hidden shadow-xl`}>
               {/* Section Header */}
               <button
                 onClick={() => toggleSection(build.id)}
-                className="w-full p-8 flex items-center justify-between hover:bg-white/5 transition-all duration-300"
+                className="w-full p-8 flex items-center justify-between hover:bg-white/10 transition-all duration-300"
               >
                 <div className="flex items-center gap-6 text-left">
-                  <div className="p-4 bg-white/10 rounded-2xl backdrop-blur-sm">
+                  <div className={`p-4 rounded-2xl backdrop-blur-sm ${build.id === 'cav-vs-cav' ? 'bg-red-500/20' : build.id === 'sync-cav-mu-hsiang' ? 'bg-green-500/20' : 'bg-blue-500/20'}`}>
                     {build.icon}
                   </div>
                   <div>
-                    <h2 className="text-3xl font-zentry font-black text-black mb-2 tracking-wide">
+                    <h2 className="text-3xl font-zentry font-black text-white mb-2 tracking-wide">
                       {build.title}
                     </h2>
                     <p className="text-violet-600 font-circular-web font-semibold text-xl tracking-wide mb-3">
                       {build.subtitle}
                     </p>
-                    <p className="text-black/80 font-circular-web font-medium text-base max-w-4xl">
+                    <p className="text-blue-50 font-circular-web font-medium text-base max-w-4xl">
                       {build.description}
                     </p>
                   </div>
                 </div>
-                <div className="text-black/70 p-2 bg-white/10 rounded-full">
+                <div className="text-white/70 p-2 bg-white/10 rounded-full">
                   {expandedSections[build.id] ? (
                     <IoChevronUp className="text-2xl" />
                   ) : (
@@ -385,8 +385,8 @@ const CavGuideScreen = () => {
               {/* Section Content */}
               {expandedSections[build.id] && (
                 <div className="px-8 pb-8">
-                  <div className="border-t border-black/10 pt-8">
-                    <h3 className="text-2xl font-zentry font-black text-black mb-8 flex items-center gap-3 tracking-wide">
+                  <div className="border-t border-gray-700 pt-8">
+                    <h3 className="text-2xl font-zentry font-black text-white mb-8 flex items-center gap-3 tracking-wide">
                       <GiTreasureMap className="text-violet-600" />
                       Formation & Setup
                     </h3>
@@ -395,7 +395,7 @@ const CavGuideScreen = () => {
                       {build.heroData.map((hero) => (
                         <div
                           key={hero.id}
-                          className="group bg-white/60 backdrop-blur-sm rounded-2xl border border-white/40 p-6 hover:bg-white/80 hover:shadow-xl transition-all duration-500"
+                          className="group bg-gray-800/60 backdrop-blur-sm rounded-2xl border border-gray-600 p-6 hover:bg-gray-700/80 hover:shadow-xl transition-all duration-500"
                         >
                           <div className="flex flex-col lg:flex-row gap-6">
                             {/* Hero Info */}
@@ -407,27 +407,30 @@ const CavGuideScreen = () => {
                                 <h4 className="text-xl font-zentry font-black text-black tracking-wide">
                                   {hero.heroes.join(" / ")}
                                 </h4>
-                                <span className="text-blue-600 text-base font-circular-web font-semibold px-4 py-2 bg-blue-100 rounded-full border border-blue-200">
+                                <h4 className="text-xl font-zentry font-black text-white tracking-wide">
+                                  {hero.heroes.join(" / ")}
+                                </h4>
+                                <span className="text-blue-300 text-base font-circular-web font-semibold px-4 py-2 bg-blue-900/50 rounded-full border border-blue-700">
                                   {hero.speed}
                                 </span>
                               </div>
                               
                               <div className="space-y-3">
-                                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                  <span className="text-blue-600 font-circular-web font-bold text-sm uppercase tracking-wider">Pet:</span>
-                                  <span className="text-blue-800 font-circular-web font-semibold text-base">{hero.pet}</span>
+                                <div className="flex items-center gap-3 p-3 bg-blue-900/30 rounded-lg border border-blue-700">
+                                  <span className="text-blue-300 font-circular-web font-bold text-sm uppercase tracking-wider">Pet:</span>
+                                  <span className="text-blue-100 font-circular-web font-semibold text-base">{hero.pet}</span>
                                 </div>
-                                <div className="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                                  <span className="text-yellow-600 font-circular-web font-bold text-sm uppercase tracking-wider">Artifact:</span>
-                                  <span className="text-yellow-800 font-circular-web font-semibold text-base">{hero.artifact}</span>
+                                <div className="flex items-center gap-3 p-3 bg-yellow-900/30 rounded-lg border border-yellow-700">
+                                  <span className="text-yellow-300 font-circular-web font-bold text-sm uppercase tracking-wider">Artifact:</span>
+                                  <span className="text-yellow-100 font-circular-web font-semibold text-base">{hero.artifact}</span>
                                 </div>
                               </div>
 
                               {/* Hero-specific notes */}
                               {hero.notes && (
-                                <div className="mt-4 space-y-2 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <div className="mt-4 space-y-2 p-4 bg-gray-800/50 rounded-lg border border-gray-600">
                                   {hero.notes.map((note, index) => (
-                                    <p key={index} className="text-sm text-gray-700 font-circular-web font-medium">
+                                    <p key={index} className="text-sm text-gray-300 font-circular-web font-medium">
                                       {note}
                                     </p>
                                   ))}
@@ -439,7 +442,7 @@ const CavGuideScreen = () => {
                             <div className="flex gap-4">
                               <div className="text-center">
                                 <div 
-                                  className="w-24 h-24 bg-gradient-to-br from-violet-200 to-blue-200 rounded-xl border border-violet-300 flex items-center justify-center cursor-pointer hover:border-violet-500 hover:scale-105 transition-all duration-300 group-hover:shadow-lg"
+                                  className="w-24 h-24 bg-gradient-to-br from-violet-800 to-blue-800 rounded-xl border border-violet-600 flex items-center justify-center cursor-pointer hover:border-violet-400 hover:scale-105 transition-all duration-300 group-hover:shadow-lg"
                                   onClick={() => setSelectedHero({ ...hero, type: 'hero' })}
                                 >
                                   <img 
@@ -455,12 +458,12 @@ const CavGuideScreen = () => {
                                     <GiSwordman className="text-xl text-violet-600" />
                                   </div>
                                 </div>
-                                <span className="text-sm text-black/70 mt-2 block font-circular-web font-semibold">Heroes</span>
+                                <span className="text-sm text-white/70 mt-2 block font-circular-web font-semibold">Heroes</span>
                               </div>
                               
                               <div className="text-center">
                                 <div 
-                                  className="w-24 h-24 bg-gradient-to-br from-green-200 to-emerald-200 rounded-xl border border-green-300 flex items-center justify-center cursor-pointer hover:border-green-500 hover:scale-105 transition-all duration-300 group-hover:shadow-lg"
+                                  className="w-24 h-24 bg-gradient-to-br from-green-800 to-emerald-800 rounded-xl border border-green-600 flex items-center justify-center cursor-pointer hover:border-green-400 hover:scale-105 transition-all duration-300 group-hover:shadow-lg"
                                   onClick={() => setSelectedHero({ ...hero, type: 'talent' })}
                                 >
                                   <img 
@@ -476,7 +479,7 @@ const CavGuideScreen = () => {
                                     <GiTreasureMap className="text-xl text-green-600" />
                                   </div>
                                 </div>
-                                <span className="text-sm text-black/70 mt-2 block font-circular-web font-semibold">Talents</span>
+                                <span className="text-sm text-white/70 mt-2 block font-circular-web font-semibold">Talents</span>
                               </div>
                             </div>
                           </div>
@@ -488,13 +491,13 @@ const CavGuideScreen = () => {
                     {build.specialNotes.length > 0 && (
                       <div className="mt-8 space-y-6">
                         {build.specialNotes.map((note, index) => (
-                          <div key={index} className="bg-gradient-to-r from-yellow-100 to-orange-100 border border-yellow-300 rounded-2xl p-6 backdrop-blur-sm">
-                            <h4 className="text-xl font-zentry font-black text-yellow-800 mb-4 tracking-wide">
+                          <div key={index} className="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-700 rounded-2xl p-6 backdrop-blur-sm">
+                            <h4 className="text-xl font-zentry font-black text-yellow-300 mb-4 tracking-wide">
                               {note.title}
                             </h4>
                             <div className="space-y-2">
                               {note.content.map((line, lineIndex) => (
-                                <p key={lineIndex} className="text-base text-yellow-900 font-circular-web font-medium leading-relaxed">
+                                <p key={lineIndex} className="text-base text-yellow-100 font-circular-web font-medium leading-relaxed">
                                   {line}
                                 </p>
                               ))}
@@ -544,19 +547,19 @@ const CavGuideScreen = () => {
       {/* Image Modal */}
       {selectedHero && (
         <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative max-w-4xl max-h-[90vh] bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-2xl">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-violet-50 to-blue-50">
-              <h3 className="text-2xl font-zentry font-black text-black tracking-wide">
+          <div className="relative max-w-4xl max-h-[90vh] bg-gray-900 rounded-3xl border border-gray-700 overflow-hidden shadow-2xl">
+            <div className="flex items-center justify-between p-6 border-b border-gray-700 bg-gradient-to-r from-violet-900/50 to-blue-900/50">
+              <h3 className="text-2xl font-zentry font-black text-white tracking-wide">
                 {selectedHero.heroes.join(" / ")} - {selectedHero.type === 'hero' ? 'Heroes' : 'Talent Tree'}
               </h3>
               <button
                 onClick={() => setSelectedHero(null)}
-                className="text-black/70 hover:text-black transition-all duration-300 hover:scale-110 p-2 hover:bg-black/5 rounded-full"
+                className="text-white/70 hover:text-white transition-all duration-300 hover:scale-110 p-2 hover:bg-white/10 rounded-full"
               >
                 <IoClose className="text-xl" />
               </button>
             </div>
-            <div className="p-6 bg-white">
+            <div className="p-6 bg-gray-900">
               <img
                 src={selectedHero.type === 'hero' ? selectedHero.heroImage : selectedHero.talentImage}
                 alt={`${selectedHero.heroes.join('/')} ${selectedHero.type}`}
@@ -566,7 +569,7 @@ const CavGuideScreen = () => {
                   if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                 }}
               />
-              <div className="w-full h-64 hidden items-center justify-center text-black/60">
+              <div className="w-full h-64 hidden items-center justify-center text-white/60">
                 <div className="text-center">
                   {selectedHero.type === 'hero' ? <GiSwordman className="text-4xl mx-auto mb-2" /> : <GiTreasureMap className="text-4xl mx-auto mb-2" />}
                   <p>Image not available</p>
