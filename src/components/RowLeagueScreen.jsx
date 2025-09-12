@@ -305,12 +305,12 @@ const RowLeagueScreen = () => {
         <section className="flex min-h-screen items-center justify-center">
           <Story />
         </section>
-
+  <h1>Leads</h1>
         {/* Card stack under story */}
         <CardStack />
       </main>
 
-      <AnimatedText text="Welcome to our ROW League showcase" />
+    <h1>Player List</h1>
     </div>
   );
 };
