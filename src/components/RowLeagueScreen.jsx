@@ -7,6 +7,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Lenis from "lenis";
 import AnimatedTitle from "./AnimatedTitle";
 import Button from "./Button";
+import { CardCarousel } from "./CardCarousel";
 
 const RowLeagueScreen = () => {
   const navigate = useNavigate();
@@ -91,6 +92,18 @@ const RowLeagueScreen = () => {
       description:
         "Versatile support player ensuring team cohesion and battlefield awareness.",
     },
+  ];
+
+  // Additional team members for carousel
+  const allTeamImages = [
+    { src: "/img/shiso.png", alt: "Shiso - Team Captain" },
+    { src: "/img/esvipe.png", alt: "Esvipe - Combat Specialist" },
+    { src: "/img/fob.png", alt: "FOB - Strategy Coordinator" },
+    { src: "/img/joker.png", alt: "Joker - Support Specialist" },
+    { src: "/img/emry.png", alt: "Emry - Reserve Player" },
+    { src: "/img/niya.png", alt: "Niya - Scout" },
+    { src: "/img/lil.png", alt: "Lil - Analyst" },
+    { src: "/img/tournament.png", alt: "Tournament Highlights" },
   ];
 
   // Scroll-based transforms for the leader card
@@ -237,6 +250,23 @@ const RowLeagueScreen = () => {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Team Carousel Section */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <AnimatedTitle
+            title="Extended <b>Roster</b>"
+            containerClass="mb-16 !text-black text-center"
+          />
+          
+          <CardCarousel 
+            images={allTeamImages}
+            autoplayDelay={2000}
+            showPagination={true}
+            showNavigation={true}
+          />
         </div>
       </section>
 
