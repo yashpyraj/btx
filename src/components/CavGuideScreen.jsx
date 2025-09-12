@@ -290,7 +290,7 @@ const CavGuideScreen = () => {
         </div>
       </div>
 
-      {/* Hero Section */}
+      {/* Hero Section with Video Background */}
       <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-300 via-blue-300 to-yellow-300">
         {/* Background Video */}
         <div className="absolute inset-0 overflow-hidden">
