@@ -1,60 +1,106 @@
 import gsap from "gsap";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 import Button from "./Button";
 import AnimatedTitle from "./AnimatedTitle";
 
 const FloatingImage = () => {
   const frameRef = useRef(null);
+  const proxyRef = useRef({ rx: 0, ry: 0 }); // current animated values
+  const tweenRef = useRef(null);
 
-  const handleMouseMove = (e) => {
-    const { clientX, clientY } = e;
-    const element = frameRef.current;
+  useEffect(() => {
+    const el = frameRef.current;
+    if (!el) return;
 
-    if (!element) return;
+    // Initial styles for better GPU performance & proper 3D rendering
+    gsap.set(el, {
+      transformStyle: "preserve-3d",
+      transformOrigin: "center center",
+      willChange: "transform",
+      // set an initial tiny rotation so GPU has a consistent transform on start
+      rotateX: 0,
+      rotateY: 0,
+    });
 
-    const rect = element.getBoundingClientRect();
-    const xPos = clientX - rect.left;
-    const yPos = clientY - rect.top;
+    // Cleanup on unmount
+    return () => {
+      if (tweenRef.current) tweenRef.current.kill();
+      gsap.set(el, { rotateX: 0, rotateY: 0 });
+    };
+  }, []);
 
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
+  // pointermove handler computes target angles and animates proxy -> DOM
+  const handlePointerMove = (e) => {
+    const el = frameRef.current;
+    if (!el) return;
 
-    const rotateX = ((yPos - centerY) / centerY) * -10;
-    const rotateY = ((xPos - centerX) / centerX) * 10;
+    // Use pointer coordinates relative to element
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX ?? (e.touches && e.touches[0].clientX);
+    const y = e.clientY ?? (e.touches && e.touches[0].clientY);
+    if (x == null || y == null) return;
 
-    gsap.to(element, {
-      duration: 0.3,
-      rotateX,
-      rotateY,
-      transformPerspective: 500,
-      ease: "power1.inOut",
+    const px = x - rect.left;
+    const py = y - rect.top;
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+
+    // Adjust these multipliers to taste (lower = subtler)
+    const maxTilt = 10; // degrees
+    const rotateX = ((py - cy) / cy) * -maxTilt;
+    const rotateY = ((px - cx) / cx) * maxTilt;
+
+    // Smoothly animate the proxy object to the new target.
+    // onUpdate writes values to the element — single tween, overwritten on new events.
+    const elRef = frameRef.current;
+    if (tweenRef.current) tweenRef.current.kill();
+
+    tweenRef.current = gsap.to(proxyRef.current, {
+      rx: rotateX,
+      ry: rotateY,
+      duration: 0.6, // longer = smoother feel
+      ease: "power3.out",
+      overwrite: true,
+      onUpdate: () => {
+        // write out during tween — keeps updates smooth and batched
+        gsap.set(elRef, {
+          rotateX: proxyRef.current.rx,
+          rotateY: proxyRef.current.ry,
+          transformPerspective: 700,
+        });
+      },
     });
   };
 
-  const handleMouseLeave = () => {
-    const element = frameRef.current;
+  const handlePointerLeave = () => {
+    const el = frameRef.current;
+    if (!el) return;
 
-    if (element) {
-      gsap.to(element, {
-        duration: 0.3,
-        rotateX: 0,
-        rotateY: 0,
-        ease: "power1.inOut",
-      });
-    }
+    // Return smoothly to neutral
+    if (tweenRef.current) tweenRef.current.kill();
+
+    tweenRef.current = gsap.to(proxyRef.current, {
+      rx: 0,
+      ry: 0,
+      duration: 0.8,
+      ease: "power4.out",
+      overwrite: true,
+      onUpdate: () => {
+        gsap.set(el, {
+          rotateX: proxyRef.current.rx,
+          rotateY: proxyRef.current.ry,
+        });
+      },
+    });
   };
 
   return (
-    <div id="story" className="min-h-dvh w-screen bg-black text-blue-50">
+    <div id="story" className="w-screen  text-blue-50">
       <div className="flex size-full flex-col items-center py-10 pb-24">
-        <p className="font-general text-sm uppercase md:text-[10px]">
-          the multiversal ip world
-        </p>
-
         <div className="relative size-full">
           <AnimatedTitle
-            title="the st<b>o</b>ry of <br /> a hidden real<b>m</b>"
+            title="<b>Welcome to our ROW League showcase</b>"
             containerClass="mt-5 pointer-events-none mix-blend-difference relative z-10"
           />
 
@@ -63,13 +109,20 @@ const FloatingImage = () => {
               <div className="story-img-content">
                 <img
                   ref={frameRef}
-                  onMouseMove={handleMouseMove}
-                  onMouseLeave={handleMouseLeave}
-                  onMouseUp={handleMouseLeave}
-                  onMouseEnter={handleMouseLeave}
+                  // use pointer events (covers mouse + touch)
+                  onPointerMove={handlePointerMove}
+                  onPointerLeave={handlePointerLeave}
+                  onPointerCancel={handlePointerLeave}
+                  onPointerUp={handlePointerLeave}
                   src="/img/entrance.webp"
-                  alt="entrance.webp"
+                  alt="entrance"
                   className="object-contain"
+                  // inline style as fallback so it's active even before JS runs
+                  style={{
+                    willChange: "transform",
+                    transformStyle: "preserve-3d",
+                    backfaceVisibility: "hidden",
+                  }}
                 />
               </div>
             </div>
@@ -100,22 +153,6 @@ const FloatingImage = () => {
                 </filter>
               </defs>
             </svg>
-          </div>
-        </div>
-
-        <div className="-mt-80 flex w-full justify-center md:-mt-64 md:me-44 md:justify-end">
-          <div className="flex h-full w-fit flex-col items-center md:items-start">
-            <p className="mt-3 max-w-sm text-center font-circular-web text-violet-50 md:text-start">
-              Where realms converge, lies Zentry and the boundless pillar.
-              Discover its secrets and shape your fate amidst infinite
-              opportunities.
-            </p>
-
-            <Button
-              id="realm-btn"
-              title="discover prologue"
-              containerClass="mt-5"
-            />
           </div>
         </div>
       </div>
