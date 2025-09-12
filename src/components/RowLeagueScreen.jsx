@@ -109,7 +109,6 @@ const Skiper16 = ({ projectsList, leaderIndex: leaderIndexProp }) => {
         { title: "Project 2", src: "/img/gallery-3.webp" },
         { title: "Project 3", src: "/img/gallery-4.webp" },
         { title: "Project 4", src: "/img/gallery-5.webp" },
-        { title: "Project 5", src: "/img/gallery-6.webp" },
       ],
     [projectsList]
   );
