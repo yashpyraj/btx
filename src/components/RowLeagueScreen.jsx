@@ -1,316 +1,296 @@
-"use client";
-
-import { useState, useRef, useMemo, useCallback, useEffect, memo } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useReducedMotion,
-} from "framer-motion";
-import { IoArrowBack, IoClose } from "react-icons/io5";
-import { GiCrown } from "react-icons/gi";
+import { useState } from "react";
+import { IoClose, IoArrowBack } from "react-icons/io5";
+import { GiCrown, GiSwordman, GiShield, GiTrophy } from "react-icons/gi";
+import { TiLocationArrow } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
-import Story from "../components/Story";
+import AnimatedTitle from "./AnimatedTitle";
+import Button from "./Button";
 
-/* -------------------------
-   Helper: safe image loader
-   ------------------------- */
-const useImageFallback = (initialSrc, fallback = "/img/placeholder.webp") => {
-  const [src, setSrc] = useState(initialSrc);
-  const onError = useCallback(() => setSrc(fallback), [fallback]);
-  useEffect(() => setSrc(initialSrc), [initialSrc]);
-  return [src, onError];
-};
-
-/* -------------------------
-   StickyCard component
-   ------------------------- */
-const StickyCard = ({
-  i,
-  title,
-  src,
-  progress,
-  range,
-  targetScale,
-  z,
-  isLeader = false,
-}) => {
-  const cardRef = useRef(null);
-  const shouldReduceMotion = useReducedMotion();
-  const scale = useTransform(progress, range, [1, targetScale]);
-  const topOffset = `calc(-8vh + ${i * 18 + 180}px)`;
-  const [imgSrc, onImgError] = useImageFallback(src);
-
-  const leaderMultiplier = isLeader ? 1.06 : 1;
-  const finalScale = shouldReduceMotion ? 1 : scale;
-
-  return (
-    <div
-      ref={cardRef}
-      className="sticky top-0 flex items-center justify-center pointer-events-none"
-    >
-      <motion.div
-        style={{ scale: finalScale, top: topOffset, zIndex: z }}
-        transition={{ type: "spring", stiffness: 160, damping: 20 }}
-        className={`relative -top-1/4 w-[min(70vw,420px)] max-w-[420px] origin-top rounded-2xl overflow-hidden shadow-xl pointer-events-auto ${
-          isLeader ? "ring-2 ring-red-400/30 backdrop-blur-sm" : ""
-        }`}
-      >
-        <img
-          src={imgSrc}
-          alt={title}
-          onError={onImgError}
-          className="block w-full h-auto object-contain bg-black"
-          loading="lazy"
-          decoding="async"
-          style={{ transform: `scale(${isLeader ? leaderMultiplier : 1})` }}
-        />
-
-        {isLeader && (
-          <div className="absolute right-3 top-3 flex items-center gap-2 rounded-full bg-gradient-to-r from-red-500/90 to-orange-400/90 px-2.5 py-0.5 text-xs font-semibold text-white shadow">
-            <GiCrown size={14} /> LEADER
-          </div>
-        )}
-
-        <div className="absolute left-3 bottom-3 rounded-md bg-black/60 px-2 py-0.5 text-xs backdrop-blur-sm text-white">
-          <span className="font-semibold">{title}</span>
-          <span className="ml-2 opacity-70">#{i + 1}</span>
-        </div>
-      </motion.div>
-    </div>
-  );
-};
-
-/* -----------------------------------------
-   Improved Character + AnimatedText (shiny)
-   -----------------------------------------
-   - slower/eased animations
-   - shiny silver gradient + shimmer
-   - reduced-motion support
-   - memoized Character for perf
-------------------------------------------*/
-
-/* Character — memoized for performance */
-const Character = memo(function Character({
-  char,
-  index,
-  centerIndex,
-  scrollYProgress,
-  prefersReduced,
-}) {
-  const isSpace = char === " ";
-  // normalized distance from center (-1 .. 1)
-  const distance = (index - centerIndex) / Math.max(1, centerIndex);
-
-  // Slow, subtle transforms for a refined look
-  const rotateX = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [distance * -10, distance * 10]
-  );
-  const translateY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [distance * 12, distance * -12]
-  );
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [1 - Math.abs(distance) * 0.02, 1 + Math.abs(distance) * 0.03]
-  );
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [0.88 + Math.abs(distance) * -0.15, 1]
-  );
-
-  const finalStyle = prefersReduced
-    ? { y: 0, rotateX: 0, scale: 1, opacity: 1 }
-    : { y: translateY, rotateX, scale, opacity };
-
-  // entrance animation (staggered slightly)
-  const entrance = {
-    initial: { opacity: 0, y: 10 },
-    animate: { opacity: 1, y: 0 },
-    transition: {
-      delay: index * 0.03,
-      duration: 0.9,
-      ease: [0.22, 0.8, 0.36, 0.97],
-    },
-  };
-
-  return (
-    <motion.span
-      className={`inline-block char ${isSpace ? "w-4" : ""}`}
-      {...entrance}
-      style={finalStyle}
-      aria-hidden={isSpace}
-    >
-      {char}
-    </motion.span>
-  );
-});
-
-/* AnimatedText — uses shiny silver shimmer and slower motion */
-const AnimatedText = ({ text = "Welcome to our ROW League showcase" }) => {
-  const targetRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: targetRef });
-  const prefersReduced = useReducedMotion();
-
-  const characters = useMemo(() => text.split(""), [text]);
-  const centerIndex = Math.floor(characters.length / 2);
-
-  return (
-    <div
-      ref={targetRef}
-      className="relative box-border flex h-[120vh] items-center justify-center gap-[2vw] overflow-hidden p-[2vw]"
-    >
-      {/* local CSS for shimmer + character smoothing */}
-      <style>{`
-        .shimmer {
-          background: linear-gradient(90deg, #bfc3c7 0%, #ffffff 45%, #bfc3c7 55%, #c7c7c9 100%);
-          background-size: 200% 100%;
-          -webkit-background-clip: text;
-          background-clip: text;
-          color: transparent;
-          animation: shimmer 3.6s linear infinite;
-          text-shadow: 0 1px 0 rgba(255,255,255,0.85), 0 8px 24px rgba(0,0,0,0.45);
-        }
-        @keyframes shimmer {
-          0% { background-position: 200% 0; }
-          100% { background-position: -200% 0; }
-        }
-        .char {
-          display: inline-block;
-          will-change: transform, opacity;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-        }
-        /* small interactive pop (non-essential) */
-        .char:hover { transform: translateY(-6px) scale(1.02); }
-      `}</style>
-
-      <div
-        className="w-full max-w-4xl text-center text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter"
-        style={{ perspective: "900px" }}
-      >
-        <span className="shimmer">
-          {characters.map((char, index) => (
-            <Character
-              key={index}
-              char={char}
-              index={index}
-              centerIndex={centerIndex}
-              scrollYProgress={scrollYProgress}
-              prefersReduced={prefersReduced}
-            />
-          ))}
-        </span>
-      </div>
-    </div>
-  );
-};
-
-/* -------------------------
-   CardStack component
-   ------------------------- */
-const CardStack = ({ projectsList, leaderIndex: leaderIndexProp }) => {
-  const container = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: container,
-    offset: ["start start", "end end"],
-  });
-
-  const projects = useMemo(
-    () =>
-      projectsList || [
-        { title: "Team Captain", src: "/img/shiso.png" },
-        { title: "Strategy Lead", src: "/img/esvipe.png" },
-        { title: "Combat Specialist", src: "/img/fob.png" },
-        { title: "Combat Specialist", src: "/img/joker.png" },
-      ],
-    [projectsList]
-  );
-
-  const leaderIndex = 0;
-
-  return (
-    <section
-      ref={container}
-      className="relative flex w-full flex-col items-center justify-center min-h-[60vh] pb-[60vh] pt-[20vh]"
-    >
-      <div className="absolute left-1/2 top-[8%] -translate-x-1/2 text-center">
-        <span className="relative max-w-[14ch] text-xs uppercase leading-tight opacity-40 text-white">
-          scroll down to view the team
-        </span>
-      </div>
-
-      {projects.map((project, i) => {
-        const zIndex = projects.length - i + (i === leaderIndex ? 10 : 0);
-        const baseTarget = Math.max(0.55, 1 - (projects.length - i - 1) * 0.08);
-        const targetScale = i === leaderIndex ? baseTarget * 1.06 : baseTarget;
-        const rangeStart = Math.max(0, i * (1 / Math.max(4, projects.length)));
-
-        return (
-          <StickyCard
-            key={`p_${i}`}
-            i={i}
-            title={project.title}
-            src={project.src}
-            progress={scrollYProgress}
-            range={[rangeStart, 1]}
-            targetScale={targetScale}
-            z={zIndex}
-            isLeader={i === leaderIndex}
-          />
-        );
-      })}
-    </section>
-  );
-};
-
-/* -------------------------
-   Screen: RowLeagueScreen
-   ------------------------- */
 const RowLeagueScreen = () => {
   const navigate = useNavigate();
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+
+  const teamMembers = [
+    {
+      id: 1,
+      name: "Shiso",
+      role: "Team Captain",
+      image: "/img/shiso.png",
+      stats: {
+        wins: 127,
+        kdr: "3.2",
+        rank: "Grandmaster"
+      },
+      description: "Strategic mastermind leading the charge with unmatched tactical prowess.",
+      isLeader: true
+    },
+    {
+      id: 2,
+      name: "Esvipe",
+      role: "Combat Specialist",
+      image: "/img/esvipe.png",
+      stats: {
+        wins: 98,
+        kdr: "4.1",
+        rank: "Master"
+      },
+      description: "Elite warrior specializing in high-impact combat scenarios and battlefield control."
+    },
+    {
+      id: 3,
+      name: "FOB",
+      role: "Strategy Coordinator",
+      image: "/img/fob.png",
+      stats: {
+        wins: 89,
+        kdr: "2.8",
+        rank: "Master"
+      },
+      description: "Tactical genius coordinating team movements and strategic positioning."
+    },
+    {
+      id: 4,
+      name: "Joker",
+      role: "Support Specialist",
+      image: "/img/joker.png",
+      stats: {
+        wins: 76,
+        kdr: "2.5",
+        rank: "Diamond"
+      },
+      description: "Versatile support player ensuring team cohesion and battlefield awareness."
+    }
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white font-sans">
+    <div className="min-h-screen bg-[#dfdff0] text-black font-general overflow-x-hidden">
       {/* Header */}
-      <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-white/10 bg-black/60 p-4 backdrop-blur-sm">
-        <div className="flex items-center gap-3">
+      <div className="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/10">
+        <div className="flex items-center justify-between p-6">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-white/70 hover:text-white transition-all duration-300 hover:scale-105"
+            >
+              <IoArrowBack className="text-xl" />
+              <span className="text-sm font-semibold">Back</span>
+            </button>
+            <div className="h-6 w-px bg-white/20" />
+            <h1 className="text-3xl font-zentry font-black text-white tracking-wider">
+              ROW LEAGUE
+            </h1>
+          </div>
           <button
-            onClick={() => navigate("/")}
-            className="rounded-full p-2 hover:bg-white/10 transition-colors"
+            onClick={() => navigate('/')}
+            className="text-white/70 hover:text-white transition-all duration-300 hover:scale-110"
           >
-            <IoArrowBack size={18} />
+            <IoClose className="text-2xl" />
           </button>
-          <div>
-            <h1 className="text-lg font-semibold">ROW League</h1>
-            <p className="text-xs opacity-60">Team Showcase • Season 2025</p>
+        </div>
+      </div>
+
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-300 via-blue-300 to-yellow-300">
+        <div className="absolute inset-0 bg-black/20" />
+        
+        <div className="relative z-10 text-center px-4">
+          <AnimatedTitle
+            title="<b>Welcome</b> to our <br /> ROW League <b>showcase</b>"
+            containerClass="!text-black mb-8"
+          />
+          
+          <p className="text-xl md:text-2xl font-circular-web text-black/80 max-w-3xl mx-auto mb-12 leading-relaxed">
+            Meet the elite warriors of Root of War - where strategy meets skill in epic battles
+          </p>
+
+          <div className="flex flex-wrap justify-center gap-6 mb-12">
+            <div className="bg-black/10 backdrop-blur-sm rounded-2xl p-6 border border-black/20">
+              <div className="flex items-center gap-3 mb-2">
+                <GiTrophy className="text-2xl text-yellow-600" />
+                <span className="font-zentry font-black text-lg">VICTORIES</span>
+              </div>
+              <p className="text-3xl font-zentry font-black text-violet-600">390+</p>
+            </div>
+            
+            <div className="bg-black/10 backdrop-blur-sm rounded-2xl p-6 border border-black/20">
+              <div className="flex items-center gap-3 mb-2">
+                <GiShield className="text-2xl text-blue-600" />
+                <span className="font-zentry font-black text-lg">RANK</span>
+              </div>
+              <p className="text-3xl font-zentry font-black text-violet-600">#1</p>
+            </div>
+            
+            <div className="bg-black/10 backdrop-blur-sm rounded-2xl p-6 border border-black/20">
+              <div className="flex items-center gap-3 mb-2">
+                <GiSwordman className="text-2xl text-red-600" />
+                <span className="font-zentry font-black text-lg">MEMBERS</span>
+              </div>
+              <p className="text-3xl font-zentry font-black text-violet-600">4</p>
+            </div>
+          </div>
+
+          <Button
+            title="View Team Stats"
+            rightIcon={<TiLocationArrow />}
+            containerClass="bg-violet-300 hover:bg-violet-400 text-black"
+          />
+        </div>
+      </section>
+
+      {/* Team Members Section */}
+      <section className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <AnimatedTitle
+            title="Meet the <b>Champions</b>"
+            containerClass="mb-16 !text-black text-center"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {teamMembers.map((member) => (
+              <div
+                key={member.id}
+                className="group relative bg-black rounded-3xl overflow-hidden hover:scale-105 transition-all duration-500 cursor-pointer"
+                onClick={() => setSelectedPlayer(member)}
+              >
+                {member.isLeader && (
+                  <div className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-zentry font-black">
+                    <GiCrown className="text-sm" />
+                    CAPTAIN
+                  </div>
+                )}
+
+                <div className="aspect-square overflow-hidden">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    onError={(e) => {
+                      e.target.src = "/img/placeholder.webp";
+                    }}
+                  />
+                </div>
+
+                <div className="p-6 text-white">
+                  <h3 className="text-2xl font-zentry font-black mb-2">{member.name}</h3>
+                  <p className="text-violet-300 font-circular-web font-semibold mb-4">{member.role}</p>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-white/70">Wins:</span>
+                      <span className="font-zentry font-black text-yellow-300">{member.stats.wins}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-white/70">K/D:</span>
+                      <span className="font-zentry font-black text-green-300">{member.stats.kdr}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-white/70">Rank:</span>
+                      <span className="font-zentry font-black text-violet-300">{member.stats.rank}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            ))}
           </div>
         </div>
-        <button
-          onClick={() => navigate("/")}
-          className="rounded-full p-2 hover:bg-white/10 transition-colors"
-        >
-          <IoClose size={18} />
-        </button>
-      </header>
+      </section>
 
-      {/* Main Content */}
-      <main className="mx-auto max-w-6xl">
-        {/* Center Story component */}
-        <section className="flex min-h-screen items-center justify-center">
-          <Story />
-        </section>
-  <h1>Leads</h1>
-        {/* Card stack under story */}
-        <CardStack />
-      </main>
+      {/* Call to Action Section */}
+      <section className="relative py-20 bg-black text-white">
+        <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 to-blue-600/20" />
+        
+        <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
+          <AnimatedTitle
+            title="Ready to <b>join</b> the <br /> <b>battle</b>?"
+            containerClass="mb-8 !text-white"
+          />
+          
+          <p className="text-xl font-circular-web text-white/80 mb-12 max-w-2xl mx-auto">
+            Think you have what it takes to compete with the best? Join our ranks and prove your worth in the arena.
+          </p>
 
-    <h1>Player List</h1>
+          <div className="flex flex-wrap justify-center gap-6">
+            <Button
+              title="Join Tournament"
+              rightIcon={<TiLocationArrow />}
+              containerClass="bg-violet-500 hover:bg-violet-600 text-white"
+            />
+            <Button
+              title="View Leaderboard"
+              rightIcon={<TiLocationArrow />}
+              containerClass="bg-transparent border border-white/30 hover:bg-white/10 text-white"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Player Detail Modal */}
+      {selectedPlayer && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="relative max-w-2xl w-full bg-gradient-to-br from-black to-gray-900 rounded-3xl border border-white/20 overflow-hidden">
+            <button
+              onClick={() => setSelectedPlayer(null)}
+              className="absolute top-6 right-6 z-10 text-white/70 hover:text-white transition-colors"
+            >
+              <IoClose className="text-2xl" />
+            </button>
+
+            <div className="aspect-video overflow-hidden">
+              <img
+                src={selectedPlayer.image}
+                alt={selectedPlayer.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.src = "/img/placeholder.webp";
+                }}
+              />
+            </div>
+
+            <div className="p-8 text-white">
+              <div className="flex items-center gap-4 mb-6">
+                <h2 className="text-4xl font-zentry font-black">{selectedPlayer.name}</h2>
+                {selectedPlayer.isLeader && (
+                  <div className="flex items-center gap-2 bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-zentry font-black">
+                    <GiCrown className="text-sm" />
+                    CAPTAIN
+                  </div>
+                )}
+              </div>
+
+              <p className="text-2xl text-violet-300 font-circular-web font-semibold mb-6">
+                {selectedPlayer.role}
+              </p>
+
+              <p className="text-lg text-white/80 font-circular-web mb-8 leading-relaxed">
+                {selectedPlayer.description}
+              </p>
+
+              <div className="grid grid-cols-3 gap-6">
+                <div className="text-center p-4 bg-white/5 rounded-2xl border border-white/10">
+                  <p className="text-3xl font-zentry font-black text-yellow-300 mb-2">
+                    {selectedPlayer.stats.wins}
+                  </p>
+                  <p className="text-white/70 font-circular-web">Wins</p>
+                </div>
+                <div className="text-center p-4 bg-white/5 rounded-2xl border border-white/10">
+                  <p className="text-3xl font-zentry font-black text-green-300 mb-2">
+                    {selectedPlayer.stats.kdr}
+                  </p>
+                  <p className="text-white/70 font-circular-web">K/D Ratio</p>
+                </div>
+                <div className="text-center p-4 bg-white/5 rounded-2xl border border-white/10">
+                  <p className="text-2xl font-zentry font-black text-violet-300 mb-2">
+                    {selectedPlayer.stats.rank}
+                  </p>
+                  <p className="text-white/70 font-circular-web">Rank</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
