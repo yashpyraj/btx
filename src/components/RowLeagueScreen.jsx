@@ -1,10 +1,20 @@
-import { useState, useRef, useMemo, useCallback, useEffect } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+"use client";
+
+import { useState, useRef, useMemo, useCallback, useEffect, memo } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 import { IoArrowBack, IoClose } from "react-icons/io5";
 import { GiCrown } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
+import Story from "../components/Story";
 
-// Helper: safe image loader with fallback
+/* -------------------------
+   Helper: safe image loader
+   ------------------------- */
 const useImageFallback = (initialSrc, fallback = "/img/placeholder.webp") => {
   const [src, setSrc] = useState(initialSrc);
   const onError = useCallback(() => setSrc(fallback), [fallback]);
@@ -12,7 +22,9 @@ const useImageFallback = (initialSrc, fallback = "/img/placeholder.webp") => {
   return [src, onError];
 };
 
-// StickyCard component
+/* -------------------------
+   StickyCard component
+   ------------------------- */
 const StickyCard = ({
   i,
   title,
@@ -40,7 +52,7 @@ const StickyCard = ({
       <motion.div
         style={{ scale: finalScale, top: topOffset, zIndex: z }}
         transition={{ type: "spring", stiffness: 160, damping: 20 }}
-        className={`relative -top-1/4 w-[min(86vw,640px)] max-w-[640px] origin-top rounded-3xl overflow-hidden shadow-2xl pointer-events-auto ${
+        className={`relative -top-1/4 w-[min(70vw,420px)] max-w-[420px] origin-top rounded-2xl overflow-hidden shadow-xl pointer-events-auto ${
           isLeader ? "ring-2 ring-red-400/30 backdrop-blur-sm" : ""
         }`}
       >
@@ -48,57 +60,102 @@ const StickyCard = ({
           src={imgSrc}
           alt={title}
           onError={onImgError}
-          className="block h-[360px] w-full object-cover sm:h-[420px] md:h-[460px] lg:h-[480px]"
+          className="block w-full h-auto object-contain bg-black"
           loading="lazy"
           decoding="async"
           style={{ transform: `scale(${isLeader ? leaderMultiplier : 1})` }}
         />
 
         {isLeader && (
-          <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-gradient-to-r from-red-500/90 to-orange-400/90 px-3 py-1 text-xs font-semibold text-white shadow">
+          <div className="absolute right-3 top-3 flex items-center gap-2 rounded-full bg-gradient-to-r from-red-500/90 to-orange-400/90 px-2.5 py-0.5 text-xs font-semibold text-white shadow">
             <GiCrown size={14} /> LEADER
           </div>
         )}
 
-        <div className="absolute left-4 bottom-4 rounded-md bg-black/60 px-3 py-1 text-sm backdrop-blur-sm text-white">
+        <div className="absolute left-3 bottom-3 rounded-md bg-black/60 px-2 py-0.5 text-xs backdrop-blur-sm text-white">
           <span className="font-semibold">{title}</span>
-          <span className="ml-2 text-xs opacity-70">#{i + 1}</span>
+          <span className="ml-2 opacity-70">#{i + 1}</span>
         </div>
       </motion.div>
     </div>
   );
 };
 
-// Character component for animated text
-const Character = ({ char, index, centerIndex, scrollYProgress }) => {
-  const isSpace = char === " ";
-  const distanceFromCenter = index - centerIndex;
+/* -----------------------------------------
+   Improved Character + AnimatedText (shiny)
+   -----------------------------------------
+   - slower/eased animations
+   - shiny silver gradient + shimmer
+   - reduced-motion support
+   - memoized Character for perf
+------------------------------------------*/
 
-  const x = useTransform(
+/* Character — memoized for performance */
+const Character = memo(function Character({
+  char,
+  index,
+  centerIndex,
+  scrollYProgress,
+  prefersReduced,
+}) {
+  const isSpace = char === " ";
+  // normalized distance from center (-1 .. 1)
+  const distance = (index - centerIndex) / Math.max(1, centerIndex);
+
+  // Slow, subtle transforms for a refined look
+  const rotateX = useTransform(
     scrollYProgress,
-    [0, 0.5],
-    [distanceFromCenter * 50, 0]
+    [0, 1],
+    [distance * -10, distance * 10]
   );
-  const rotate = useTransform(
+  const translateY = useTransform(
     scrollYProgress,
-    [0, 0.5],
-    [distanceFromCenter * 50, 0]
+    [0, 1],
+    [distance * 12, distance * -12]
   );
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [1 - Math.abs(distance) * 0.02, 1 + Math.abs(distance) * 0.03]
+  );
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0.88 + Math.abs(distance) * -0.15, 1]
+  );
+
+  const finalStyle = prefersReduced
+    ? { y: 0, rotateX: 0, scale: 1, opacity: 1 }
+    : { y: translateY, rotateX, scale, opacity };
+
+  // entrance animation (staggered slightly)
+  const entrance = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    transition: {
+      delay: index * 0.03,
+      duration: 0.9,
+      ease: [0.22, 0.8, 0.36, 0.97],
+    },
+  };
 
   return (
     <motion.span
-      className={`inline-block text-red-400 ${isSpace ? "w-4" : ""}`}
-      style={{ x, rotate }}
+      className={`inline-block char ${isSpace ? "w-4" : ""}`}
+      {...entrance}
+      style={finalStyle}
+      aria-hidden={isSpace}
     >
       {char}
     </motion.span>
   );
-};
+});
 
-// Animated text component
+/* AnimatedText — uses shiny silver shimmer and slower motion */
 const AnimatedText = ({ text = "Welcome to our ROW League showcase" }) => {
   const targetRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: targetRef });
+  const prefersReduced = useReducedMotion();
 
   const characters = useMemo(() => text.split(""), [text]);
   const centerIndex = Math.floor(characters.length / 2);
@@ -108,25 +165,55 @@ const AnimatedText = ({ text = "Welcome to our ROW League showcase" }) => {
       ref={targetRef}
       className="relative box-border flex h-[120vh] items-center justify-center gap-[2vw] overflow-hidden p-[2vw]"
     >
+      {/* local CSS for shimmer + character smoothing */}
+      <style>{`
+        .shimmer {
+          background: linear-gradient(90deg, #bfc3c7 0%, #ffffff 45%, #bfc3c7 55%, #c7c7c9 100%);
+          background-size: 200% 100%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          animation: shimmer 3.6s linear infinite;
+          text-shadow: 0 1px 0 rgba(255,255,255,0.85), 0 8px 24px rgba(0,0,0,0.45);
+        }
+        @keyframes shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+        .char {
+          display: inline-block;
+          will-change: transform, opacity;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        /* small interactive pop (non-essential) */
+        .char:hover { transform: translateY(-6px) scale(1.02); }
+      `}</style>
+
       <div
-        className="w-full max-w-4xl text-center text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter text-white"
-        style={{ perspective: "500px" }}
+        className="w-full max-w-4xl text-center text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tighter"
+        style={{ perspective: "900px" }}
       >
-        {characters.map((char, index) => (
-          <Character
-            key={index}
-            char={char}
-            index={index}
-            centerIndex={centerIndex}
-            scrollYProgress={scrollYProgress}
-          />
-        ))}
+        <span className="shimmer">
+          {characters.map((char, index) => (
+            <Character
+              key={index}
+              char={char}
+              index={index}
+              centerIndex={centerIndex}
+              scrollYProgress={scrollYProgress}
+              prefersReduced={prefersReduced}
+            />
+          ))}
+        </span>
       </div>
     </div>
   );
 };
 
-// Card stack component
+/* -------------------------
+   CardStack component
+   ------------------------- */
 const CardStack = ({ projectsList, leaderIndex: leaderIndexProp }) => {
   const container = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -137,18 +224,15 @@ const CardStack = ({ projectsList, leaderIndex: leaderIndexProp }) => {
   const projects = useMemo(
     () =>
       projectsList || [
-        { title: "Team Captain", src: "/img/gallery-2.webp" },
-        { title: "Strategy Lead", src: "/img/gallery-3.webp" },
-        { title: "Combat Specialist", src: "/img/gallery-4.webp" },
-        { title: "Support Player", src: "/img/gallery-5.webp" },
+        { title: "Team Captain", src: "/img/shiso.png" },
+        { title: "Strategy Lead", src: "/img/esvipe.png" },
+        { title: "Combat Specialist", src: "/img/fob.png" },
+        { title: "Combat Specialist", src: "/img/joker.png" },
       ],
     [projectsList]
   );
 
-  const leaderIndex =
-    typeof leaderIndexProp === "number"
-      ? leaderIndexProp
-      : Math.floor(projects.length / 2);
+  const leaderIndex = 0;
 
   return (
     <section
@@ -163,16 +247,9 @@ const CardStack = ({ projectsList, leaderIndex: leaderIndexProp }) => {
 
       {projects.map((project, i) => {
         const zIndex = projects.length - i + (i === leaderIndex ? 10 : 0);
-        const baseTarget = Math.max(
-          0.55,
-          1 - (projects.length - i - 1) * 0.08
-        );
-        const targetScale =
-          i === leaderIndex ? baseTarget * 1.06 : baseTarget;
-        const rangeStart = Math.max(
-          0,
-          i * (1 / Math.max(4, projects.length))
-        );
+        const baseTarget = Math.max(0.55, 1 - (projects.length - i - 1) * 0.08);
+        const targetScale = i === leaderIndex ? baseTarget * 1.06 : baseTarget;
+        const rangeStart = Math.max(0, i * (1 / Math.max(4, projects.length)));
 
         return (
           <StickyCard
@@ -192,6 +269,9 @@ const CardStack = ({ projectsList, leaderIndex: leaderIndexProp }) => {
   );
 };
 
+/* -------------------------
+   Screen: RowLeagueScreen
+   ------------------------- */
 const RowLeagueScreen = () => {
   const navigate = useNavigate();
 
@@ -201,7 +281,7 @@ const RowLeagueScreen = () => {
       <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-white/10 bg-black/60 p-4 backdrop-blur-sm">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             className="rounded-full p-2 hover:bg-white/10 transition-colors"
           >
             <IoArrowBack size={18} />
@@ -212,7 +292,7 @@ const RowLeagueScreen = () => {
           </div>
         </div>
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
           className="rounded-full p-2 hover:bg-white/10 transition-colors"
         >
           <IoClose size={18} />
@@ -221,9 +301,16 @@ const RowLeagueScreen = () => {
 
       {/* Main Content */}
       <main className="mx-auto max-w-6xl">
-        <AnimatedText text="Welcome to our ROW League showcase" />
+        {/* Center Story component */}
+        <section className="flex min-h-screen items-center justify-center">
+          <Story />
+        </section>
+
+        {/* Card stack under story */}
         <CardStack />
       </main>
+
+      <AnimatedText text="Welcome to our ROW League showcase" />
     </div>
   );
 };
