@@ -1,269 +1,257 @@
-import { useState } from "react";
-import { IoClose, IoArrowBack, IoTrophy, IoCalendar, IoTime, IoPeople } from "react-icons/io5";
-import { GiSwordman, GiCrown, GiShield, GiBattleGear, GiTreasureMap } from "react-icons/gi";
+"use client";
+
+import React, {
+  useRef,
+  useMemo,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
+import ReactLenis from "lenis/react";
+import { IoArrowBack, IoTrophy, IoCalendar, IoSparkles } from "react-icons/io5";
+import { GiCrown, GiTreasureMap } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 
-const RowLeagueScreen = () => {
-  const navigate = useNavigate();
-  const [selectedTab, setSelectedTab] = useState('overview');
+/* ------------------------------
+   Helper: safe image loader with fallback
+   ------------------------------ */
+const useImageFallback = (initialSrc, fallback = "/img/placeholder.webp") => {
+  const [src, setSrc] = useState(initialSrc);
+  const onError = useCallback(() => setSrc(fallback), [fallback]);
+  useEffect(() => setSrc(initialSrc), [initialSrc]);
+  return [src, onError];
+};
 
-  const tournamentData = {
-    overview: {
-      title: "Root of War Tournament",
-      subtitle: "Epic battles await the strongest warriors",
-      description: "Join the ultimate competition where alliances clash in strategic warfare. Prove your dominance and claim your place among legends.",
-      stats: [
-        { icon: <IoPeople />, label: "Participants", value: "500+" },
-        { icon: <IoTrophy />, label: "Prize Pool", value: "$10,000" },
-        { icon: <IoCalendar />, label: "Duration", value: "30 Days" },
-        { icon: <IoTime />, label: "Battles Daily", value: "24/7" }
-      ]
-    },
-    rules: [
-      {
-        title: "🏆 Tournament Format",
-        content: [
-          "• Single elimination bracket system",
-          "• Best of 3 matches per round",
-          "• Alliance vs Alliance battles",
-          "• Maximum 50 members per alliance"
-        ]
-      },
-      {
-        title: "⚔️ Battle Rules",
-        content: [
-          "• All battles must be recorded",
-          "• No external assistance allowed",
-          "• Standard game rules apply",
-          "• Fair play enforcement active"
-        ]
-      },
-      {
-        title: "🎯 Scoring System",
-        content: [
-          "• Victory: 3 points",
-          "• Draw: 1 point",
-          "• Defeat: 0 points",
-          "• Bonus points for style and strategy"
-        ]
-      }
-    ],
-    prizes: [
-      {
-        rank: "1st Place",
-        prize: "$5,000",
-        rewards: ["Champion Title", "Exclusive Avatar", "Premium Resources"],
-        icon: <GiCrown className="text-yellow-400" />
-      },
-      {
-        rank: "2nd Place", 
-        prize: "$3,000",
-        rewards: ["Runner-up Title", "Special Badge", "Resource Pack"],
-        icon: <GiShield className="text-gray-400" />
-      },
-      {
-        rank: "3rd Place",
-        prize: "$2,000", 
-        rewards: ["Bronze Title", "Achievement Badge", "Bonus Resources"],
-        icon: <GiBattleGear className="text-orange-400" />
-      }
-    ]
-  };
+/* ------------------------------
+   StickyCard_001 (improved)
+   - accepts isLeader
+   ------------------------------ */
+const StickyCard_001 = ({
+  i,
+  title,
+  src,
+  progress,
+  range,
+  targetScale,
+  z,
+  isLeader = false,
+}) => {
+  const cardRef = useRef(null);
+  const shouldReduceMotion = useReducedMotion();
+  const scale = useTransform(progress, range, [1, targetScale]);
+  const topOffset = `calc(-8vh + ${i * 18 + 180}px)`;
+  const [imgSrc, onImgError] = useImageFallback(src);
 
-  const tabs = [
-    { id: 'overview', label: 'Overview', icon: <GiTreasureMap /> },
-    { id: 'rules', label: 'Rules', icon: <GiShield /> },
-    { id: 'prizes', label: 'Prizes', icon: <IoTrophy /> }
-  ];
+  // bump leader slightly more and add subtle pulse using spring transition
+  const leaderMultiplier = isLeader ? 1.06 : 1;
+  const finalScale = shouldReduceMotion ? 1 : scale;
+  const styleScale = isLeader ? finalScale : finalScale;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white font-circular-web">
-      <div className="h-full overflow-y-auto">
-        {/* Header */}
-        <div className="sticky top-0 z-10 bg-black/90 backdrop-blur-md border-b border-white/10">
-          <div className="flex items-center justify-between p-6">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate('/')}
-                className="flex items-center gap-2 text-white/70 hover:text-white transition-all duration-300 hover:scale-105"
-              >
-                <IoArrowBack className="text-xl" />
-                <span className="text-sm font-semibold">Back</span>
-              </button>
-              <div className="h-6 w-px bg-white/20" />
-              <h1 className="text-3xl font-circular-web font-black text-transparent bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text tracking-wider">
-                ROW LEAGUE
-              </h1>
-            </div>
-            <button
-              onClick={() => navigate('/')}
-              className="text-white/70 hover:text-white transition-all duration-300 hover:scale-110"
-            >
-              <IoClose className="text-2xl" />
-            </button>
+    <div
+      ref={cardRef}
+      className="sticky top-0 flex items-center justify-center pointer-events-none"
+    >
+      <motion.div
+        style={{ scale: styleScale, top: topOffset, zIndex: z }}
+        transition={{ type: "spring", stiffness: 160, damping: 20 }}
+        className={`relative -top-1/4 w-[min(86vw,640px)] max-w-[640px] origin-top rounded-3xl overflow-hidden shadow-2xl pointer-events-auto
+          ${isLeader ? "ring-2 ring-white/12 backdrop-blur-sm" : ""}`}
+        aria-label={`project-card-${i}`}
+      >
+        <img
+          src={imgSrc}
+          alt={title}
+          onError={onImgError}
+          className="block h-[360px] w-full object-cover sm:h-[420px] md:h-[460px] lg:h-[480px]"
+          loading="lazy"
+          decoding="async"
+          style={{ transform: `scale(${isLeader ? leaderMultiplier : 1})` }}
+        />
+
+        {/* Leader badge */}
+        {isLeader && (
+          <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-gradient-to-r from-yellow-500/90 to-orange-400/90 px-3 py-1 text-xs font-semibold text-black shadow">
+            <GiCrown size={14} /> LEAD
           </div>
+        )}
+
+        <div className="absolute left-4 bottom-4 rounded-md bg-black/60 px-3 py-1 text-sm backdrop-blur-sm">
+          <span className="font-semibold">{title}</span>
+          <span className="ml-2 text-xs opacity-70">#{i + 1}</span>
         </div>
-
-        {/* Content */}
-        <div className="max-w-6xl mx-auto p-6">
-          {/* Hero Section */}
-          <div className="text-center mb-12">
-            <div className="flex justify-center mb-6">
-              <div className="p-6 bg-gradient-to-br from-red-500/30 to-orange-500/30 rounded-full border border-red-400/50">
-                <GiSwordman className="text-6xl text-red-400" />
-              </div>
-            </div>
-            <h2 className="text-5xl font-circular-web font-black text-transparent bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text mb-4 tracking-wide">
-              {tournamentData.overview.title}
-            </h2>
-            <p className="text-xl text-orange-300 font-circular-web font-semibold mb-4">
-              {tournamentData.overview.subtitle}
-            </p>
-            <p className="text-lg text-white/80 font-circular-web max-w-3xl mx-auto">
-              {tournamentData.overview.description}
-            </p>
-          </div>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-            {tournamentData.overview.stats.map((stat, index) => (
-              <div key={index} className="bg-gradient-to-br from-black/60 to-gray-900/60 rounded-2xl border border-white/20 p-6 text-center backdrop-blur-sm">
-                <div className="text-3xl text-orange-400 mb-3 flex justify-center">
-                  {stat.icon}
-                </div>
-                <div className="text-2xl font-circular-web font-black text-white mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-white/70 font-circular-web font-semibold">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Tabs */}
-          <div className="flex justify-center mb-8">
-            <div className="bg-black/60 rounded-2xl border border-white/20 p-2 backdrop-blur-sm">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setSelectedTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-circular-web font-semibold transition-all duration-300 ${
-                    selectedTab === tab.id
-                      ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  {tab.icon}
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Tab Content */}
-          <div className="bg-gradient-to-br from-black/60 to-gray-900/60 rounded-2xl border border-white/20 p-8 backdrop-blur-sm">
-            {selectedTab === 'overview' && (
-              <div className="text-center">
-                <h3 className="text-3xl font-circular-web font-black text-transparent bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text mb-6">
-                  Tournament Overview
-                </h3>
-                <p className="text-lg text-white/80 font-circular-web max-w-4xl mx-auto leading-relaxed">
-                  The Root of War Tournament is the ultimate test of strategic warfare and alliance coordination. 
-                  Compete against the best alliances from around the world in intense battles that will determine 
-                  the true champions of war. With a massive prize pool and exclusive rewards, this tournament 
-                  represents the pinnacle of competitive gaming.
-                </p>
-                <div className="mt-8">
-                  <button className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-circular-web font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg">
-                    Register Your Alliance
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {selectedTab === 'rules' && (
-              <div>
-                <h3 className="text-3xl font-circular-web font-black text-transparent bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text mb-8 text-center">
-                  Tournament Rules
-                </h3>
-                <div className="space-y-6">
-                  {tournamentData.rules.map((rule, index) => (
-                    <div key={index} className="bg-gradient-to-r from-red-900/30 to-orange-900/30 border border-red-500/40 rounded-2xl p-6 backdrop-blur-sm">
-                      <h4 className="text-xl font-circular-web font-black text-red-300 mb-4">
-                        {rule.title}
-                      </h4>
-                      <div className="space-y-2">
-                        {rule.content.map((item, itemIndex) => (
-                          <p key={itemIndex} className="text-white/90 font-circular-web font-medium">
-                            {item}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {selectedTab === 'prizes' && (
-              <div>
-                <h3 className="text-3xl font-circular-web font-black text-transparent bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text mb-8 text-center">
-                  Prize Pool & Rewards
-                </h3>
-                <div className="space-y-6">
-                  {tournamentData.prizes.map((prize, index) => (
-                    <div key={index} className="bg-gradient-to-r from-black/60 to-gray-900/60 border border-white/20 rounded-2xl p-6 backdrop-blur-sm hover:border-orange-400/50 transition-all duration-300">
-                      <div className="flex items-center gap-6">
-                        <div className="text-4xl">
-                          {prize.icon}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="text-2xl font-circular-web font-black text-white mb-2">
-                            {prize.rank}
-                          </h4>
-                          <p className="text-3xl font-circular-web font-black text-transparent bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text mb-3">
-                            {prize.prize}
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {prize.rewards.map((reward, rewardIndex) => (
-                              <span key={rewardIndex} className="bg-orange-500/20 text-orange-300 px-3 py-1 rounded-full text-sm font-circular-web font-semibold border border-orange-400/30">
-                                {reward}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Call to Action */}
-          <div className="text-center mt-12">
-            <div className="bg-gradient-to-r from-red-900/30 to-orange-900/30 border border-red-500/40 rounded-2xl p-8 backdrop-blur-sm">
-              <h3 className="text-2xl font-circular-web font-black text-white mb-4">
-                Ready to Join the Battle?
-              </h3>
-              <p className="text-white/80 font-circular-web mb-6 max-w-2xl mx-auto">
-                Registration is now open! Gather your alliance and prepare for the ultimate test of strategy and skill.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-circular-web font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg">
-                  Register Now
-                </button>
-                <button className="border border-white/30 hover:border-white/50 text-white font-circular-web font-bold px-8 py-4 rounded-xl transition-all duration-300 hover:bg-white/10">
-                  View Leaderboard
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
 
+/* ------------------------------
+   Skiper16 — main stacked cards
+   - supports leaderIndex (defaults to middle)
+   ------------------------------ */
+const Skiper16 = ({ projectsList, leaderIndex: leaderIndexProp }) => {
+  const container = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: container,
+    offset: ["start start", "end end"],
+  });
+
+  const projects = useMemo(
+    () =>
+      projectsList || [
+        { title: "Project 1", src: "/img/gallery-2.webp" },
+        { title: "Project 2", src: "/img/gallery-3.webp" },
+        { title: "Project 3", src: "/img/gallery-4.webp" },
+        { title: "Project 4", src: "/img/gallery-5.webp" },
+        { title: "Project 5", src: "/img/gallery-6.webp" },
+      ],
+    [projectsList]
+  );
+
+  // default leader to center if not provided
+  const leaderIndex =
+    typeof leaderIndexProp === "number"
+      ? leaderIndexProp
+      : Math.floor(projects.length / 2);
+
+  return (
+    <ReactLenis root>
+      <section
+        ref={container}
+        className="relative flex w-full flex-col items-center justify-center min-h-[60vh] pb-[90vh] pt-[40vh]"
+        aria-roledescription="project stack"
+      >
+        <div className="absolute left-1/2 top-[8%] -translate-x-1/2 text-center">
+          <span className="relative max-w-[14ch] text-xs uppercase leading-tight opacity-40">
+            scroll down to view the card stack
+          </span>
+        </div>
+
+        {projects.map((project, i) => {
+          const zIndex = projects.length - i + (i === leaderIndex ? 10 : 0);
+          const baseTarget = Math.max(
+            0.55,
+            1 - (projects.length - i - 1) * 0.08
+          );
+          // the leader gets a slightly larger target
+          const targetScale =
+            i === leaderIndex ? baseTarget * 1.06 : baseTarget;
+          const rangeStart = Math.max(
+            0,
+            i * (1 / Math.max(4, projects.length))
+          );
+
+          return (
+            <StickyCard_001
+              key={`p_${i}`}
+              i={i}
+              title={project.title}
+              src={project.src}
+              progress={scrollYProgress}
+              range={[rangeStart, 1]}
+              targetScale={targetScale}
+              z={zIndex}
+              isLeader={i === leaderIndex}
+            />
+          );
+        })}
+      </section>
+    </ReactLenis>
+  );
+};
+
+/* ------------------------------
+   DemoSkiper16 - showcase, highlight center leader by default
+   - change leaderIndex to highlight different card
+   ------------------------------ */
+const DemoSkiper16 = ({ leaderIndex } = {}) => {
+  const demoProjects = useMemo(
+    () => [
+      { title: "Project 1", src: "/img/gallery-2.webp" },
+      { title: "Project 2", src: "/img/gallery-3.webp" },
+      { title: "Project 3", src: "/img/gallery-4.webp" },
+      { title: "Project 4", src: "/img/gallery-5.webp" },
+      { title: "Project 5", src: "/img/gallery-6.webp" },
+    ],
+    []
+  );
+
+  return <Skiper16 projectsList={demoProjects} leaderIndex={leaderIndex} />;
+};
+
+/* ------------------------------
+   RowLeagueScreen - showcase page
+   ------------------------------ */
+const RowLeagueScreen = () => {
+  const navigate = useNavigate();
+  const [selectedTab, setSelectedTab] = useState("overview");
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white font-sans">
+      <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-white/6 bg-black/60 p-4 backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="rounded-full p-2 hover:bg-white/5"
+            aria-label="go-back"
+          >
+            <IoArrowBack size={18} />
+          </button>
+
+          <div>
+            <h1 className="text-lg font-semibold">Row League</h1>
+            <p className="text-xs opacity-60">Showcase • Season 2025</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button className="rounded-md px-3 py-1 text-xs hover:bg-white/5">
+            <IoTrophy className="inline-block mr-1" /> Leaderboard
+          </button>
+          <button className="rounded-md px-3 py-1 text-xs hover:bg-white/5">
+            <IoCalendar className="inline-block mr-1" /> Schedule
+          </button>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-6xl space-y-8 p-6">
+        <section className="grid gap-6 lg:grid-cols-3">
+          <div className="col-span-2 rounded-2xl border border-white/6 p-6">
+            <h2 className="mb-2 text-2xl font-semibold">Row League Showcase</h2>
+            <p className="mb-4 text-sm opacity-70">
+              A small showcase section for Row League — highlights, featured
+              projects, and the interactive card stack demo below. The centered
+              card is highlighted as the current lead of the row.
+            </p>
+
+            <div className="mb-4 flex flex-wrap gap-3">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/6 px-3 py-1 text-xs">
+                <GiCrown /> Top Division
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/6 px-3 py-1 text-xs">
+                <GiTreasureMap /> Next Match: Sep 20, 2025
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/6 px-3 py-1 text-xs">
+                <IoSparkles /> Featured
+              </span>
+            </div>
+
+            <div className="rounded-xl border border-white/5 p-4">
+              {/* default: leader = center card */}
+              <DemoSkiper16 />
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+};
+
+export { Skiper16, StickyCard_001, DemoSkiper16 };
 export default RowLeagueScreen;
