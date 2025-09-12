@@ -155,12 +155,25 @@ const RowLeagueScreen = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-300 via-blue-300 to-yellow-300">
-        <div className="absolute inset-0 bg-black/20" />
+        {/* Background Video */}
+        <div className="absolute inset-0 overflow-hidden">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/videos/cod.mp4" type="video/mp4" />
+          </video>
+          {/* Video overlay */}
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
 
         <div className="relative z-10 text-center px-4">
           <AnimatedTitle
             title="<b>Welcome</b> to our <br /> ROW League <b>showcase</b>"
-            containerClass="!text-black mb-8"
+            containerClass="!text-white mb-8 drop-shadow-2xl"
           />
         </div>
       </section>
