@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { IoClose, IoArrowBack } from "react-icons/io5";
-import { GiLightningBolt, GiTrident, GiSkullCrossedBones, GiCrown, GiSwordman, GiShield } from "react-icons/gi";
+import { GiTrident, GiSkullCrossedBones, GiCrown, GiSwordman, GiShield } from "react-icons/gi";
+import { FaBolt } from "react-icons/fa";
 import { TiLocationArrow } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -27,7 +28,7 @@ const BTXTeamsScreen = () => {
       name: 'Team Zeus',
       title: 'Sky Dominators',
       description: 'Masters of lightning and thunder, commanding the heavens with divine power and strategic supremacy.',
-      icon: <GiLightningBolt className="text-4xl text-yellow-400" />,
+      icon: <FaBolt className="text-4xl text-yellow-400" />,
       color: 'from-yellow-500/30 to-orange-500/30',
       borderColor: 'border-yellow-400',
       bgGradient: 'from-yellow-900/20 via-orange-900/20 to-yellow-900/20',
@@ -169,7 +170,7 @@ const BTXTeamsScreen = () => {
           <div className="flex flex-wrap justify-center gap-4 mb-8">
             <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/30">
               <div className="flex items-center gap-2">
-                <GiLightningBolt className="text-white text-xl" />
+                <FaBolt className="text-white text-xl" />
                 <span className="text-white font-zentry font-bold">Zeus</span>
               </div>
             </div>
