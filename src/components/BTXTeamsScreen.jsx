@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { IoClose, IoArrowBack } from "react-icons/io5";
-import { GiTrident, GiSkullCrossedBones, GiCrown, GiSwordman, GiShield } from "react-icons/gi";
+import {
+  GiTrident,
+  GiSkullCrossedBones,
+  GiCrown,
+  GiSwordman,
+  GiShield,
+} from "react-icons/gi";
 import { FaBolt } from "react-icons/fa";
 import { TiLocationArrow } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
@@ -24,93 +30,220 @@ const BTXTeamsScreen = () => {
 
   const greekTeams = [
     {
-      id: 'zeus',
-      name: 'Team Zeus',
-      title: 'Sky Dominators',
-      description: 'Masters of lightning and thunder, commanding the heavens with divine power and strategic supremacy.',
+      id: "zeus",
+      name: "Team Zeus",
+      title: "Sky Dominators",
+      description:
+        "Masters of lightning and thunder, commanding the heavens with divine power and strategic supremacy.",
       icon: <FaBolt className="text-4xl text-yellow-400" />,
-      color: 'from-yellow-500/30 to-orange-500/30',
-      borderColor: 'border-yellow-400',
-      bgGradient: 'from-yellow-900/20 via-orange-900/20 to-yellow-900/20',
-      image: 'https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg',
+      color: "from-yellow-500/30 to-orange-500/30",
+      borderColor: "border-yellow-400",
+      bgGradient: "from-yellow-900/20 via-orange-900/20 to-yellow-900/20",
+      image:
+        "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg",
       members: [
-        'BoatyMcBoatFace', '神农ᶦᵒⁿᶻ', 'ᴿᵒʷRomolusRemus', 'Poohpo0h', 'ʙᴛxメ Leonhart',
-        'Immortalized', 'ᵂᴸ ᴛʜᴇ ʟɪᴏɴ', 'ʸᵃˢᵘᵏᵉLASTOMANIA', 'ᵇᵗˣASH', 'KillèrBee',
-        'Acz', 'Erötic Sûshï 亗', 'Kube', 'Esvipe', 'ᵘᵒᵘ wARIm', 'Bªlbì',
-        'wAKIm', 'ʙᴛxAtilla', 'ᴬᶠᵏJalalz', 'Helixz', 'Žøŗô', 'Coer', 'ᵂᴸ MOKA',
-        'THE WALL', 'Kapoios', 'ᵘᵒᵘ ShadeZ', 'ᵘᵒᵘ ᴢMᴇᴏWャ', 'ᵏⁱⁿᵍChouchou',
-        'ᵂᴸ Geekゝ', 'EdriaИᴵᵁ', 'ᵘᵒᵘ TUM', 'OscarGlzᴹᵉˣ', 'ᵘᵒᵘ LUCIFER',
-        'ᵘᵒᵘ ZeüS', 'ᵘᵒᵘ Tyo ˣ', 'ᵇᵗˣ Cute Toes Kay', 'Humble Hypraa',
-        'YotaTacoma', 'Ｆｌｅｘｉｅ', 'ˣᴶᴸ', 'ᵁʷᵁ AryaHornigold', 'ʙᴛxメ Draco メ',
-        'ᵘᵒᵘKaTouR', 'Rоcket', 'ᵇᵗˣMaupa', 'CườngMT', 'Enchantreṣs', 'Cаstiel',
-        'BetterCall grimJJ', 'ᵘᵒᵘHayulz'
+        "BoatyMcBoatFace",
+        "神农ᶦᵒⁿᶻ",
+        "ᴿᵒʷRomolusRemus",
+        "Poohpo0h",
+        "ʙᴛxメ Leonhart",
+        "Immortalized",
+        "ᵂᴸ ᴛʜᴇ ʟɪᴏɴ",
+        "ʸᵃˢᵘᵏᵉLASTOMANIA",
+        "ᵇᵗˣASH",
+        "KillèrBee",
+        "Acz",
+        "Erötic Sûshï 亗",
+        "Kube",
+        "Esvipe",
+        "ᵘᵒᵘ wARIm",
+        "Bªlbì",
+        "wAKIm",
+        "ʙᴛxAtilla",
+        "ᴬᶠᵏJalalz",
+        "Helixz",
+        "Žøŗô",
+        "Coer",
+        "ᵂᴸ MOKA",
+        "THE WALL",
+        "Kapoios",
+        "ᵘᵒᵘ ShadeZ",
+        "ᵘᵒᵘ ᴢMᴇᴏWャ",
+        "ᵏⁱⁿᵍChouchou",
+        "ᵂᴸ Geekゝ",
+        "EdriaИᴵᵁ",
+        "ᵘᵒᵘ TUM",
+        "OscarGlzᴹᵉˣ",
+        "ᵘᵒᵘ LUCIFER",
+        "ᵘᵒᵘ ZeüS",
+        "ᵘᵒᵘ Tyo ˣ",
+        "ᵇᵗˣ Cute Toes Kay",
+        "Humble Hypraa",
+        "YotaTacoma",
+        "Ｆｌｅｘｉｅ",
+        "ˣᴶᴸ",
+        "ᵁʷᵁ AryaHornigold",
+        "ʙᴛxメ Draco メ",
+        "ᵘᵒᵘKaTouR",
+        "Rоcket",
+        "ᵇᵗˣMaupa",
+        "CườngMT",
+        "Enchantreṣs",
+        "Cаstiel",
+        "BetterCall grimJJ",
+        "ᵘᵒᵘHayulz",
       ],
       stats: {
         victories: 156,
-        winRate: '89%',
-        rank: 'Divine Tier',
-        specialty: 'Aerial Combat'
-      }
+        winRate: "89%",
+        rank: "Divine Tier",
+        specialty: "Aerial Combat",
+      },
     },
     {
-      id: 'poseidon',
-      name: 'Team Poseidon',
-      title: 'Ocean Rulers',
-      description: 'Lords of the seas and earthquakes, wielding the power of tsunamis and controlling the depths of battle.',
+      id: "poseidon",
+      name: "Team Poseidon",
+      title: "Ocean Rulers",
+      description:
+        "Lords of the seas and earthquakes, wielding the power of tsunamis and controlling the depths of battle.",
       icon: <GiTrident className="text-4xl text-blue-400" />,
-      color: 'from-blue-500/30 to-cyan-500/30',
-      borderColor: 'border-blue-400',
-      bgGradient: 'from-blue-900/20 via-cyan-900/20 to-blue-900/20',
-      image: 'https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg',
+      color: "from-blue-500/30 to-cyan-500/30",
+      borderColor: "border-blue-400",
+      bgGradient: "from-blue-900/20 via-cyan-900/20 to-blue-900/20",
+      image:
+        "https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg",
       members: [
-        'BLIИK', 'S O R E N', 'lIIIlIlllIlIllI', 'Narr', 'ᴅᴀʀᴋメ', 'BaBaDemouz',
-        '亗WIZ么RD', 'Midget Shisó', 'ᵘᵒᵘ Hvn', 'the ONE', 'ᵘʷᵘ', 'ᴱᴰᴸ Ethylik',
-        'Yvel', 'CptnObvus', 'Gothgirls Enjoyer', 'ᴱᴰᴸ Larnak', 'tacosbell',
-        'Roland67', 'Kumichan', '乂 ʞɔnp pǝuoʇS', 'Azzaran', 'ᴮᵗʳ ryaster ヅ',
-        'GgstrsCreamSoup', 'NolanCAV', 'ᵂᴸ YAZᴱᴱᴰ气', 'RadouX', 'TheDeeTee',
-        'Exquisite94', 'SNEAK1453', 'FerociousPaws', 'Everglow', 'Warby',
-        'ZhiDark', 'ᵘᵒᵘ kARim', 'Don Snake', 'Whiisp', 'Niksøn', 'ᴃᴛẍ MothyMax',
-        'Seeo', 'Titanik', 'OMAR3221', 'Plankton BTR', 'Jw Child', 'ᵘᵒᵘ Yᴀᴍᴀɴᴀᴋᴀ',
-        'A K A R', 'Mangó', '守 ᴍᴀᴅʙᴀʟʟ', 'Don Po', 'NolanINF', 'Zeidrichsama',
-        'ĐặngDanh ᵛᶰ㋡'
+        "BLIИK",
+        "S O R E N",
+        "lIIIlIlllIlIllI",
+        "Narr",
+        "ᴅᴀʀᴋメ",
+        "BaBaDemouz",
+        "亗WIZ么RD",
+        "Midget Shisó",
+        "ᵘᵒᵘ Hvn",
+        "the ONE",
+        "ᵘʷᵘ",
+        "ᴱᴰᴸ Ethylik",
+        "Yvel",
+        "CptnObvus",
+        "Gothgirls Enjoyer",
+        "ᴱᴰᴸ Larnak",
+        "tacosbell",
+        "Roland67",
+        "Kumichan",
+        "乂 ʞɔnp pǝuoʇS",
+        "Azzaran",
+        "ᴮᵗʳ ryaster ヅ",
+        "GgstrsCreamSoup",
+        "NolanCAV",
+        "ᵂᴸ YAZᴱᴱᴰ气",
+        "RadouX",
+        "TheDeeTee",
+        "Exquisite94",
+        "SNEAK1453",
+        "FerociousPaws",
+        "Everglow",
+        "Warby",
+        "ZhiDark",
+        "ᵘᵒᵘ kARim",
+        "Don Snake",
+        "Whiisp",
+        "Niksøn",
+        "ᴃᴛẍ MothyMax",
+        "Seeo",
+        "Titanik",
+        "OMAR3221",
+        "Plankton BTR",
+        "Jw Child",
+        "ᵘᵒᵘ Yᴀᴍᴀɴᴀᴋᴀ",
+        "A K A R",
+        "Mangó",
+        "守 ᴍᴀᴅʙᴀʟʟ",
+        "Don Po",
+        "NolanINF",
+        "Zeidrichsama",
+        "ĐặngDanh ᵛᶰ㋡",
       ],
       stats: {
         victories: 142,
-        winRate: '85%',
-        rank: 'Divine Tier',
-        specialty: 'Naval Warfare'
-      }
+        winRate: "85%",
+        rank: "Divine Tier",
+        specialty: "Naval Warfare",
+      },
     },
     {
-      id: 'hades',
-      name: 'Team Hades',
-      title: 'Underworld Champions',
-      description: 'Rulers of the underworld and shadows, commanding dark magic and the souls of fallen warriors.',
+      id: "hades",
+      name: "Team Hades",
+      title: "Underworld Champions",
+      description:
+        "Rulers of the underworld and shadows, commanding dark magic and the souls of fallen warriors.",
       icon: <GiSkullCrossedBones className="text-4xl text-purple-400" />,
-      color: 'from-purple-500/30 to-red-500/30',
-      borderColor: 'border-purple-400',
-      bgGradient: 'from-purple-900/20 via-red-900/20 to-purple-900/20',
-      image: 'https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg',
+      color: "from-purple-500/30 to-red-500/30",
+      borderColor: "border-purple-400",
+      bgGradient: "from-purple-900/20 via-red-900/20 to-purple-900/20",
+      image:
+        "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg",
       members: [
-        'Humble Soju', 'Joker7even', 'Ｌ Ｉ Ａㆆᴗㆆ', 'Pingᴰᴱᴹᴼᴺァ', 'Nörthwölfş',
-        '2K2Ę', 'ᵘᵒᵘ kAZIm', 'ᵂᴸ Hùmbłé M Á Ð', 'ᵂᴸ Just SCɅRY ャ',
-        'ᵂᴸSOLO LEVELING', 'ᵘᵒᵘʟɪʙʀᴀᴅᴇʟ', 'ᵂᴸDooM', 'ᵂᴸ Slayゝ', 'Qatarson',
-        'boscat', 'ᵘᵒᵘCarryBomber', 'Gagster5', 'Jack Daniels Farm', 'ᵀᵒⁿᵗᵒⁿActéoOn',
-        'Chemona', 'ᴬᶠᴷᴊᴏᴋᴇʀꜰᴀᴋᴇ', 'ᵘᵒᵘ tlne', 'Ğarius', 'KingYammy', 'ᵂᴸ рăın',
-        'T1이상혁TheGOAT', 'ʙᴛxメsᴜᴘʀᴇᴍᴇ ʟᴇᴏ', 'Farmer Nara', 'ᵁʷᵁ TahLeV',
-        'ᵘᵒᵘT BAG', 'ᵂᴸSung Jinwoo', 'メDaenerysメ', 'デ愛 i S E K A i Z',
-        'ᴬᶠᵏHoneyFox', '崔ＬｅＶｉ', 'NIZZAAAAAAAA', 'ᵘᵒᵘCarry B0', 'ᴵᴹ Aba',
-        'Ilúvatar', 'Krokette', 'Prof Diz', 'Anak KOST', 'ɢ ᴏ ʀ ɪ ʟ ʟ ᴀ ᴢ',
-        'ᵘᵒᵘSouthside', 'FaceOfBlade', 'ᴿᵃᵍᵉ ioya', 'Nhà Cái Kaokey', 'ᵘᵒᵘShal2py',
-        'Falkensr', 'Ardnahc', 'SugarWoogy'
+        "Humble Soju",
+        "Joker7even",
+        "Ｌ Ｉ Ａㆆᴗㆆ",
+        "Pingᴰᴱᴹᴼᴺァ",
+        "Nörthwölfş",
+        "2K2Ę",
+        "ᵘᵒᵘ kAZIm",
+        "ᵂᴸ Hùmbłé M Á Ð",
+        "ᵂᴸ Just SCɅRY ャ",
+        "ᵂᴸSOLO LEVELING",
+        "ᵘᵒᵘʟɪʙʀᴀᴅᴇʟ",
+        "ᵂᴸDooM",
+        "ᵂᴸ Slayゝ",
+        "Qatarson",
+        "boscat",
+        "ᵘᵒᵘCarryBomber",
+        "Gagster5",
+        "Jack Daniels Farm",
+        "ᵀᵒⁿᵗᵒⁿActéoOn",
+        "Chemona",
+        "ᴬᶠᴷᴊᴏᴋᴇʀꜰᴀᴋᴇ",
+        "ᵘᵒᵘ tlne",
+        "Ğarius",
+        "KingYammy",
+        "ᵂᴸ рăın",
+        "T1이상혁TheGOAT",
+        "ʙᴛxメsᴜᴘʀᴇᴍᴇ ʟᴇᴏ",
+        "Farmer Nara",
+        "ᵁʷᵁ TahLeV",
+        "ᵘᵒᵘT BAG",
+        "ᵂᴸSung Jinwoo",
+        "メDaenerysメ",
+        "デ愛 i S E K A i Z",
+        "ᴬᶠᵏHoneyFox",
+        "崔ＬｅＶｉ",
+        "NIZZAAAAAAAA",
+        "ᵘᵒᵘCarry B0",
+        "ᴵᴹ Aba",
+        "Ilúvatar",
+        "Krokette",
+        "Prof Diz",
+        "Anak KOST",
+        "ɢ ᴏ ʀ ɪ ʟ ʟ ᴀ ᴢ",
+        "ᵘᵒᵘSouthside",
+        "FaceOfBlade",
+        "ᴿᵃᵍᵉ ioya",
+        "Nhà Cái Kaokey",
+        "ᵘᵒᵘShal2py",
+        "Falkensr",
+        "Ardnahc",
+        "SugarWoogy",
       ],
       stats: {
         victories: 134,
-        winRate: '82%',
-        rank: 'Divine Tier',
-        specialty: 'Psychological Warfare'
-      }
-    }
+        winRate: "82%",
+        rank: "Divine Tier",
+        specialty: "Psychological Warfare",
+      },
+    },
   ];
 
   return (
@@ -120,7 +253,7 @@ const BTXTeamsScreen = () => {
         <div className="flex items-center justify-between p-6">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               className="flex items-center gap-2 text-white/70 hover:text-white transition-all duration-300 hover:scale-105"
             >
               <IoArrowBack className="text-xl" />
@@ -132,7 +265,7 @@ const BTXTeamsScreen = () => {
             </h1>
           </div>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
             className="text-white/70 hover:text-white transition-all duration-300 hover:scale-110"
           >
             <IoClose className="text-2xl" />
@@ -153,14 +286,16 @@ const BTXTeamsScreen = () => {
             loading="lazy"
             className="absolute inset-0 w-full h-full object-cover"
             onLoadedData={() => setIsVideoLoaded(true)}
-            style={{ 
+            style={{
               opacity: isVideoLoaded ? 1 : 0,
-              transition: 'opacity 0.5s ease-in-out'
+              transition: "opacity 0.5s ease-in-out",
             }}
           >
-            {shouldPlayVideo && <source src="/videos/cod.mp4" type="video/mp4" />}
+            {shouldPlayVideo && (
+              <source src="/videos/cod.mp4" type="video/mp4" />
+            )}
           </video>
-          
+
           {/* Loading placeholder */}
           {!isVideoLoaded && shouldPlayVideo && (
             <div className="absolute inset-0 bg-gradient-to-br from-violet-900 via-blue-900 to-black flex items-center justify-center">
@@ -171,7 +306,7 @@ const BTXTeamsScreen = () => {
               </div>
             </div>
           )}
-          
+
           {/* Video overlay */}
           <div className="absolute inset-0 bg-black/40" />
         </div>
@@ -181,10 +316,6 @@ const BTXTeamsScreen = () => {
             title="<b>Legendary</b> Greek <br /> Mythology <b>Teams</b>"
             containerClass="!text-white mb-8 drop-shadow-2xl"
           />
-          
-          <p className="text-xl font-circular-web text-blue-50 mb-8 max-w-2xl mx-auto drop-shadow-lg">
-            Join the divine forces of Zeus, Poseidon, or Hades in epic battles that will determine the fate of BTX
-          </p>
 
           <div className="flex flex-wrap justify-center gap-4 mb-8">
             <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/30">
@@ -196,7 +327,9 @@ const BTXTeamsScreen = () => {
             <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/30">
               <div className="flex items-center gap-2">
                 <GiTrident className="text-white text-xl" />
-                <span className="text-white font-zentry font-bold">Poseidon</span>
+                <span className="text-white font-zentry font-bold">
+                  Poseidon
+                </span>
               </div>
             </div>
             <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/30">
@@ -206,23 +339,12 @@ const BTXTeamsScreen = () => {
               </div>
             </div>
           </div>
-
-          <Button
-            title="Choose Your Destiny"
-            rightIcon={<TiLocationArrow />}
-            containerClass="bg-violet-500 hover:bg-violet-600 text-white border-none"
-          />
         </div>
       </section>
 
       {/* Teams Section */}
       <section className="py-20 px-4 min-h-screen">
         <div className="max-w-7xl mx-auto">
-          <AnimatedTitle
-            title="Choose Your <b>Divine</b> Alliance"
-            containerClass="mb-16 !text-white text-center"
-          />
-
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {greekTeams.map((team, index) => (
               <motion.div
@@ -246,7 +368,9 @@ const BTXTeamsScreen = () => {
               >
                 {/* Team Icon */}
                 <div className="absolute top-6 right-6 z-20">
-                  <div className={`p-4 rounded-full bg-gradient-to-br ${team.color} border-2 ${team.borderColor} backdrop-blur-sm`}>
+                  <div
+                    className={`p-4 rounded-full bg-gradient-to-br ${team.color} border-2 ${team.borderColor} backdrop-blur-sm`}
+                  >
                     {team.icon}
                   </div>
                 </div>
@@ -260,7 +384,8 @@ const BTXTeamsScreen = () => {
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.5 }}
                     onError={(e) => {
-                      e.target.src = "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg";
+                      e.target.src =
+                        "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg";
                     }}
                   />
                 </div>
@@ -270,26 +395,13 @@ const BTXTeamsScreen = () => {
                   <h3 className="text-3xl font-zentry font-black text-white mb-2">
                     {team.name}
                   </h3>
-                  <p className="text-lg font-circular-web font-semibold text-gray-300 mb-3">
-                    {team.title}
-                  </p>
-                  <p className="text-sm font-circular-web text-gray-400 mb-4 line-clamp-3">
-                    {team.description}
-                  </p>
-                  
+
                   {/* Stats */}
                   <div className="flex justify-between items-center">
-                    <div className="flex gap-4">
-                      <div className="text-center">
-                        <div className="text-lg font-zentry font-black text-white">{team.stats.victories}</div>
-                        <div className="text-xs text-gray-400">Victories</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-lg font-zentry font-black text-white">{team.stats.winRate}</div>
-                        <div className="text-xs text-gray-400">Win Rate</div>
-                      </div>
-                    </div>
-                    <div className={`px-3 py-1 rounded-full text-xs font-circular-web font-semibold bg-gradient-to-r ${team.color} border ${team.borderColor}`}>
+                    <div className="flex gap-4"></div>
+                    <div
+                      className={`px-3 py-1 rounded-full text-xs font-circular-web font-semibold bg-gradient-to-r ${team.color} border ${team.borderColor}`}
+                    >
                       {team.stats.rank}
                     </div>
                   </div>
@@ -303,49 +415,23 @@ const BTXTeamsScreen = () => {
         </div>
       </section>
 
-      {/* Call to Action Section */}
-      <section className="relative py-20 bg-black text-white">
-        <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 to-blue-600/20" />
-
-        <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
-          <AnimatedTitle
-            title="Ready to <b>ascend</b> to <br /> <b>godhood</b>?"
-            containerClass="mb-8 !text-white"
-          />
-
-          <p className="text-xl font-circular-web text-white/80 mb-12 max-w-2xl mx-auto">
-            Choose your divine alliance and prove your worth among the gods. The fate of BTX rests in your hands.
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-6">
-            <Button
-              title="Join Divine Battle"
-              rightIcon={<TiLocationArrow />}
-              containerClass="bg-violet-500 hover:bg-violet-600 text-white"
-            />
-            <Button
-              title="View Olympus Rankings"
-              rightIcon={<TiLocationArrow />}
-              containerClass="bg-transparent border border-white/30 hover:bg-white/10 text-white"
-            />
-          </div>
-        </div>
-      </section>
-
       {/* Team Detail Modal */}
       {selectedTeam && (
         <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
           <div className="relative max-w-4xl max-h-[90vh] bg-gray-900 rounded-3xl border border-gray-700 overflow-hidden shadow-2xl">
-            <div className={`flex items-center justify-between p-6 border-b border-gray-700 bg-gradient-to-r ${selectedTeam.bgGradient}`}>
+            <div
+              className={`flex items-center justify-between p-6 border-b border-gray-700 bg-gradient-to-r ${selectedTeam.bgGradient}`}
+            >
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-full bg-gradient-to-br ${selectedTeam.color} border-2 ${selectedTeam.borderColor}`}>
+                <div
+                  className={`p-3 rounded-full bg-gradient-to-br ${selectedTeam.color} border-2 ${selectedTeam.borderColor}`}
+                >
                   {selectedTeam.icon}
                 </div>
                 <div>
                   <h3 className="text-2xl font-zentry font-black text-white tracking-wide">
                     {selectedTeam.name}
                   </h3>
-                  <p className="text-lg font-circular-web text-gray-300">{selectedTeam.title}</p>
                 </div>
               </div>
               <button
@@ -355,46 +441,25 @@ const BTXTeamsScreen = () => {
                 <IoClose className="text-xl" />
               </button>
             </div>
-            
+
             <div className="p-6 bg-gray-900 max-h-[70vh] overflow-y-auto">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <img
-                    src={selectedTeam.image}
-                    alt={selectedTeam.name}
-                    className="w-full h-64 object-cover rounded-xl mb-4"
-                  />
-                  <p className="text-gray-300 font-circular-web mb-4">{selectedTeam.description}</p>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-gray-800 rounded-lg p-3 text-center">
-                      <div className="text-2xl font-zentry font-black text-white">{selectedTeam.stats.victories}</div>
-                      <div className="text-sm text-gray-400">Total Victories</div>
-                    </div>
-                    <div className="bg-gray-800 rounded-lg p-3 text-center">
-                      <div className="text-2xl font-zentry font-black text-white">{selectedTeam.stats.winRate}</div>
-                      <div className="text-sm text-gray-400">Win Rate</div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <h4 className="text-xl font-zentry font-black text-white mb-4">Team Members</h4>
+                  <h4 className="text-xl font-zentry font-black text-white mb-4">
+                    Team Members
+                  </h4>
                   <div className="max-h-64 overflow-y-auto bg-gray-800 rounded-lg p-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {selectedTeam.members.map((member, index) => (
-                        <div key={index} className="bg-gray-700 rounded p-2 text-center">
-                          <span className="text-white font-circular-web text-sm">{member}</span>
+                        <div
+                          key={index}
+                          className="bg-gray-700 rounded p-2 text-center"
+                        >
+                          <span className="text-white font-circular-web text-sm">
+                            {member}
+                          </span>
                         </div>
                       ))}
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6 p-4 bg-gray-800 rounded-lg">
-                    <h5 className="font-zentry font-black text-white mb-2">Specialty</h5>
-                    <p className="text-gray-300">{selectedTeam.stats.specialty}</p>
-                    <div className="mt-3 text-sm text-gray-400">
-                      <p><span className="text-violet-400 font-semibold">Total Members:</span> {selectedTeam.members.length}</p>
                     </div>
                   </div>
                 </div>
