@@ -95,9 +95,6 @@ const BTXTeamsScreen = () => {
         "ᵘᵒᵘHayulz",
       ],
       stats: {
-        victories: 156,
-        winRate: "89%",
-        rank: "Divine Tier",
         specialty: "Aerial Combat",
       },
     },
@@ -168,9 +165,6 @@ const BTXTeamsScreen = () => {
         "ĐặngDanh ᵛᶰ㋡",
       ],
       stats: {
-        victories: 142,
-        winRate: "85%",
-        rank: "Divine Tier",
         specialty: "Naval Warfare",
       },
     },
@@ -241,9 +235,6 @@ const BTXTeamsScreen = () => {
         "SugarWoogy",
       ],
       stats: {
-        victories: 134,
-        winRate: "82%",
-        rank: "Divine Tier",
         specialty: "Psychological Warfare",
       },
     },
@@ -405,7 +396,7 @@ const BTXTeamsScreen = () => {
                     <div
                       className={`px-3 py-1 rounded-full text-xs font-circular-web font-semibold bg-gradient-to-r ${team.color} border ${team.borderColor}`}
                     >
-                      {team.stats.rank}
+                      {team.stats.specialty}
                     </div>
                   </div>
                 </div>
@@ -470,25 +461,12 @@ const BTXTeamsScreen = () => {
                   {selectedTeam.description}
                 </p>
                 
-                {/* Team Stats */}
-                <div className="flex justify-center gap-6 mb-6">
-                  <div className="text-center">
-                    <div className={`text-2xl font-zentry font-black bg-gradient-to-r ${selectedTeam.color} bg-clip-text text-transparent`}>
-                      {selectedTeam.stats.victories}
-                    </div>
-                    <div className="text-xs text-gray-400 font-circular-web">Victories</div>
-                  </div>
-                  <div className="text-center">
-                    <div className={`text-2xl font-zentry font-black bg-gradient-to-r ${selectedTeam.color} bg-clip-text text-transparent`}>
-                      {selectedTeam.stats.winRate}
-                    </div>
-                    <div className="text-xs text-gray-400 font-circular-web">Win Rate</div>
-                  </div>
-                  <div className="text-center">
-                    <div className={`text-lg font-zentry font-black bg-gradient-to-r ${selectedTeam.color} bg-clip-text text-transparent`}>
-                      {selectedTeam.stats.rank}
-                    </div>
-                    <div className="text-xs text-gray-400 font-circular-web">Rank</div>
+                {/* Team Specialty */}
+                <div className="text-center mb-6">
+                  <div className={`inline-block px-4 py-2 rounded-full bg-gradient-to-r ${selectedTeam.color} border-2 ${selectedTeam.borderColor}`}>
+                    <span className="text-white font-circular-web font-semibold">
+                      Specialty: {selectedTeam.stats.specialty}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -553,20 +531,6 @@ const BTXTeamsScreen = () => {
                     ))}
                   </div>
                 </div>
-              </div>
-              
-              {/* Call to Action */}
-              <div className="text-center pt-4 border-t border-gray-700">
-                <p className="text-gray-400 font-circular-web text-sm mb-4">
-                  Ready to join the {selectedTeam.name}?
-                </p>
-                <Button
-                  title={`Join ${selectedTeam.name}`}
-                  rightIcon={<TiLocationArrow />}
-                  containerClass={`${selectedTeam.id === 'zeus' ? 'bg-yellow-500 hover:bg-yellow-600' : 
-                                   selectedTeam.id === 'poseidon' ? 'bg-blue-500 hover:bg-blue-600' : 
-                                   'bg-purple-500 hover:bg-purple-600'} text-white border-none`}
-                />
               </div>
             </div>
           </div>
