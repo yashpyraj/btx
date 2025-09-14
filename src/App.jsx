@@ -8,6 +8,8 @@ import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import CavGuideScreen from "./components/CavGuideScreen";
 import RowLeagueScreen from "./components/RowLeagueScreen";
+import PetGuideScreen from "./components/PetGuideScreen";
+import BTXTeamsScreen from "./components/BTXTeamsScreen";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
       } />
       <Route path="/cav-guide" element={<CavGuideScreen />} />
       <Route path="/row-league" element={<RowLeagueScreen />} />
+      <Route path="/pet-guide" element={<PetGuideScreen />} />
+      <Route path="/btx-teams" element={<BTXTeamsScreen />} />
     </Routes>
   );
 }

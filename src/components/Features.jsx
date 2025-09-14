@@ -213,7 +213,7 @@ const Features = () => {
           />
         </BentoTilt>
 
-        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1">
+        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-2">
           <BentoCard
             src="img/tournament.png"
             title={
