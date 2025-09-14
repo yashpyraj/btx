@@ -41,6 +41,7 @@ const BTXTeamsScreen = () => {
       bgGradient: "from-yellow-900/20 via-orange-900/20 to-yellow-900/20",
       image:
         "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg",
+      godImage: "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg", // Zeus lightning/sky theme
       members: [
         "BoatyMcBoatFace",
         "神农ᶦᵒⁿᶻ",
@@ -112,6 +113,7 @@ const BTXTeamsScreen = () => {
       bgGradient: "from-blue-900/20 via-cyan-900/20 to-blue-900/20",
       image:
         "https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg",
+      godImage: "https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg", // Poseidon ocean/water theme
       members: [
         "BLIИK",
         "S O R E N",
@@ -183,7 +185,8 @@ const BTXTeamsScreen = () => {
       borderColor: "border-purple-400",
       bgGradient: "from-purple-900/20 via-red-900/20 to-purple-900/20",
       image:
-        "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg",
+        "https://images.pexels.com/photos/1386604/pexels-photo-1386604.jpeg",
+      godImage: "https://images.pexels.com/photos/1386604/pexels-photo-1386604.jpeg", // Hades dark/underworld theme
       members: [
         "Humble Soju",
         "Joker7even",
@@ -443,26 +446,127 @@ const BTXTeamsScreen = () => {
             </div>
 
             <div className="p-6 bg-gray-900 max-h-[70vh] overflow-y-auto">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="text-xl font-zentry font-black text-white mb-4">
-                    Team Members
+              {/* God Image Section */}
+              <div className="mb-8 text-center">
+                <div className="relative inline-block">
+                  <div className={`w-32 h-32 mx-auto rounded-full overflow-hidden border-4 ${selectedTeam.borderColor} shadow-2xl`}>
+                    <img
+                      src={selectedTeam.godImage}
+                      alt={`${selectedTeam.name} God`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = selectedTeam.image;
+                      }}
+                    />
+                  </div>
+                  <div className={`absolute -top-2 -right-2 p-2 rounded-full bg-gradient-to-br ${selectedTeam.color} border-2 ${selectedTeam.borderColor}`}>
+                    {selectedTeam.icon}
+                  </div>
+                </div>
+                <h4 className="text-2xl font-zentry font-black text-white mt-4 mb-2">
+                  {selectedTeam.title}
+                </h4>
+                <p className="text-gray-300 font-circular-web mb-4 max-w-md mx-auto">
+                  {selectedTeam.description}
+                </p>
+                
+                {/* Team Stats */}
+                <div className="flex justify-center gap-6 mb-6">
+                  <div className="text-center">
+                    <div className={`text-2xl font-zentry font-black bg-gradient-to-r ${selectedTeam.color} bg-clip-text text-transparent`}>
+                      {selectedTeam.stats.victories}
+                    </div>
+                    <div className="text-xs text-gray-400 font-circular-web">Victories</div>
+                  </div>
+                  <div className="text-center">
+                    <div className={`text-2xl font-zentry font-black bg-gradient-to-r ${selectedTeam.color} bg-clip-text text-transparent`}>
+                      {selectedTeam.stats.winRate}
+                    </div>
+                    <div className="text-xs text-gray-400 font-circular-web">Win Rate</div>
+                  </div>
+                  <div className="text-center">
+                    <div className={`text-lg font-zentry font-black bg-gradient-to-r ${selectedTeam.color} bg-clip-text text-transparent`}>
+                      {selectedTeam.stats.rank}
+                    </div>
+                    <div className="text-xs text-gray-400 font-circular-web">Rank</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Team Members Section */}
+              <div className="mb-6">
+                <div className="flex items-center justify-center gap-3 mb-6">
+                  <div className={`h-px flex-1 bg-gradient-to-r ${selectedTeam.color}`} />
+                  <h4 className="text-xl font-zentry font-black text-white flex items-center gap-2">
+                    <GiSwordman className={`text-xl ${selectedTeam.id === 'zeus' ? 'text-yellow-400' : selectedTeam.id === 'poseidon' ? 'text-blue-400' : 'text-purple-400'}`} />
+                    Team Warriors ({selectedTeam.members.length})
                   </h4>
-                  <div className="max-h-64 overflow-y-auto bg-gray-800 rounded-lg p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {selectedTeam.members.map((member, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-700 rounded p-2 text-center"
-                        >
-                          <span className="text-white font-circular-web text-sm">
+                  <div className={`h-px flex-1 bg-gradient-to-l ${selectedTeam.color}`} />
+                </div>
+                
+                <div className="max-h-80 overflow-y-auto bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-2xl p-6 border border-gray-600 backdrop-blur-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {selectedTeam.members.map((member, index) => (
+                      <motion.div
+                        key={index}
+                        className={`group relative bg-gradient-to-r from-gray-700/80 to-gray-800/80 rounded-xl p-3 border border-gray-600 hover:border-opacity-100 transition-all duration-300 cursor-pointer overflow-hidden`}
+                        style={{
+                          borderColor: selectedTeam.id === 'zeus' ? '#facc15' : selectedTeam.id === 'poseidon' ? '#60a5fa' : '#a855f7'
+                        }}
+                        whileHover={{ 
+                          scale: 1.02,
+                          boxShadow: selectedTeam.id === 'zeus' ? '0 0 20px rgba(250, 204, 21, 0.3)' : 
+                                    selectedTeam.id === 'poseidon' ? '0 0 20px rgba(96, 165, 250, 0.3)' : 
+                                    '0 0 20px rgba(168, 85, 247, 0.3)'
+                        }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ 
+                          opacity: 1, 
+                          y: 0,
+                          transition: { delay: index * 0.01, duration: 0.3 }
+                        }}
+                      >
+                        {/* Rank indicator */}
+                        <div className="absolute top-1 right-1 w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center">
+                          <span className="text-xs font-bold text-gray-300">
+                            {index + 1}
+                          </span>
+                        </div>
+                        
+                        {/* Member name */}
+                        <div className="pr-8">
+                          <span className="text-white font-circular-web text-sm font-medium leading-tight block">
                             {member}
                           </span>
                         </div>
-                      ))}
-                    </div>
+                        
+                        {/* Hover effect overlay */}
+                        <div className={`absolute inset-0 bg-gradient-to-r ${selectedTeam.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-xl`} />
+                        
+                        {/* Team icon on hover */}
+                        <div className="absolute bottom-1 right-1 opacity-0 group-hover:opacity-30 transition-opacity duration-300">
+                          <div className="text-xs">
+                            {selectedTeam.icon}
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
                   </div>
                 </div>
+              </div>
+              
+              {/* Call to Action */}
+              <div className="text-center pt-4 border-t border-gray-700">
+                <p className="text-gray-400 font-circular-web text-sm mb-4">
+                  Ready to join the {selectedTeam.name}?
+                </p>
+                <Button
+                  title={`Join ${selectedTeam.name}`}
+                  rightIcon={<TiLocationArrow />}
+                  containerClass={`${selectedTeam.id === 'zeus' ? 'bg-yellow-500 hover:bg-yellow-600' : 
+                                   selectedTeam.id === 'poseidon' ? 'bg-blue-500 hover:bg-blue-600' : 
+                                   'bg-purple-500 hover:bg-purple-600'} text-white border-none`}
+                />
               </div>
             </div>
           </div>
