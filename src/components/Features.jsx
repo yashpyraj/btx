@@ -172,7 +172,7 @@ const Features = () => {
       </BentoTilt> */}
 
       <div className="grid h-[135vh] w-full grid-cols-2 grid-rows-3 gap-7">
-        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1 md:row-span-2">
+        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1 md:row-span-1">
           <BentoCard
             src="img/emry.png"
             title={
@@ -186,7 +186,7 @@ const Features = () => {
           />
         </BentoTilt>
 
-        <BentoTilt className="bento-tilt_1 row-span-1 ms-32 md:col-span-1 md:ms-0">
+        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1">
           <BentoCard
             src="img/lil.png"
             title={
@@ -200,7 +200,35 @@ const Features = () => {
           />
         </BentoTilt>
 
-        <BentoTilt className="bento-tilt_1 me-14 md:col-span-1 md:me-0">
+        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1">
+          <BentoCard
+            src="https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg"
+            title={
+              <>
+                <b>pet guide</b>
+              </>
+            }
+            description="Complete pet optimization guide - Low, Mid & High spend strategies with detailed stats and recommendations."
+            ctaText="explore pets"
+            onClick={() => navigate('/pet-guide')}
+          />
+        </BentoTilt>
+
+        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1">
+          <BentoCard
+            src="https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg"
+            title={
+              <>
+                <b>BTX teams</b>
+              </>
+            }
+            description="Join legendary Greek mythology teams - Zeus, Poseidon, or Hades. Choose your divine alliance and dominate."
+            ctaText="choose team"
+            onClick={() => navigate('/btx-teams')}
+          />
+        </BentoTilt>
+
+        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1">
           <BentoCard
             src="img/niya.png"
             title={
@@ -213,7 +241,7 @@ const Features = () => {
           />
         </BentoTilt>
 
-        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-2">
+        <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1">
           <BentoCard
             src="img/tournament.png"
             title={
