@@ -1,12 +1,23 @@
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/all";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
   const videoRef = useRef(null);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
+
+  useEffect(() => {
+    // Delay video loading to improve initial page load
+    const timer = setTimeout(() => {
+      setShouldPlayVideo(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useGSAP(() => {
     gsap.set("#video-frame", {
@@ -35,13 +46,31 @@ const Hero = () => {
       >
         <video
           ref={videoRef}
-          src="videos/cod.mp4"
-          autoPlay
+          src={shouldPlayVideo ? "videos/cod.mp4" : undefined}
+          autoPlay={shouldPlayVideo}
           loop
           muted
           playsInline
+          preload="none"
+          loading="lazy"
           className="absolute left-0 top-0 size-full object-cover object-center"
+          onLoadedData={() => setIsVideoLoaded(true)}
+          style={{ 
+            opacity: isVideoLoaded ? 1 : 0,
+            transition: 'opacity 0.5s ease-in-out'
+          }}
         />
+
+        {/* Loading placeholder */}
+        {!isVideoLoaded && shouldPlayVideo && (
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-900 via-blue-900 to-black flex items-center justify-center">
+            <div className="three-body">
+              <div className="three-body__dot"></div>
+              <div className="three-body__dot"></div>
+              <div className="three-body__dot"></div>
+            </div>
+          </div>
+        )}
 
         {/* Centered Text */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-40 text-center">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoClose, IoArrowBack, IoChevronDown, IoChevronUp } from "react-icons/io5";
 import { GiSwordman, GiHorseHead, GiTreasureMap, GiCrossedSwords, GiShield, GiCrown } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,17 @@ const CavGuideScreen = () => {
   const navigate = useNavigate();
   const [selectedHero, setSelectedHero] = useState(null);
   const [expandedSections, setExpandedSections] = useState({});
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
+
+  useEffect(() => {
+    // Delay video loading for better performance
+    const timer = setTimeout(() => {
+      setShouldPlayVideo(true);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const toggleSection = (sectionId) => {
     setExpandedSections(prev => ({
@@ -295,14 +306,33 @@ const CavGuideScreen = () => {
         {/* Background Video */}
         <div className="absolute inset-0 overflow-hidden">
           <video
-            autoPlay
+            autoPlay={shouldPlayVideo}
             loop
             muted
             playsInline
+            preload="none"
+            loading="lazy"
             className="absolute inset-0 w-full h-full object-cover"
+            onLoadedData={() => setIsVideoLoaded(true)}
+            style={{ 
+              opacity: isVideoLoaded ? 1 : 0,
+              transition: 'opacity 0.5s ease-in-out'
+            }}
           >
-            <source src="/videos/cod.mp4" type="video/mp4" />
+            {shouldPlayVideo && <source src="/videos/cod.mp4" type="video/mp4" />}
           </video>
+          
+          {/* Loading placeholder */}
+          {!isVideoLoaded && shouldPlayVideo && (
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-900 via-blue-900 to-black flex items-center justify-center">
+              <div className="three-body">
+                <div className="three-body__dot"></div>
+                <div className="three-body__dot"></div>
+                <div className="three-body__dot"></div>
+              </div>
+            </div>
+          )}
+          
           {/* Video overlay */}
           <div className="absolute inset-0 bg-black/40" />
         </div>

@@ -11,6 +11,8 @@ import { CardCarousel } from "./CardCarousel";
 
 const RowLeagueScreen = () => {
   const navigate = useNavigate();
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
 
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -20,6 +22,11 @@ const RowLeagueScreen = () => {
 
   // Initialize smooth scrolling
   useEffect(() => {
+    // Delay video loading for better performance
+    const videoTimer = setTimeout(() => {
+      setShouldPlayVideo(true);
+    }, 800);
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -34,6 +41,7 @@ const RowLeagueScreen = () => {
     requestAnimationFrame(raf);
 
     return () => {
+      clearTimeout(videoTimer);
       lenis.destroy();
     };
   }, []);
@@ -158,14 +166,33 @@ const RowLeagueScreen = () => {
         {/* Background Video */}
         <div className="absolute inset-0 overflow-hidden">
           <video
-            autoPlay
+            autoPlay={shouldPlayVideo}
             loop
             muted
             playsInline
+            preload="none"
+            loading="lazy"
             className="absolute inset-0 w-full h-full object-cover"
+            onLoadedData={() => setIsVideoLoaded(true)}
+            style={{ 
+              opacity: isVideoLoaded ? 1 : 0,
+              transition: 'opacity 0.5s ease-in-out'
+            }}
           >
-            <source src="/videos/cod.mp4" type="video/mp4" />
+            {shouldPlayVideo && <source src="/videos/cod.mp4" type="video/mp4" />}
           </video>
+          
+          {/* Loading placeholder */}
+          {!isVideoLoaded && shouldPlayVideo && (
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-900 via-blue-900 to-black flex items-center justify-center">
+              <div className="three-body">
+                <div className="three-body__dot"></div>
+                <div className="three-body__dot"></div>
+                <div className="three-body__dot"></div>
+              </div>
+            </div>
+          )}
+          
           {/* Video overlay */}
           <div className="absolute inset-0 bg-black/40" />
         </div>
