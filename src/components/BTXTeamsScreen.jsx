@@ -34,10 +34,16 @@ const BTXTeamsScreen = () => {
       bgGradient: 'from-yellow-900/20 via-orange-900/20 to-yellow-900/20',
       image: 'https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg',
       members: [
-        { name: 'Thunder King', role: 'Team Captain', power: 'Lightning Strike' },
-        { name: 'Storm Caller', role: 'Strategist', power: 'Weather Control' },
-        { name: 'Sky Guardian', role: 'Support', power: 'Divine Shield' },
-        { name: 'Cloud Walker', role: 'Scout', power: 'Aerial Reconnaissance' }
+        'BoatyMcBoatFace', '神农ᶦᵒⁿᶻ', 'ᴿᵒʷRomolusRemus', 'Poohpo0h', 'ʙᴛxメ Leonhart',
+        'Immortalized', 'ᵂᴸ ᴛʜᴇ ʟɪᴏɴ', 'ʸᵃˢᵘᵏᵉLASTOMANIA', 'ᵇᵗˣASH', 'KillèrBee',
+        'Acz', 'Erötic Sûshï 亗', 'Kube', 'Esvipe', 'ᵘᵒᵘ wARIm', 'Bªlbì',
+        'wAKIm', 'ʙᴛxAtilla', 'ᴬᶠᵏJalalz', 'Helixz', 'Žøŗô', 'Coer', 'ᵂᴸ MOKA',
+        'THE WALL', 'Kapoios', 'ᵘᵒᵘ ShadeZ', 'ᵘᵒᵘ ᴢMᴇᴏWャ', 'ᵏⁱⁿᵍChouchou',
+        'ᵂᴸ Geekゝ', 'EdriaИᴵᵁ', 'ᵘᵒᵘ TUM', 'OscarGlzᴹᵉˣ', 'ᵘᵒᵘ LUCIFER',
+        'ᵘᵒᵘ ZeüS', 'ᵘᵒᵘ Tyo ˣ', 'ᵇᵗˣ Cute Toes Kay', 'Humble Hypraa',
+        'YotaTacoma', 'Ｆｌｅｘｉｅ', 'ˣᴶᴸ', 'ᵁʷᵁ AryaHornigold', 'ʙᴛxメ Draco メ',
+        'ᵘᵒᵘKaTouR', 'Rоcket', 'ᵇᵗˣMaupa', 'CườngMT', 'Enchantreṣs', 'Cаstiel',
+        'BetterCall grimJJ', 'ᵘᵒᵘHayulz'
       ],
       stats: {
         victories: 156,
@@ -57,10 +63,16 @@ const BTXTeamsScreen = () => {
       bgGradient: 'from-blue-900/20 via-cyan-900/20 to-blue-900/20',
       image: 'https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg',
       members: [
-        { name: 'Wave Master', role: 'Team Captain', power: 'Tsunami Force' },
-        { name: 'Deep Sage', role: 'Strategist', power: 'Ocean Wisdom' },
-        { name: 'Tide Turner', role: 'Support', power: 'Current Control' },
-        { name: 'Reef Guardian', role: 'Defender', power: 'Coral Barrier' }
+        'BLIИK', 'S O R E N', 'lIIIlIlllIlIllI', 'Narr', 'ᴅᴀʀᴋメ', 'BaBaDemouz',
+        '亗WIZ么RD', 'Midget Shisó', 'ᵘᵒᵘ Hvn', 'the ONE', 'ᵘʷᵘ', 'ᴱᴰᴸ Ethylik',
+        'Yvel', 'CptnObvus', 'Gothgirls Enjoyer', 'ᴱᴰᴸ Larnak', 'tacosbell',
+        'Roland67', 'Kumichan', '乂 ʞɔnp pǝuoʇS', 'Azzaran', 'ᴮᵗʳ ryaster ヅ',
+        'GgstrsCreamSoup', 'NolanCAV', 'ᵂᴸ YAZᴱᴱᴰ气', 'RadouX', 'TheDeeTee',
+        'Exquisite94', 'SNEAK1453', 'FerociousPaws', 'Everglow', 'Warby',
+        'ZhiDark', 'ᵘᵒᵘ kARim', 'Don Snake', 'Whiisp', 'Niksøn', 'ᴃᴛẍ MothyMax',
+        'Seeo', 'Titanik', 'OMAR3221', 'Plankton BTR', 'Jw Child', 'ᵘᵒᵘ Yᴀᴍᴀɴᴀᴋᴀ',
+        'A K A R', 'Mangó', '守 ᴍᴀᴅʙᴀʟʟ', 'Don Po', 'NolanINF', 'Zeidrichsama',
+        'ĐặngDanh ᵛᶰ㋡'
       ],
       stats: {
         victories: 142,
@@ -80,10 +92,17 @@ const BTXTeamsScreen = () => {
       bgGradient: 'from-purple-900/20 via-red-900/20 to-purple-900/20',
       image: 'https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg',
       members: [
-        { name: 'Soul Reaper', role: 'Team Captain', power: 'Death Touch' },
-        { name: 'Shadow Whisper', role: 'Strategist', power: 'Dark Prophecy' },
-        { name: 'Bone Crusher', role: 'Assault', power: 'Necromancy' },
-        { name: 'Void Walker', role: 'Infiltrator', power: 'Shadow Step' }
+        'Humble Soju', 'Joker7even', 'Ｌ Ｉ Ａㆆᴗㆆ', 'Pingᴰᴱᴹᴼᴺァ', 'Nörthwölfş',
+        '2K2Ę', 'ᵘᵒᵘ kAZIm', 'ᵂᴸ Hùmbłé M Á Ð', 'ᵂᴸ Just SCɅRY ャ',
+        'ᵂᴸSOLO LEVELING', 'ᵘᵒᵘʟɪʙʀᴀᴅᴇʟ', 'ᵂᴸDooM', 'ᵂᴸ Slayゝ', 'Qatarson',
+        'boscat', 'ᵘᵒᵘCarryBomber', 'Gagster5', 'Jack Daniels Farm', 'ᵀᵒⁿᵗᵒⁿActéoOn',
+        'Chemona', 'ᴬᶠᴷᴊᴏᴋᴇʀꜰᴀᴋᴇ', 'ᵘᵒᵘ tlne', 'Ğarius', 'KingYammy', 'ᵂᴸ рăın',
+        'T1이상혁TheGOAT', 'ʙᴛxメsᴜᴘʀᴇᴍᴇ ʟᴇᴏ', 'Farmer Nara', 'ᵁʷᵁ TahLeV',
+        'ᵘᵒᵘT BAG', 'ᵂᴸSung Jinwoo', 'メDaenerysメ', 'デ愛 i S E K A i Z',
+        'ᴬᶠᵏHoneyFox', '崔ＬｅＶｉ', 'NIZZAAAAAAAA', 'ᵘᵒᵘCarry B0', 'ᴵᴹ Aba',
+        'Ilúvatar', 'Krokette', 'Prof Diz', 'Anak KOST', 'ɢ ᴏ ʀ ɪ ʟ ʟ ᴀ ᴢ',
+        'ᵘᵒᵘSouthside', 'FaceOfBlade', 'ᴿᵃᵍᵉ ioya', 'Nhà Cái Kaokey', 'ᵘᵒᵘShal2py',
+        'Falkensr', 'Ardnahc', 'SugarWoogy'
       ],
       stats: {
         victories: 134,
@@ -361,23 +380,22 @@ const BTXTeamsScreen = () => {
                 
                 <div>
                   <h4 className="text-xl font-zentry font-black text-white mb-4">Team Members</h4>
-                  <div className="space-y-3">
-                    {selectedTeam.members.map((member, index) => (
-                      <div key={index} className="bg-gray-800 rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <h5 className="font-zentry font-black text-white">{member.name}</h5>
-                          <span className="text-xs text-gray-400 bg-gray-700 px-2 py-1 rounded">{member.role}</span>
+                  <div className="max-h-64 overflow-y-auto bg-gray-800 rounded-lg p-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {selectedTeam.members.map((member, index) => (
+                        <div key={index} className="bg-gray-700 rounded p-2 text-center">
+                          <span className="text-white font-circular-web text-sm">{member}</span>
                         </div>
-                        <p className="text-sm text-gray-300">
-                          <span className="text-violet-400 font-semibold">Power:</span> {member.power}
-                        </p>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                   
                   <div className="mt-6 p-4 bg-gray-800 rounded-lg">
                     <h5 className="font-zentry font-black text-white mb-2">Specialty</h5>
                     <p className="text-gray-300">{selectedTeam.stats.specialty}</p>
+                    <div className="mt-3 text-sm text-gray-400">
+                      <p><span className="text-violet-400 font-semibold">Total Members:</span> {selectedTeam.members.length}</p>
+                    </div>
                   </div>
                 </div>
               </div>
