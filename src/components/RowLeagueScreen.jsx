@@ -64,7 +64,7 @@ const RowLeagueScreen = () => {
     {
       id: 2,
       name: "Esvipe",
-      role: "Combat Specialist",
+      role: "Team Captain",
       image: "/img/esvipe.png",
       stats: {
         wins: 98,
@@ -73,6 +73,7 @@ const RowLeagueScreen = () => {
       },
       description:
         "Elite warrior specializing in high-impact combat scenarios and battlefield control.",
+      isLeader: true,
     },
     {
       id: 3,
