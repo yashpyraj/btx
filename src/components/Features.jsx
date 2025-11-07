@@ -242,20 +242,7 @@ const Features = () => {
                   <b>memories</b>
                 </>
               }
-              description="Relive epic moments and legendary battles from our journey."
-              isComingSoon
-            />
-          </BentoTilt>
-
-          <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1">
-            <BentoCard
-              src="https://images.pexels.com/photos/1092671/pexels-photo-1092671.jpeg"
-              title={
-                <>
-                  larnak <b>lost GH</b>
-                </>
-              }
-              description="The legendary tale of Larnak's lost glory hall."
+              description="Relive epic moments, legendary battles, and Larnak's lost GH from our journey."
               isComingSoon
             />
           </BentoTilt>
