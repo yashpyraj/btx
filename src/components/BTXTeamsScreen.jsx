@@ -421,43 +421,6 @@ const BTXTeamsScreen = () => {
                   </div>
                 </div>
 
-                {/* Team Stats Footer */}
-                <div className="p-6 bg-black/20 border-t border-white/10">
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                    <div>
-                      <p className="text-white/60 text-sm font-circular-web mb-1">
-                        Victories
-                      </p>
-                      <p className="text-2xl font-zentry font-black text-white">
-                        {team.stats.victories}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-white/60 text-sm font-circular-web mb-1">
-                        Win Rate
-                      </p>
-                      <p className="text-2xl font-zentry font-black text-white">
-                        {team.stats.winRate}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-white/60 text-sm font-circular-web mb-1">
-                        Rank
-                      </p>
-                      <p className="text-2xl font-zentry font-black text-white">
-                        {team.stats.rank}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-white/60 text-sm font-circular-web mb-1">
-                        Specialty
-                      </p>
-                      <p className="text-lg font-zentry font-black text-white">
-                        {team.stats.specialty}
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </motion.div>
             ))}
           </div>
