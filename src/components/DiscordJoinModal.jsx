@@ -47,11 +47,11 @@ const DiscordJoinModal = ({ isOpen, onClose }) => {
           />
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.9, x: 100, y: 100 }}
+            animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, x: 100, y: 100 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed left-1/2 top-1/2 z-50 w-[95%] max-w-2xl -translate-x-1/2 -translate-y-1/2"
+            className="fixed bottom-6 right-6 z-50 w-[95%] max-w-md md:max-w-lg"
           >
             <div className="relative overflow-hidden rounded-3xl border border-violet-500/30 bg-gradient-to-br from-black via-violet-950/20 to-black shadow-2xl shadow-violet-500/20">
               {/* Animated Background */}
