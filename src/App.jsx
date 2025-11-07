@@ -10,6 +10,7 @@ import CavGuideScreen from "./components/CavGuideScreen";
 import RowLeagueScreen from "./components/RowLeagueScreen";
 import PetGuideScreen from "./components/PetGuideScreen";
 import BTXTeamsScreen from "./components/BTXTeamsScreen";
+import MemoriesScreen from "./components/MemoriesScreen";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
       <Route path="/row-league" element={<RowLeagueScreen />} />
       <Route path="/pet-guide" element={<PetGuideScreen />} />
       <Route path="/btx-teams" element={<BTXTeamsScreen />} />
+      <Route path="/memories" element={<MemoriesScreen />} />
     </Routes>
   );
 }
