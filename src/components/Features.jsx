@@ -243,7 +243,8 @@ const Features = () => {
                 </>
               }
               description="Relive epic moments, legendary battles, and Larnak's lost GH from our journey."
-              isComingSoon
+              ctaText="view memories"
+              onClick={() => navigate("/memories")}
             />
           </BentoTilt>
 
