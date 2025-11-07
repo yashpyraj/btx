@@ -27,6 +27,7 @@ const MemoriesScreen = () => {
       image: "https://images.pexels.com/photos/1152854/pexels-photo-1152854.jpeg",
       date: "Season 3",
       type: "Epic Fail",
+      isComingSoon: false,
     },
     {
       id: 2,
@@ -35,6 +36,7 @@ const MemoriesScreen = () => {
       image: "https://images.pexels.com/photos/1309584/pexels-photo-1309584.jpeg",
       date: "Season 1",
       type: "Victory",
+      isComingSoon: true,
     },
     {
       id: 3,
@@ -43,6 +45,7 @@ const MemoriesScreen = () => {
       image: "https://images.pexels.com/photos/1762851/pexels-photo-1762851.jpeg",
       date: "Season 2",
       type: "Defense",
+      isComingSoon: true,
     },
     {
       id: 4,
@@ -51,6 +54,7 @@ const MemoriesScreen = () => {
       image: "https://images.pexels.com/photos/1612461/pexels-photo-1612461.jpeg",
       date: "Season 2",
       type: "Raid",
+      isComingSoon: true,
     },
     {
       id: 5,
@@ -59,6 +63,7 @@ const MemoriesScreen = () => {
       image: "https://images.pexels.com/photos/1420440/pexels-photo-1420440.jpeg",
       date: "Season 3",
       type: "Victory",
+      isComingSoon: true,
     },
     {
       id: 6,
@@ -67,6 +72,7 @@ const MemoriesScreen = () => {
       image: "https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg",
       date: "Season 1",
       type: "Community",
+      isComingSoon: true,
     },
     {
       id: 7,
@@ -75,6 +81,7 @@ const MemoriesScreen = () => {
       image: "https://images.pexels.com/photos/1591056/pexels-photo-1591056.jpeg",
       date: "Season 2",
       type: "Battle",
+      isComingSoon: true,
     },
     {
       id: 8,
@@ -83,6 +90,7 @@ const MemoriesScreen = () => {
       image: "https://images.pexels.com/photos/1337380/pexels-photo-1337380.jpeg",
       date: "Season 3",
       type: "Victory",
+      isComingSoon: true,
     },
   ];
 
@@ -144,22 +152,37 @@ const MemoriesScreen = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
+                  {/* Coming Soon Overlay */}
+                  {memory.isComingSoon && (
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="bg-yellow-400/20 border-2 border-yellow-400 text-yellow-400 text-lg font-zentry font-bold px-6 py-3 rounded-full">
+                          COMING SOON
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Type Badge */}
-                  <div className="absolute top-4 left-4 bg-violet-600/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold">
-                    {memory.type}
-                  </div>
+                  {!memory.isComingSoon && (
+                    <div className="absolute top-4 left-4 bg-violet-600/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold">
+                      {memory.type}
+                    </div>
+                  )}
 
                   {/* Like Button */}
-                  <button
-                    onClick={() => toggleLike(memory.id)}
-                    className="absolute top-4 right-4 p-2 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-all duration-300 hover:scale-110"
-                  >
-                    {likedMemories.has(memory.id) ? (
-                      <IoHeart className="text-red-500 text-xl" />
-                    ) : (
-                      <IoHeartOutline className="text-white text-xl" />
-                    )}
-                  </button>
+                  {!memory.isComingSoon && (
+                    <button
+                      onClick={() => toggleLike(memory.id)}
+                      className="absolute top-4 right-4 p-2 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-all duration-300 hover:scale-110"
+                    >
+                      {likedMemories.has(memory.id) ? (
+                        <IoHeart className="text-red-500 text-xl" />
+                      ) : (
+                        <IoHeartOutline className="text-white text-xl" />
+                      )}
+                    </button>
+                  )}
                 </div>
 
                 {/* Content */}
@@ -185,37 +208,6 @@ const MemoriesScreen = () => {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 px-6 bg-gradient-to-br from-violet-900/10 via-blue-900/10 to-purple-900/10">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-zentry font-black text-center mb-12 text-white">
-            Journey <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-blue-400">Stats</span>
-          </h2>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 text-center">
-              <div className="text-4xl font-zentry font-black text-violet-400 mb-2">3</div>
-              <div className="text-sm text-white/70 font-circular-web">Seasons</div>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 text-center">
-              <div className="text-4xl font-zentry font-black text-blue-400 mb-2">150+</div>
-              <div className="text-sm text-white/70 font-circular-web">Battles Won</div>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 text-center">
-              <div className="text-4xl font-zentry font-black text-purple-400 mb-2">500+</div>
-              <div className="text-sm text-white/70 font-circular-web">Epic Moments</div>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 text-center">
-              <div className="text-4xl font-zentry font-black text-pink-400 mb-2">1</div>
-              <div className="text-sm text-white/70 font-circular-web">Legendary GH Lost</div>
-            </div>
           </div>
         </div>
       </section>
