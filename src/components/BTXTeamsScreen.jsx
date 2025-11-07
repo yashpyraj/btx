@@ -16,7 +16,6 @@ import Button from "./Button";
 
 const BTXTeamsScreen = () => {
   const navigate = useNavigate();
-  const [selectedTeam, setSelectedTeam] = useState(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
 
@@ -343,17 +342,13 @@ const BTXTeamsScreen = () => {
       </section>
 
       {/* Teams Section */}
-      <section className="py-20 px-4 min-h-screen">
+      <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="space-y-16">
             {greekTeams.map((team, index) => (
               <motion.div
                 key={team.id}
-                className={`group relative bg-gradient-to-br ${team.bgGradient} rounded-3xl border-2 ${team.borderColor} overflow-hidden cursor-pointer shadow-2xl`}
-                whileHover={{
-                  scale: 1.05,
-                  transition: { duration: 0.3 },
-                }}
+                className={`bg-gradient-to-br ${team.bgGradient} rounded-3xl border-2 ${team.borderColor} overflow-hidden shadow-2xl`}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{
                   opacity: 1,
@@ -364,110 +359,110 @@ const BTXTeamsScreen = () => {
                   },
                 }}
                 viewport={{ once: true }}
-                onClick={() => setSelectedTeam(team)}
               >
-                {/* Team Icon */}
-                <div className="absolute top-6 right-6 z-20">
-                  <div
-                    className={`p-4 rounded-full bg-gradient-to-br ${team.color} border-2 ${team.borderColor} backdrop-blur-sm`}
-                  >
-                    {team.icon}
-                  </div>
-                </div>
-
-                {/* Background Image */}
-                <div className="aspect-[4/5] overflow-hidden">
-                  <motion.img
-                    src={team.image}
-                    alt={team.name}
-                    className="w-full h-full object-cover"
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.5 }}
-                    onError={(e) => {
-                      e.target.src =
-                        "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg";
-                    }}
-                  />
-                </div>
-
-                {/* Team Info */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/80 to-transparent">
-                  <h3 className="text-3xl font-zentry font-black text-white mb-2">
-                    {team.name}
-                  </h3>
-
-                  {/* Stats */}
-                  <div className="flex justify-between items-center">
-                    <div className="flex gap-4"></div>
+                {/* Team Header */}
+                <div className="p-8 border-b border-white/10">
+                  <div className="flex items-center justify-between flex-wrap gap-4">
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`p-4 rounded-full bg-gradient-to-br ${team.color} border-2 ${team.borderColor}`}
+                      >
+                        {team.icon}
+                      </div>
+                      <div>
+                        <h3 className="text-4xl font-zentry font-black text-white mb-1">
+                          {team.name}
+                        </h3>
+                        <p className="text-lg text-white/70 font-circular-web">
+                          {team.title}
+                        </p>
+                      </div>
+                    </div>
                     <div
-                      className={`px-3 py-1 rounded-full text-xs font-circular-web font-semibold bg-gradient-to-r ${team.color} border ${team.borderColor}`}
+                      className={`px-4 py-2 rounded-full text-sm font-circular-web font-semibold bg-gradient-to-r ${team.color} border ${team.borderColor}`}
                     >
                       {team.stats.rank}
                     </div>
                   </div>
+                  <p className="text-white/60 font-circular-web mt-4">
+                    {team.description}
+                  </p>
                 </div>
 
-                {/* Hover Effect */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                {/* Team Members Grid */}
+                <div className="p-8">
+                  <h4 className="text-2xl font-zentry font-black text-white mb-6 flex items-center gap-2">
+                    Team Members
+                    <span className="text-lg text-white/60 font-circular-web">
+                      ({team.members.length})
+                    </span>
+                  </h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                    {team.members.map((member, memberIndex) => (
+                      <motion.div
+                        key={memberIndex}
+                        className="bg-black/40 backdrop-blur-sm rounded-lg p-3 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        whileInView={{
+                          opacity: 1,
+                          scale: 1,
+                          transition: {
+                            duration: 0.3,
+                            delay: memberIndex * 0.01,
+                          },
+                        }}
+                        viewport={{ once: true }}
+                      >
+                        <span className="text-white font-circular-web text-sm block text-center break-words">
+                          {member}
+                        </span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Team Stats Footer */}
+                <div className="p-6 bg-black/20 border-t border-white/10">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                    <div>
+                      <p className="text-white/60 text-sm font-circular-web mb-1">
+                        Victories
+                      </p>
+                      <p className="text-2xl font-zentry font-black text-white">
+                        {team.stats.victories}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-white/60 text-sm font-circular-web mb-1">
+                        Win Rate
+                      </p>
+                      <p className="text-2xl font-zentry font-black text-white">
+                        {team.stats.winRate}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-white/60 text-sm font-circular-web mb-1">
+                        Rank
+                      </p>
+                      <p className="text-2xl font-zentry font-black text-white">
+                        {team.stats.rank}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-white/60 text-sm font-circular-web mb-1">
+                        Specialty
+                      </p>
+                      <p className="text-lg font-zentry font-black text-white">
+                        {team.stats.specialty}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
-
-      {/* Team Detail Modal */}
-      {selectedTeam && (
-        <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative max-w-4xl max-h-[90vh] bg-gray-900 rounded-3xl border border-gray-700 overflow-hidden shadow-2xl">
-            <div
-              className={`flex items-center justify-between p-6 border-b border-gray-700 bg-gradient-to-r ${selectedTeam.bgGradient}`}
-            >
-              <div className="flex items-center gap-4">
-                <div
-                  className={`p-3 rounded-full bg-gradient-to-br ${selectedTeam.color} border-2 ${selectedTeam.borderColor}`}
-                >
-                  {selectedTeam.icon}
-                </div>
-                <div>
-                  <h3 className="text-2xl font-zentry font-black text-white tracking-wide">
-                    {selectedTeam.name}
-                  </h3>
-                </div>
-              </div>
-              <button
-                onClick={() => setSelectedTeam(null)}
-                className="text-white/70 hover:text-white transition-all duration-300 hover:scale-110 p-2 hover:bg-white/10 rounded-full"
-              >
-                <IoClose className="text-xl" />
-              </button>
-            </div>
-
-            <div className="p-6 bg-gray-900 max-h-[70vh] overflow-y-auto">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="text-xl font-zentry font-black text-white mb-4">
-                    Team Members
-                  </h4>
-                  <div className="max-h-64 overflow-y-auto bg-gray-800 rounded-lg p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {selectedTeam.members.map((member, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-700 rounded p-2 text-center"
-                        >
-                          <span className="text-white font-circular-web text-sm">
-                            {member}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
