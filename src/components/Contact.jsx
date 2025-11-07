@@ -1,5 +1,7 @@
+import { useState } from "react";
 import AnimatedTitle from "./AnimatedTitle";
 import Button from "./Button";
+import DiscordJoinModal from "./DiscordJoinModal";
 
 const ImageClipBox = ({ src, clipClass }) => (
   <div className={clipClass}>
@@ -8,6 +10,8 @@ const ImageClipBox = ({ src, clipClass }) => (
 );
 
 const Contact = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div id="contact" className="my-20 min-h-96 w-screen  px-10">
       <div className="relative rounded-lg bg-black py-24 text-blue-50 sm:overflow-hidden">
@@ -43,9 +47,13 @@ const Contact = () => {
             className="special-font !md:text-[6.2rem] w-full font-zentry !text-5xl !font-black !leading-[.9]"
           />
 
-          <Button title="contact us" containerClass="mt-10 cursor-pointer" />
+          <div onClick={() => setIsModalOpen(true)}>
+            <Button title="contact us" containerClass="mt-10 cursor-pointer" />
+          </div>
         </div>
       </div>
+
+      <DiscordJoinModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

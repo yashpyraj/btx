@@ -8,11 +8,13 @@ import Lenis from "lenis";
 import AnimatedTitle from "./AnimatedTitle";
 import Button from "./Button";
 import { CardCarousel } from "./CardCarousel";
+import DiscordJoinModal from "./DiscordJoinModal";
 
 const RowLeagueScreen = () => {
   const navigate = useNavigate();
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -318,14 +320,18 @@ const RowLeagueScreen = () => {
           />
 
           <div className="flex flex-wrap justify-center gap-6">
-            <Button
-              title="Join us"
-              rightIcon={<TiLocationArrow />}
-              containerClass="bg-violet-500 hover:bg-violet-600 text-white"
-            />
+            <div onClick={() => setIsModalOpen(true)}>
+              <Button
+                title="Join us"
+                rightIcon={<TiLocationArrow />}
+                containerClass="bg-violet-500 hover:bg-violet-600 text-white"
+              />
+            </div>
           </div>
         </div>
       </section>
+
+      <DiscordJoinModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };
