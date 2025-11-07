@@ -395,38 +395,38 @@ const CavGuideScreen = () => {
       </section>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto p-6 bg-black">
+      <div className="max-w-7xl mx-auto px-6 py-12 bg-black">
         {/* Build Sections */}
-        <div className="space-y-8">
-          {buildData.map((build) => (
+        <div className="space-y-12">
+          {buildData.map((build, index) => (
             <div
               key={build.id}
-              className={`bg-gradient-to-r from-gray-900/90 via-gray-800/90 to-gray-900/90 rounded-3xl border border-gray-700 backdrop-blur-sm overflow-hidden shadow-xl`}
+              className={`bg-gradient-to-br ${build.color} rounded-3xl border-2 ${build.borderColor} backdrop-blur-sm overflow-hidden shadow-2xl`}
             >
               {/* Section Header */}
               <button
                 onClick={() => toggleSection(build.id)}
-                className="w-full p-8 flex items-center justify-between hover:bg-white/10 transition-all duration-300"
+                className="w-full p-8 flex items-center justify-between hover:brightness-110 transition-all duration-300 group"
               >
                 <div className="flex items-center gap-6 text-left">
                   <div
-                    className={`p-4 rounded-2xl backdrop-blur-sm ${build.id === "cav-vs-cav" ? "bg-red-500/20" : build.id === "sync-cav-mu-hsiang" ? "bg-green-500/20" : "bg-blue-500/20"}`}
+                    className={`p-5 rounded-2xl backdrop-blur-sm border-2 ${build.borderColor} ${build.id === "cav-vs-cav" ? "bg-red-500/30" : build.id === "sync-cav-mu-hsiang" ? "bg-green-500/30" : "bg-blue-500/30"} group-hover:scale-110 transition-transform duration-300`}
                   >
                     {build.icon}
                   </div>
                   <div>
-                    <h2 className="text-3xl font-zentry font-black text-white mb-2 tracking-wide">
+                    <h2 className="text-4xl font-zentry font-black text-white mb-2 tracking-wide drop-shadow-lg">
                       {build.title}
                     </h2>
-                    <p className="text-violet-600 font-circular-web font-semibold text-xl tracking-wide mb-3">
+                    <p className="text-white/80 font-circular-web font-semibold text-lg tracking-wide mb-3">
                       {build.subtitle}
                     </p>
-                    <p className="text-blue-50 font-circular-web font-medium text-base max-w-4xl">
+                    <p className="text-white/70 font-circular-web font-medium text-base max-w-4xl">
                       {build.description}
                     </p>
                   </div>
                 </div>
-                <div className="text-white/70 p-2 bg-white/10 rounded-full">
+                <div className="text-white p-3 bg-white/20 rounded-full group-hover:bg-white/30 transition-colors duration-300">
                   {expandedSections[build.id] ? (
                     <IoChevronUp className="text-2xl" />
                   ) : (
@@ -438,9 +438,9 @@ const CavGuideScreen = () => {
               {/* Section Content */}
               {expandedSections[build.id] && (
                 <div className="px-8 pb-8">
-                  <div className="border-t border-gray-700 pt-8">
-                    <h3 className="text-2xl font-zentry font-black text-white mb-8 flex items-center gap-3 tracking-wide">
-                      <GiTreasureMap className="text-violet-600" />
+                  <div className="border-t border-white/20 pt-8">
+                    <h3 className="text-3xl font-zentry font-black text-white mb-8 flex items-center gap-3 tracking-wide drop-shadow-lg">
+                      <GiTreasureMap className="text-white" />
                       Formation & Setup
                     </h3>
 
@@ -448,40 +448,37 @@ const CavGuideScreen = () => {
                       {build.heroData.map((hero) => (
                         <div
                           key={hero.id}
-                          className="group bg-gray-800/60 backdrop-blur-sm rounded-2xl border border-gray-600 p-6 hover:bg-gray-700/80 hover:shadow-xl transition-all duration-500"
+                          className="group bg-black/40 backdrop-blur-sm rounded-2xl border-2 border-white/20 p-6 hover:border-white/40 hover:bg-black/60 hover:shadow-2xl transition-all duration-500"
                         >
                           <div className="flex flex-col lg:flex-row gap-6">
                             {/* Hero Info */}
                             <div className="flex-1">
-                              <div className="flex items-center gap-4 mb-4">
-                                <span className="text-3xl font-zentry font-black text-violet-600">
+                              <div className="flex items-center gap-4 mb-4 flex-wrap">
+                                <span className="text-4xl font-zentry font-black text-white">
                                   {hero.position}
                                 </span>
-                                <h4 className="text-xl font-zentry font-black text-black tracking-wide">
+                                <h4 className="text-2xl font-zentry font-black text-white tracking-wide">
                                   {hero.heroes.join(" / ")}
                                 </h4>
-                                <h4 className="text-xl font-zentry font-black text-white tracking-wide">
-                                  {hero.heroes.join(" / ")}
-                                </h4>
-                                <span className="text-blue-300 text-base font-circular-web font-semibold px-4 py-2 bg-blue-900/50 rounded-full border border-blue-700">
+                                <span className="text-white text-sm font-circular-web font-semibold px-4 py-2 bg-white/20 rounded-full border-2 border-white/30">
                                   {hero.speed}
                                 </span>
                               </div>
 
                               <div className="space-y-3">
-                                <div className="flex items-center gap-3 p-3 bg-blue-900/30 rounded-lg border border-blue-700">
-                                  <span className="text-blue-300 font-circular-web font-bold text-sm uppercase tracking-wider">
+                                <div className="flex items-center gap-3 p-4 bg-white/10 rounded-xl border border-white/20 hover:bg-white/15 transition-colors duration-300">
+                                  <span className="text-white font-circular-web font-bold text-sm uppercase tracking-wider">
                                     Pet:
                                   </span>
-                                  <span className="text-blue-100 font-circular-web font-semibold text-base">
+                                  <span className="text-white/90 font-circular-web font-semibold text-base">
                                     {hero.pet}
                                   </span>
                                 </div>
-                                <div className="flex items-center gap-3 p-3 bg-yellow-900/30 rounded-lg border border-yellow-700">
-                                  <span className="text-yellow-300 font-circular-web font-bold text-sm uppercase tracking-wider">
+                                <div className="flex items-center gap-3 p-4 bg-white/10 rounded-xl border border-white/20 hover:bg-white/15 transition-colors duration-300">
+                                  <span className="text-white font-circular-web font-bold text-sm uppercase tracking-wider">
                                     Artifact:
                                   </span>
-                                  <span className="text-yellow-100 font-circular-web font-semibold text-base">
+                                  <span className="text-white/90 font-circular-web font-semibold text-base">
                                     {hero.artifact}
                                   </span>
                                 </div>
@@ -489,11 +486,11 @@ const CavGuideScreen = () => {
 
                               {/* Hero-specific notes */}
                               {hero.notes && (
-                                <div className="mt-4 space-y-2 p-4 bg-gray-800/50 rounded-lg border border-gray-600">
+                                <div className="mt-4 space-y-2 p-4 bg-white/10 rounded-xl border border-white/20">
                                   {hero.notes.map((note, index) => (
                                     <p
                                       key={index}
-                                      className="text-sm text-gray-300 font-circular-web font-medium"
+                                      className="text-sm text-white/80 font-circular-web font-medium leading-relaxed"
                                     >
                                       {note}
                                     </p>
@@ -506,7 +503,7 @@ const CavGuideScreen = () => {
                             <div className="flex gap-4">
                               <div className="text-center">
                                 <div
-                                  className="w-24 h-24 bg-gradient-to-br from-violet-800 to-blue-800 rounded-xl border border-violet-600 flex items-center justify-center cursor-pointer hover:border-violet-400 hover:scale-105 transition-all duration-300 group-hover:shadow-lg"
+                                  className="w-28 h-28 bg-white/10 rounded-xl border-2 border-white/30 flex items-center justify-center cursor-pointer hover:border-white/60 hover:scale-105 transition-all duration-300 group-hover:shadow-2xl overflow-hidden"
                                   onClick={() =>
                                     setSelectedHero({ ...hero, type: "hero" })
                                   }
@@ -526,14 +523,14 @@ const CavGuideScreen = () => {
                                     <GiSwordman className="text-xl text-violet-600" />
                                   </div>
                                 </div>
-                                <span className="text-sm text-white/70 mt-2 block font-circular-web font-semibold">
+                                <span className="text-sm text-white/90 mt-2 block font-circular-web font-bold">
                                   Heroes
                                 </span>
                               </div>
 
                               <div className="text-center">
                                 <div
-                                  className="w-24 h-24 bg-gradient-to-br from-green-800 to-emerald-800 rounded-xl border border-green-600 flex items-center justify-center cursor-pointer hover:border-green-400 hover:scale-105 transition-all duration-300 group-hover:shadow-lg"
+                                  className="w-28 h-28 bg-white/10 rounded-xl border-2 border-white/30 flex items-center justify-center cursor-pointer hover:border-white/60 hover:scale-105 transition-all duration-300 group-hover:shadow-2xl overflow-hidden"
                                   onClick={() =>
                                     setSelectedHero({ ...hero, type: "talent" })
                                   }
@@ -553,7 +550,7 @@ const CavGuideScreen = () => {
                                     <GiTreasureMap className="text-xl text-green-600" />
                                   </div>
                                 </div>
-                                <span className="text-sm text-white/70 mt-2 block font-circular-web font-semibold">
+                                <span className="text-sm text-white/90 mt-2 block font-circular-web font-bold">
                                   Talents
                                 </span>
                               </div>
@@ -569,16 +566,16 @@ const CavGuideScreen = () => {
                         {build.specialNotes.map((note, index) => (
                           <div
                             key={index}
-                            className="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-700 rounded-2xl p-6 backdrop-blur-sm"
+                            className="bg-white/10 border-2 border-white/30 rounded-2xl p-6 backdrop-blur-sm"
                           >
-                            <h4 className="text-xl font-zentry font-black text-yellow-300 mb-4 tracking-wide">
+                            <h4 className="text-2xl font-zentry font-black text-white mb-4 tracking-wide">
                               {note.title}
                             </h4>
                             <div className="space-y-2">
                               {note.content.map((line, lineIndex) => (
                                 <p
                                   key={lineIndex}
-                                  className="text-base text-yellow-100 font-circular-web font-medium leading-relaxed"
+                                  className="text-base text-white/80 font-circular-web font-medium leading-relaxed"
                                 >
                                   {line}
                                 </p>
