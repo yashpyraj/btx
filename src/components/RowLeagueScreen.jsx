@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IoClose, IoArrowBack } from "react-icons/io5";
 import { GiCrown, GiSwordman, GiShield, GiTrophy } from "react-icons/gi";
 import { TiLocationArrow } from "react-icons/ti";
@@ -25,7 +25,7 @@ const RowLeagueScreen = () => {
     // Delay video loading for better performance
     const videoTimer = setTimeout(() => {
       setShouldPlayVideo(true);
-    }, 500);
+    }, 800);
 
     const lenis = new Lenis({
       duration: 1.2,
@@ -33,22 +33,20 @@ const RowLeagueScreen = () => {
       smooth: true,
     });
 
-    let rafId;
     function raf(time) {
       lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
+      requestAnimationFrame(raf);
     }
 
-    rafId = requestAnimationFrame(raf);
+    requestAnimationFrame(raf);
 
     return () => {
       clearTimeout(videoTimer);
-      if (rafId) cancelAnimationFrame(rafId);
       lenis.destroy();
     };
   }, []);
 
-  const teamMembers = useMemo(() => [
+  const teamMembers = [
     {
       id: 1,
       name: "Shiso",
@@ -102,45 +100,30 @@ const RowLeagueScreen = () => {
       description:
         "Versatile support player ensuring team cohesion and battlefield awareness.",
     },
-  ], []);
+  ];
 
   // Additional team members for carousel
-  const allTeamImages = useMemo(() => Array.from({ length: 29 }, (_, i) => ({
+  const allTeamImages = Array.from({ length: 29 }, (_, i) => ({
     src: `/img/row/row${i + 1}.png`,
-    alt: `Row Player ${i + 1}`,
-  })), []);
+    alt: `Row Player ${i + 1}`, // You can later map real names/roles if needed
+  }));
 
-  // Scroll-based transforms for the leader card (memoized)
-  const leaderScale = useMemo(() => useTransform(
+  // Scroll-based transforms for the leader card
+  const leaderScale = useTransform(
     scrollYProgress,
     [0.3, 0.5, 0.7],
     [1, 1.1, 1]
-  ), [scrollYProgress]);
-
-  const leaderY = useMemo(() => useTransform(
-    scrollYProgress,
-    [0.3, 0.5, 0.7],
-    [0, -20, 0]
-  ), [scrollYProgress]);
-
-  const leaderRotate = useMemo(() => useTransform(
+  );
+  const leaderY = useTransform(scrollYProgress, [0.3, 0.5, 0.7], [0, -20, 0]);
+  const leaderRotate = useTransform(
     scrollYProgress,
     [0.3, 0.5, 0.7],
     [0, 2, 0]
-  ), [scrollYProgress]);
+  );
 
-  // Scroll-based transforms for other cards (memoized)
-  const cardScale = useMemo(() => useTransform(
-    scrollYProgress,
-    [0.4, 0.6],
-    [0.95, 1]
-  ), [scrollYProgress]);
-
-  const cardOpacity = useMemo(() => useTransform(
-    scrollYProgress,
-    [0.3, 0.6],
-    [0.7, 1]
-  ), [scrollYProgress]);
+  // Scroll-based transforms for other cards
+  const cardScale = useTransform(scrollYProgress, [0.4, 0.6], [0.95, 1]);
+  const cardOpacity = useTransform(scrollYProgress, [0.3, 0.6], [0.7, 1]);
 
   return (
     <div
@@ -284,7 +267,6 @@ const RowLeagueScreen = () => {
                       src={member.image}
                       alt={member.name}
                       className="w-full h-full object-cover"
-                      loading={index === 0 ? "eager" : "lazy"}
                       whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.5 }}
                       onError={(e) => {
@@ -317,7 +299,7 @@ const RowLeagueScreen = () => {
 
           <CardCarousel
             images={allTeamImages}
-            autoplayDelay={3000}
+            autoplayDelay={2000}
             showPagination={true}
             showNavigation={true}
           />
