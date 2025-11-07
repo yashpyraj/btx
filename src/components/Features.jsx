@@ -236,13 +236,26 @@ const Features = () => {
 
           <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1">
             <BentoCard
-              src="img/niya.png"
+              src="https://images.pexels.com/photos/1568342/pexels-photo-1568342.jpeg"
               title={
                 <>
-                  <b>love area</b>
+                  <b>memories</b>
                 </>
               }
-              description="----"
+              description="Relive epic moments and legendary battles from our journey."
+              isComingSoon
+            />
+          </BentoTilt>
+
+          <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1">
+            <BentoCard
+              src="https://images.pexels.com/photos/1092671/pexels-photo-1092671.jpeg"
+              title={
+                <>
+                  larnak <b>lost GH</b>
+                </>
+              }
+              description="The legendary tale of Larnak's lost glory hall."
               isComingSoon
             />
           </BentoTilt>
