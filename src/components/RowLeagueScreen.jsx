@@ -313,12 +313,8 @@ const RowLeagueScreen = () => {
         <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
           <AnimatedTitle
             title="Think you have <b>what it takes</b>?"
-            containerClass="mb-8 !text-white"
+            containerClass="mb-12 !text-white"
           />
-
-          <p className="text-xl font-circular-web text-white/80 mb-12 max-w-2xl mx-auto">
-            Join our ranks and prove your worth in the arena. Compete with the best and rise through the ranks.
-          </p>
 
           <div className="flex flex-wrap justify-center gap-6">
             <Button
