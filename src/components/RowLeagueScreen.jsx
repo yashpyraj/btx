@@ -312,13 +312,12 @@ const RowLeagueScreen = () => {
 
         <div className="relative z-10 max-w-4xl mx-auto text-center px-4">
           <AnimatedTitle
-            title="Ready to <b>join</b> the <br /> <b>battle</b>?"
+            title="Think you have <b>what it takes</b>?"
             containerClass="mb-8 !text-white"
           />
 
           <p className="text-xl font-circular-web text-white/80 mb-12 max-w-2xl mx-auto">
-            Think you have what it takes to compete with the best? Join our
-            ranks and prove your worth in the arena.
+            Join our ranks and prove your worth in the arena. Compete with the best and rise through the ranks.
           </p>
 
           <div className="flex flex-wrap justify-center gap-6">
@@ -326,11 +325,6 @@ const RowLeagueScreen = () => {
               title="Join us"
               rightIcon={<TiLocationArrow />}
               containerClass="bg-violet-500 hover:bg-violet-600 text-white"
-            />
-            <Button
-              title="View Leaderboard"
-              rightIcon={<TiLocationArrow />}
-              containerClass="bg-transparent border border-white/30 hover:bg-white/10 text-white"
             />
           </div>
         </div>
