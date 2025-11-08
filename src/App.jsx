@@ -11,6 +11,7 @@ import RowLeagueScreen from "./components/RowLeagueScreen";
 import PetGuideScreen from "./components/PetGuideScreen";
 import BTXTeamsScreen from "./components/BTXTeamsScreen";
 import MemoriesScreen from "./components/MemoriesScreen";
+import HierarchyTree from "./components/HierarchyTree";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
       <Route path="/pet-guide" element={<PetGuideScreen />} />
       <Route path="/btx-teams" element={<BTXTeamsScreen />} />
       <Route path="/memories" element={<MemoriesScreen />} />
+      <Route path="/hierarchy" element={<HierarchyTree />} />
     </Routes>
   );
 }
