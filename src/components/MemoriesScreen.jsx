@@ -137,26 +137,26 @@ const MemoriesScreen = () => {
       {/* Memories Grid */}
       <section className="py-16 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {memories.map((memory) => (
               <div
                 key={memory.id}
-                className="group relative bg-gradient-to-br from-white/5 to-white/10 rounded-2xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-violet-500/20"
+                className="group relative bg-gradient-to-br from-white/10 to-white/5 rounded-3xl overflow-hidden border-2 border-white/20 hover:border-violet-400/50 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-violet-500/30"
               >
                 {/* Image */}
-                <div className="relative h-64 overflow-hidden">
+                <div className="relative h-80 overflow-hidden">
                   <img
                     src={memory.image}
                     alt={memory.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
 
                   {/* Coming Soon Overlay */}
                   {memory.isComingSoon && (
-                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center">
                       <div className="text-center">
-                        <div className="bg-yellow-400/20 border-2 border-yellow-400 text-yellow-400 text-lg font-zentry font-bold px-6 py-3 rounded-full">
+                        <div className="bg-yellow-400/30 border-3 border-yellow-400 text-yellow-400 text-2xl font-zentry font-black px-8 py-4 rounded-full shadow-xl">
                           COMING SOON
                         </div>
                       </div>
@@ -165,7 +165,7 @@ const MemoriesScreen = () => {
 
                   {/* Type Badge */}
                   {!memory.isComingSoon && (
-                    <div className="absolute top-4 left-4 bg-violet-600/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold">
+                    <div className="absolute top-6 left-6 bg-violet-600 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-bold text-white shadow-lg">
                       {memory.type}
                     </div>
                   )}
@@ -174,34 +174,34 @@ const MemoriesScreen = () => {
                   {!memory.isComingSoon && (
                     <button
                       onClick={() => toggleLike(memory.id)}
-                      className="absolute top-4 right-4 p-2 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-all duration-300 hover:scale-110"
+                      className="absolute top-6 right-6 p-3 bg-black/60 backdrop-blur-sm rounded-full hover:bg-black/80 transition-all duration-300 hover:scale-110 shadow-lg"
                     >
                       {likedMemories.has(memory.id) ? (
-                        <IoHeart className="text-red-500 text-xl" />
+                        <IoHeart className="text-red-500 text-2xl" />
                       ) : (
-                        <IoHeartOutline className="text-white text-xl" />
+                        <IoHeartOutline className="text-white text-2xl" />
                       )}
                     </button>
                   )}
                 </div>
 
                 {/* Content */}
-                <div className="p-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-zentry font-bold text-white">
+                <div className="p-7">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-2xl font-zentry font-black text-white">
                       {memory.title}
                     </h3>
                   </div>
 
-                  <p className="text-sm text-white/60 font-circular-web mb-4 line-clamp-3">
+                  <p className="text-base text-white/80 font-circular-web mb-5 leading-relaxed">
                     {memory.description}
                   </p>
 
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-violet-400 font-semibold">{memory.date}</span>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-violet-400 font-bold text-base">{memory.date}</span>
                     {likedMemories.has(memory.id) && (
-                      <span className="text-red-400 font-semibold flex items-center gap-1">
-                        <IoHeart /> Liked
+                      <span className="text-red-400 font-bold flex items-center gap-2 text-base">
+                        <IoHeart className="text-xl" /> Liked
                       </span>
                     )}
                   </div>
