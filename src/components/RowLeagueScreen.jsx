@@ -103,6 +103,19 @@ const RowLeagueScreen = () => {
       description:
         "Versatile support player ensuring team cohesion and battlefield awareness.",
     },
+    {
+      id: 5,
+      name: "Ikka",
+      role: "Combat Specialist",
+      image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg",
+      stats: {
+        wins: 82,
+        kdr: "3.0",
+        rank: "Master",
+      },
+      description:
+        "Fierce combatant with exceptional battlefield instincts and tactical execution.",
+    },
   ];
 
   // Additional team members for carousel
@@ -212,7 +225,7 @@ const RowLeagueScreen = () => {
             containerClass="mb-16 !text-black text-center"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {teamMembers.map((member, index) => {
               const isLeader = member.isLeader;
 
