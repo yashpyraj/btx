@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { IoClose, IoArrowBack } from "react-icons/io5";
-import { GiCrown, GiSwordman, GiShield, GiTrophy } from "react-icons/gi";
+import { GiCrown } from "react-icons/gi";
 import { TiLocationArrow } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import Lenis from "lenis";
 import AnimatedTitle from "./AnimatedTitle";
 import Button from "./Button";
@@ -17,22 +17,19 @@ const RowLeagueScreen = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
 
   // Initialize smooth scrolling
   useEffect(() => {
     // Delay video loading for better performance
     const videoTimer = setTimeout(() => {
       setShouldPlayVideo(true);
-    }, 800);
+    }, 500);
 
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 0.8,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smooth: true,
+      smoothTouch: false,
     });
 
     function raf(time) {
@@ -124,22 +121,6 @@ const RowLeagueScreen = () => {
     alt: `Row Player ${i + 1}`, // You can later map real names/roles if needed
   }));
 
-  // Scroll-based transforms for the leader card
-  const leaderScale = useTransform(
-    scrollYProgress,
-    [0.3, 0.5, 0.7],
-    [1, 1.1, 1]
-  );
-  const leaderY = useTransform(scrollYProgress, [0.3, 0.5, 0.7], [0, -20, 0]);
-  const leaderRotate = useTransform(
-    scrollYProgress,
-    [0.3, 0.5, 0.7],
-    [0, 2, 0]
-  );
-
-  // Scroll-based transforms for other cards
-  const cardScale = useTransform(scrollYProgress, [0.4, 0.6], [0.95, 1]);
-  const cardOpacity = useTransform(scrollYProgress, [0.3, 0.6], [0.7, 1]);
 
   return (
     <div
@@ -226,81 +207,54 @@ const RowLeagueScreen = () => {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-            {teamMembers.map((member, index) => {
-              const isLeader = member.isLeader;
-
-              return (
-                <motion.div
-                  key={member.id}
-                  className="group relative bg-black rounded-3xl overflow-hidden cursor-pointer"
-                  style={
-                    isLeader
-                      ? {
-                          scale: leaderScale,
-                          y: leaderY,
-                          rotate: leaderRotate,
-                        }
-                      : {
-                          scale: cardScale,
-                          opacity: cardOpacity,
-                        }
-                  }
-                  whileHover={{
-                    scale: isLeader ? 1.15 : 1.05,
-                    transition: { duration: 0.3 },
-                  }}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                    transition: {
-                      duration: 0.6,
-                      delay: index * 0.1,
-                    },
-                  }}
-                  viewport={{ once: true }}
-                >
-                  {member.isLeader && (
-                    <motion.div
-                      className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-zentry font-black"
-                      animate={{
-                        scale: [1, 1.1, 1],
-                        rotate: [0, 5, -5, 0],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                      }}
-                    >
-                      <GiCrown className="text-sm" />
-                      CAPTAIN
-                    </motion.div>
-                  )}
-
-                  <div className="aspect-[3/4] overflow-hidden">
-                    <motion.img
-                      src={member.image}
-                      alt={member.name}
-                      className="w-full h-full object-cover"
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.5 }}
-                      onError={(e) => {
-                        e.target.src = "/img/placeholder.webp";
-                      }}
-                    />
+            {teamMembers.map((member, index) => (
+              <motion.div
+                key={member.id}
+                className="group relative bg-black rounded-3xl overflow-hidden cursor-pointer transform-gpu will-change-transform"
+                whileHover={{
+                  scale: 1.05,
+                  transition: { duration: 0.2, ease: "easeOut" },
+                }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  transition: {
+                    duration: 0.4,
+                    delay: index * 0.05,
+                    ease: "easeOut",
+                  },
+                }}
+                viewport={{ once: true, margin: "-50px" }}
+              >
+                {member.isLeader && (
+                  <div className="absolute top-4 right-4 z-20 flex items-center gap-2 bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-zentry font-black">
+                    <GiCrown className="text-sm" />
+                    CAPTAIN
                   </div>
+                )}
 
-                  <div className="p-6 text-white">
-                    <h3 className="text-2xl font-zentry font-black mb-2">
-                      {member.name}
-                    </h3>
-                  </div>
+                <div className="aspect-[3/4] overflow-hidden">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-110"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.target.src = "/img/placeholder.webp";
+                    }}
+                  />
+                </div>
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </motion.div>
-              );
-            })}
+                <div className="p-6 text-white">
+                  <h3 className="text-2xl font-zentry font-black mb-2">
+                    {member.name}
+                  </h3>
+                </div>
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
