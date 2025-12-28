@@ -420,6 +420,16 @@ const HRPanel = () => {
     return warnings[0];
   };
 
+  const getLastWarningsByPlayer = () => {
+    const playerWarnings = {};
+    warnings.forEach((warning) => {
+      if (!playerWarnings[warning.player_name]) {
+        playerWarnings[warning.player_name] = warning;
+      }
+    });
+    return Object.values(playerWarnings);
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-6">
@@ -513,6 +523,7 @@ const HRPanel = () => {
   }
 
   const lastWarning = getLastWarning();
+  const lastWarningsByPlayer = getLastWarningsByPlayer();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
@@ -614,6 +625,41 @@ const HRPanel = () => {
             </div>
           </div>
         </div>
+
+        {lastWarningsByPlayer.length > 0 && (
+          <div className="mb-8">
+            <h3 className="text-xl font-zentry font-black mb-4 flex items-center gap-2">
+              <IoAlertCircle className="text-orange-400" />
+              Last Warnings by Player
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {lastWarningsByPlayer.map((warning) => (
+                <div
+                  key={warning.id}
+                  className="bg-white/5 rounded-xl p-4 border border-white/10 hover:bg-white/10 transition-colors"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center font-bold shrink-0">
+                      {warning.player_name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold truncate">{warning.player_name}</span>
+                        {getWarningBadge(warning.warning_type)}
+                      </div>
+                      <p className="text-sm text-white/60 truncate">{warning.reason}</p>
+                      <div className="flex items-center gap-2 mt-2 text-xs text-white/40">
+                        <IoCalendar />
+                        <span>{formatDate(warning.warning_date)}</span>
+                        <span>by {warning.issued_by}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex gap-4 mb-6">
           <button
