@@ -58,6 +58,7 @@ const HRPanel = () => {
   });
   const [warningFormData, setWarningFormData] = useState({
     player_name: "",
+    player_id: "",
     warning_type: "verbal",
     warning_date: new Date().toISOString().split("T")[0],
     reason: "",
@@ -214,6 +215,7 @@ const HRPanel = () => {
   const resetWarningForm = () => {
     setWarningFormData({
       player_name: "",
+      player_id: "",
       warning_type: "verbal",
       warning_date: new Date().toISOString().split("T")[0],
       reason: "",
@@ -240,6 +242,7 @@ const HRPanel = () => {
     setEditingWarning(warning);
     setWarningFormData({
       player_name: warning.player_name,
+      player_id: warning.player_id || "",
       warning_type: warning.warning_type,
       warning_date: warning.warning_date,
       reason: warning.reason,
@@ -645,6 +648,11 @@ const HRPanel = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-semibold truncate">{warning.player_name}</span>
+                        {warning.player_id && (
+                          <span className="text-xs text-white/40 bg-white/10 px-2 py-0.5 rounded">
+                            ID: {warning.player_id}
+                          </span>
+                        )}
                         {getWarningBadge(warning.warning_type)}
                       </div>
                       <p className="text-sm text-white/60 truncate">{warning.reason}</p>
@@ -824,7 +832,12 @@ const HRPanel = () => {
                               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center font-bold">
                                 {warning.player_name.charAt(0).toUpperCase()}
                               </div>
-                              <span className="font-semibold">{warning.player_name}</span>
+                              <div>
+                                <span className="font-semibold block">{warning.player_name}</span>
+                                {warning.player_id && (
+                                  <span className="text-xs text-white/40">ID: {warning.player_id}</span>
+                                )}
+                              </div>
                             </div>
                           </td>
                           <td className="p-4">{getWarningBadge(warning.warning_type)}</td>
@@ -1044,18 +1057,33 @@ const HRPanel = () => {
 
               <form onSubmit={editingWarning ? handleUpdateWarning : handleAddWarning}>
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm text-white/60 mb-2">Player Name *</label>
-                    <input
-                      type="text"
-                      value={warningFormData.player_name}
-                      onChange={(e) =>
-                        setWarningFormData({ ...warningFormData, player_name: e.target.value })
-                      }
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:border-orange-400 focus:outline-none transition-colors"
-                      placeholder="Enter player name"
-                      required
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-white/60 mb-2">Player Name *</label>
+                      <input
+                        type="text"
+                        value={warningFormData.player_name}
+                        onChange={(e) =>
+                          setWarningFormData({ ...warningFormData, player_name: e.target.value })
+                        }
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:border-orange-400 focus:outline-none transition-colors"
+                        placeholder="Enter player name"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm text-white/60 mb-2">Player ID</label>
+                      <input
+                        type="text"
+                        value={warningFormData.player_id}
+                        onChange={(e) =>
+                          setWarningFormData({ ...warningFormData, player_id: e.target.value })
+                        }
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:border-orange-400 focus:outline-none transition-colors"
+                        placeholder="Enter player ID"
+                      />
+                    </div>
                   </div>
 
                   <div>
