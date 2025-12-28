@@ -248,6 +248,20 @@ const Features = () => {
             />
           </BentoTilt>
 
+          <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1">
+            <BentoCard
+              src="https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg"
+              title={
+                <>
+                  <b>HR panel</b>
+                </>
+              }
+              description="Track player activity, absences, and notes. PIN protected for HR team access."
+              ctaText="open panel"
+              onClick={() => navigate("/hr-panel")}
+            />
+          </BentoTilt>
+
           {/* <BentoTilt className="bento-tilt_2">
           <div className="flex size-full flex-col justify-between bg-violet-300 p-5">
             <h1 className="bento-title special-font max-w-64 text-black">
