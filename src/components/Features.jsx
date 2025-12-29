@@ -172,7 +172,7 @@ const Features = () => {
           />
         </BentoTilt>
 
-        <div className="grid h-[135vh] w-full grid-cols-2 grid-rows-3 gap-7">
+        <div className="grid h-[180vh] w-full grid-cols-2 grid-rows-4 gap-7">
           <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1 md:row-span-1">
             <BentoCard
               src="img/emry.png"
@@ -259,6 +259,20 @@ const Features = () => {
               description="Track player activity, absences, and notes. PIN protected for HR team access."
               ctaText="open panel"
               onClick={() => navigate("/hr-panel")}
+            />
+          </BentoTilt>
+
+          <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1">
+            <BentoCard
+              src="https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg"
+              title={
+                <>
+                  <b>planning</b>
+                </>
+              }
+              description="Coordinate alliance events, KvK schedules, and strategic planning with the team calendar."
+              ctaText="view calendar"
+              onClick={() => navigate("/planning")}
             />
           </BentoTilt>
 
