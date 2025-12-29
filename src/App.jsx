@@ -13,6 +13,8 @@ import BTXTeamsScreen from "./components/BTXTeamsScreen";
 import MemoriesScreen from "./components/MemoriesScreen";
 import HierarchyTree from "./components/HierarchyTree";
 import HRPanel from "./components/HRPanel";
+import PlanningScreen from "./components/PlanningScreen";
+import PlanningAdmin from "./components/PlanningAdmin";
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
       <Route path="/memories" element={<MemoriesScreen />} />
       <Route path="/hierarchy" element={<HierarchyTree />} />
       <Route path="/hr-panel" element={<HRPanel />} />
+      <Route path="/planning" element={<PlanningScreen />} />
+      <Route path="/planning-admin" element={<PlanningAdmin />} />
     </Routes>
   );
 }
