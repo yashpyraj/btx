@@ -37,6 +37,7 @@ const PlanningAdmin = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [formData, setFormData] = useState({
     title: "",
@@ -95,6 +96,7 @@ const PlanningAdmin = () => {
       location: "",
     });
     setEditingEvent(null);
+    setErrorMessage("");
   };
 
   const openCreateModal = () => {
@@ -124,6 +126,7 @@ const PlanningAdmin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
 
     const startDateTime = formData.all_day
       ? `${formData.start_date}T00:00:00`
@@ -154,19 +157,25 @@ const PlanningAdmin = () => {
         .update(eventData)
         .eq("id", editingEvent.id);
 
-      if (!error) {
-        fetchEvents();
-        setShowModal(false);
-        resetForm();
+      if (error) {
+        setErrorMessage(`Failed to update event: ${error.message}`);
+        return;
       }
+
+      fetchEvents();
+      setShowModal(false);
+      resetForm();
     } else {
       const { error } = await supabase.from("calendar_events").insert([eventData]);
 
-      if (!error) {
-        fetchEvents();
-        setShowModal(false);
-        resetForm();
+      if (error) {
+        setErrorMessage(`Failed to create event: ${error.message}`);
+        return;
       }
+
+      fetchEvents();
+      setShowModal(false);
+      resetForm();
     }
   };
 
@@ -488,6 +497,12 @@ const PlanningAdmin = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              {errorMessage && (
+                <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-red-400 text-sm">
+                  {errorMessage}
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm text-white/60 mb-2">Event Title *</label>
                 <input
