@@ -49,7 +49,7 @@ const RowLeagueScreen = () => {
     {
       id: 1,
       name: "Shiso",
-      role: "Team Captain",
+      role: "Elite Warrior",
       image: "/img/shiso.png",
       stats: {
         wins: 127,
@@ -58,12 +58,11 @@ const RowLeagueScreen = () => {
       },
       description:
         "Strategic mastermind leading the charge with unmatched tactical prowess.",
-      isLeader: true,
     },
     {
       id: 2,
       name: "Esvipe",
-      role: "Team Captain",
+      role: "Elite Warrior",
       image: "/img/esvipe.png",
       stats: {
         wins: 98,
@@ -72,7 +71,6 @@ const RowLeagueScreen = () => {
       },
       description:
         "Elite warrior specializing in high-impact combat scenarios and battlefield control.",
-      isLeader: true,
     },
     {
       id: 3,
@@ -103,7 +101,7 @@ const RowLeagueScreen = () => {
     {
       id: 5,
       name: "Ikka",
-      role: "Combat Specialist",
+      role: "Team Captain",
       image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg",
       stats: {
         wins: 82,
@@ -112,6 +110,7 @@ const RowLeagueScreen = () => {
       },
       description:
         "Fierce combatant with exceptional battlefield instincts and tactical execution.",
+      isLeader: true,
     },
   ];
 
