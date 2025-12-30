@@ -32,6 +32,7 @@ const WARNING_TYPES = [
   { value: "written", label: "Written", color: "bg-orange-500" },
   { value: "final", label: "Final", color: "bg-red-500" },
   { value: "not_performing", label: "Not Performing", color: "bg-blue-500" },
+  { value: "mob", label: "MOB", color: "bg-purple-500" },
 ];
 
 const HRPanel = () => {
