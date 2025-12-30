@@ -1,38 +1,48 @@
 import gsap from "gsap";
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 
 import Button from "./Button";
 import AnimatedTitle from "./AnimatedTitle";
 
 const FloatingImage = () => {
   const frameRef = useRef(null);
+  const rafId = useRef(null);
 
-  const handleMouseMove = (e) => {
-    const { clientX, clientY } = e;
-    const element = frameRef.current;
+  const handleMouseMove = useCallback((e) => {
+    if (rafId.current) return;
 
-    if (!element) return;
+    rafId.current = requestAnimationFrame(() => {
+      const { clientX, clientY } = e;
+      const element = frameRef.current;
 
-    const rect = element.getBoundingClientRect();
-    const xPos = clientX - rect.left;
-    const yPos = clientY - rect.top;
+      if (!element) {
+        rafId.current = null;
+        return;
+      }
 
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
+      const rect = element.getBoundingClientRect();
+      const xPos = clientX - rect.left;
+      const yPos = clientY - rect.top;
 
-    const rotateX = ((yPos - centerY) / centerY) * -10;
-    const rotateY = ((xPos - centerX) / centerX) * 10;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
 
-    gsap.to(element, {
-      duration: 0.3,
-      rotateX,
-      rotateY,
-      transformPerspective: 500,
-      ease: "power1.inOut",
+      const rotateX = ((yPos - centerY) / centerY) * -10;
+      const rotateY = ((xPos - centerX) / centerX) * 10;
+
+      gsap.to(element, {
+        duration: 0.3,
+        rotateX,
+        rotateY,
+        transformPerspective: 500,
+        ease: "power1.inOut",
+      });
+
+      rafId.current = null;
     });
-  };
+  }, []);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     const element = frameRef.current;
 
     if (element) {
@@ -43,7 +53,7 @@ const FloatingImage = () => {
         ease: "power1.inOut",
       });
     }
-  };
+  }, []);
 
   return (
     <div id="story" className="min-h-dvh w-screen bg-black text-blue-50">

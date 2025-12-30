@@ -1,9 +1,30 @@
 import { gsap } from "gsap";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, memo } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import clsx from "clsx";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const parseWord = (word) => {
+  const boldRegex = /<b>(.*?)<\/b>/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = boldRegex.exec(word)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(word.slice(lastIndex, match.index));
+    }
+    parts.push(<b key={match.index}>{match[1]}</b>);
+    lastIndex = boldRegex.lastIndex;
+  }
+
+  if (lastIndex < word.length) {
+    parts.push(word.slice(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : word;
+};
 
 const AnimatedTitle = ({ title, containerClass }) => {
   const containerRef = useRef(null);
@@ -31,7 +52,7 @@ const AnimatedTitle = ({ title, containerClass }) => {
       );
     }, containerRef);
 
-    return () => ctx.revert(); // Clean up on unmount
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -42,11 +63,9 @@ const AnimatedTitle = ({ title, containerClass }) => {
           className="flex-center max-w-full flex-wrap gap-2 px-10 md:gap-3"
         >
           {line.split(" ").map((word, idx) => (
-            <span
-              key={idx}
-              className="animated-word"
-              dangerouslySetInnerHTML={{ __html: word }}
-            />
+            <span key={idx} className="animated-word">
+              {parseWord(word)}
+            </span>
           ))}
         </div>
       ))}

@@ -1,20 +1,30 @@
 import { Routes, Route } from "react-router-dom";
-import About from "./components/About";
+import { lazy, Suspense } from "react";
 import Hero from "./components/Hero";
 import NavBar from "./components/Navbar";
 import Features from "./components/Features";
-import Story from "./components/Story";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
-import CavGuideScreen from "./components/CavGuideScreen";
-import RowLeagueScreen from "./components/RowLeagueScreen";
-import PetGuideScreen from "./components/PetGuideScreen";
-import BTXTeamsScreen from "./components/BTXTeamsScreen";
-import MemoriesScreen from "./components/MemoriesScreen";
-import HierarchyTree from "./components/HierarchyTree";
-import HRPanel from "./components/HRPanel";
-import PlanningScreen from "./components/PlanningScreen";
-import PlanningAdmin from "./components/PlanningAdmin";
+
+const CavGuideScreen = lazy(() => import("./components/CavGuideScreen"));
+const RowLeagueScreen = lazy(() => import("./components/RowLeagueScreen"));
+const PetGuideScreen = lazy(() => import("./components/PetGuideScreen"));
+const BTXTeamsScreen = lazy(() => import("./components/BTXTeamsScreen"));
+const MemoriesScreen = lazy(() => import("./components/MemoriesScreen"));
+const HierarchyTree = lazy(() => import("./components/HierarchyTree"));
+const HRPanel = lazy(() => import("./components/HRPanel"));
+const PlanningScreen = lazy(() => import("./components/PlanningScreen"));
+const PlanningAdmin = lazy(() => import("./components/PlanningAdmin"));
+
+const LoadingFallback = () => (
+  <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+    <div className="three-body">
+      <div className="three-body__dot"></div>
+      <div className="three-body__dot"></div>
+      <div className="three-body__dot"></div>
+    </div>
+  </div>
+);
 
 function App() {
   return (
@@ -31,15 +41,78 @@ function App() {
           </main>
         }
       />
-      <Route path="/cav-guide" element={<CavGuideScreen />} />
-      <Route path="/row-league" element={<RowLeagueScreen />} />
-      <Route path="/pet-guide" element={<PetGuideScreen />} />
-      <Route path="/btx-teams" element={<BTXTeamsScreen />} />
-      <Route path="/memories" element={<MemoriesScreen />} />
-      <Route path="/hierarchy" element={<HierarchyTree />} />
-      <Route path="/hr-panel" element={<HRPanel />} />
-      <Route path="/planning" element={<PlanningScreen />} />
-      <Route path="/planning-admin" element={<PlanningAdmin />} />
+      <Route
+        path="/cav-guide"
+        element={
+          <Suspense fallback={<LoadingFallback />}>
+            <CavGuideScreen />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/row-league"
+        element={
+          <Suspense fallback={<LoadingFallback />}>
+            <RowLeagueScreen />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/pet-guide"
+        element={
+          <Suspense fallback={<LoadingFallback />}>
+            <PetGuideScreen />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/btx-teams"
+        element={
+          <Suspense fallback={<LoadingFallback />}>
+            <BTXTeamsScreen />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/memories"
+        element={
+          <Suspense fallback={<LoadingFallback />}>
+            <MemoriesScreen />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/hierarchy"
+        element={
+          <Suspense fallback={<LoadingFallback />}>
+            <HierarchyTree />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/hr-panel"
+        element={
+          <Suspense fallback={<LoadingFallback />}>
+            <HRPanel />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/planning"
+        element={
+          <Suspense fallback={<LoadingFallback />}>
+            <PlanningScreen />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/planning-admin"
+        element={
+          <Suspense fallback={<LoadingFallback />}>
+            <PlanningAdmin />
+          </Suspense>
+        }
+      />
     </Routes>
   );
 }

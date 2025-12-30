@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-import html2canvas from "html2canvas";
 import {
   ChevronLeft,
   ChevronRight,
@@ -147,6 +146,7 @@ const PlanningScreen = () => {
 
   const takeScreenshot = async () => {
     if (calendarRef.current) {
+      const html2canvas = (await import("html2canvas")).default;
       const canvas = await html2canvas(calendarRef.current, {
         backgroundColor: "#0f172a",
         scale: 2,

@@ -1,12 +1,12 @@
-import { useState, useRef } from "react";
+import { useState, useRef, memo, useCallback, useMemo } from "react";
 import { TiLocationArrow } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
 
-export const BentoTilt = ({ children, className = "" }) => {
+export const BentoTilt = memo(({ children, className = "" }) => {
   const [transformStyle, setTransformStyle] = useState("");
   const itemRef = useRef(null);
 
-  const handleMouseMove = (event) => {
+  const handleMouseMove = useCallback((event) => {
     if (!itemRef.current) return;
 
     const { left, top, width, height } =
@@ -20,11 +20,11 @@ export const BentoTilt = ({ children, className = "" }) => {
 
     const newTransform = `perspective(700px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(.95, .95, .95)`;
     setTransformStyle(newTransform);
-  };
+  }, []);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     setTransformStyle("");
-  };
+  }, []);
 
   return (
     <div
@@ -37,9 +37,9 @@ export const BentoTilt = ({ children, className = "" }) => {
       {children}
     </div>
   );
-};
+});
 
-export const BentoCard = ({
+export const BentoCard = memo(({
   src,
   title,
   description,
@@ -53,20 +53,28 @@ export const BentoCard = ({
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [hoverOpacity, setHoverOpacity] = useState(0);
   const hoverButtonRef = useRef(null);
+  const rafId = useRef(null);
 
-  // Detect media type (fallback to override if provided)
-  const isVideo =
+  const isVideo = useMemo(() =>
     mediaType === "video"
       ? true
       : mediaType === "image"
         ? false
-        : /\.(mp4|webm|ogg)$/i.test(src);
+        : /\.(mp4|webm|ogg)$/i.test(src),
+    [src, mediaType]
+  );
 
-  const handleMouseMove = (e) => {
-    if (!hoverButtonRef.current) return;
-    const rect = hoverButtonRef.current.getBoundingClientRect();
-    setCursorPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  };
+  const handleMouseMove = useCallback((e) => {
+    if (!hoverButtonRef.current || rafId.current) return;
+
+    rafId.current = requestAnimationFrame(() => {
+      if (hoverButtonRef.current) {
+        const rect = hoverButtonRef.current.getBoundingClientRect();
+        setCursorPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+      }
+      rafId.current = null;
+    });
+  }, []);
 
   return (
     <div className="relative size-full" onClick={onClick}>
@@ -150,7 +158,7 @@ export const BentoCard = ({
       </div>
     </div>
   );
-};
+});
 
 const Features = () => {
   const navigate = useNavigate();
