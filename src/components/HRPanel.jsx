@@ -15,6 +15,7 @@ import {
   IoChevronBack,
   IoChevronForward,
   IoAlertCircle,
+  IoDocumentText,
 } from "react-icons/io5";
 import { supabase } from "../lib/supabase";
 
@@ -35,6 +36,14 @@ const WARNING_TYPES = [
   { value: "mob", label: "MOB", color: "bg-purple-500" },
 ];
 
+const NOTE_CATEGORIES = [
+  { value: "general", label: "General", color: "bg-slate-500" },
+  { value: "performance", label: "Performance", color: "bg-blue-500" },
+  { value: "behavior", label: "Behavior", color: "bg-orange-500" },
+  { value: "positive", label: "Positive", color: "bg-green-500" },
+  { value: "concern", label: "Concern", color: "bg-red-500" },
+];
+
 const HRPanel = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -42,13 +51,16 @@ const HRPanel = () => {
   const [pinError, setPinError] = useState(false);
   const [records, setRecords] = useState([]);
   const [warnings, setWarnings] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("activity");
   const [showAddForm, setShowAddForm] = useState(false);
   const [showWarningForm, setShowWarningForm] = useState(false);
+  const [showNoteForm, setShowNoteForm] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
   const [editingWarning, setEditingWarning] = useState(null);
+  const [editingNote, setEditingNote] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [formData, setFormData] = useState({
     player_name: "",
@@ -68,11 +80,19 @@ const HRPanel = () => {
     notes: "",
     issued_by: "",
   });
+  const [noteFormData, setNoteFormData] = useState({
+    player_name: "",
+    player_id: "",
+    note: "",
+    category: "general",
+    added_by: "",
+  });
 
   useEffect(() => {
     if (isAuthenticated) {
       fetchRecords();
       fetchWarnings();
+      fetchNotes();
       fetchCalendarEvents();
     }
   }, [isAuthenticated]);
@@ -98,6 +118,17 @@ const HRPanel = () => {
 
     if (!error && data) {
       setWarnings(data);
+    }
+  };
+
+  const fetchNotes = async () => {
+    const { data, error } = await supabase
+      .from("hr_player_notes")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setNotes(data);
     }
   };
 
@@ -215,6 +246,49 @@ const HRPanel = () => {
     }
   };
 
+  const handleAddNote = async (e) => {
+    e.preventDefault();
+    if (!noteFormData.player_name || !noteFormData.note || !noteFormData.added_by) return;
+
+    const { error } = await supabase.from("hr_player_notes").insert([noteFormData]);
+
+    if (!error) {
+      fetchNotes();
+      setShowNoteForm(false);
+      resetNoteForm();
+    }
+  };
+
+  const handleUpdateNote = async (e) => {
+    e.preventDefault();
+    if (!editingNote) return;
+
+    const { error } = await supabase
+      .from("hr_player_notes")
+      .update({
+        ...noteFormData,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", editingNote.id);
+
+    if (!error) {
+      fetchNotes();
+      setEditingNote(null);
+      setShowNoteForm(false);
+      resetNoteForm();
+    }
+  };
+
+  const handleDeleteNote = async (id) => {
+    if (!confirm("Are you sure you want to delete this note?")) return;
+
+    const { error } = await supabase.from("hr_player_notes").delete().eq("id", id);
+
+    if (!error) {
+      fetchNotes();
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       player_name: "",
@@ -236,6 +310,16 @@ const HRPanel = () => {
       reason: "",
       notes: "",
       issued_by: "",
+    });
+  };
+
+  const resetNoteForm = () => {
+    setNoteFormData({
+      player_name: "",
+      player_id: "",
+      note: "",
+      category: "general",
+      added_by: "",
     });
   };
 
@@ -267,6 +351,18 @@ const HRPanel = () => {
     setShowWarningForm(true);
   };
 
+  const startEditNote = (note) => {
+    setEditingNote(note);
+    setNoteFormData({
+      player_name: note.player_name,
+      player_id: note.player_id || "",
+      note: note.note,
+      category: note.category,
+      added_by: note.added_by,
+    });
+    setShowNoteForm(true);
+  };
+
   const getStatusBadge = (status) => {
     const statusOption = STATUS_OPTIONS.find((s) => s.value === status);
     return (
@@ -287,6 +383,28 @@ const HRPanel = () => {
         {warningType?.label || type}
       </span>
     );
+  };
+
+  const getNoteBadge = (category) => {
+    const noteCategory = NOTE_CATEGORIES.find((c) => c.value === category);
+    return (
+      <span
+        className={`${noteCategory?.color || "bg-gray-500"} px-3 py-1 rounded-full text-xs font-bold text-white`}
+      >
+        {noteCategory?.label || category}
+      </span>
+    );
+  };
+
+  const getNotesByPlayer = () => {
+    const playerNotes = {};
+    notes.forEach((note) => {
+      if (!playerNotes[note.player_name]) {
+        playerNotes[note.player_name] = [];
+      }
+      playerNotes[note.player_name].push(note);
+    });
+    return playerNotes;
   };
 
   const formatDate = (dateStr) => {
@@ -737,6 +855,16 @@ const HRPanel = () => {
           >
             Warnings
           </button>
+          <button
+            onClick={() => setActiveTab("notes")}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+              activeTab === "notes"
+                ? "bg-slate-500 text-white"
+                : "bg-white/5 text-white/60 hover:bg-white/10"
+            }`}
+          >
+            Player Notes
+          </button>
         </div>
 
         {activeTab === "activity" && (
@@ -919,6 +1047,79 @@ const HRPanel = () => {
                     </tbody>
                   </table>
                 </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {activeTab === "notes" && (
+          <>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-zentry font-black">Player Notes</h2>
+              <button
+                onClick={() => {
+                  setShowNoteForm(true);
+                  setEditingNote(null);
+                  resetNoteForm();
+                }}
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-slate-500 to-slate-600 rounded-xl font-bold hover:shadow-lg hover:shadow-slate-500/30 transition-all"
+              >
+                <IoAdd className="text-xl" />
+                Add Note
+              </button>
+            </div>
+
+            {notes.length === 0 ? (
+              <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/10">
+                <IoDocumentText className="text-6xl text-white/20 mx-auto mb-4" />
+                <p className="text-white/60">No notes yet. Add your first one!</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {Object.entries(getNotesByPlayer()).map(([playerName, playerNotes]) => (
+                  <div key={playerName} className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+                    <div className="bg-white/5 p-4 border-b border-white/10">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-slate-500 to-slate-600 flex items-center justify-center font-bold text-xl">
+                          {playerName.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-zentry font-black text-white">{playerName}</h3>
+                          <p className="text-sm text-white/60">{playerNotes.length} note{playerNotes.length !== 1 ? 's' : ''}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      {playerNotes.map((note) => (
+                        <div key={note.id} className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-colors">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              {getNoteBadge(note.category)}
+                              <span className="text-xs text-white/40">
+                                {formatDate(note.created_at)} by {note.added_by}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => startEditNote(note)}
+                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                              >
+                                <IoCreate className="text-blue-400" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteNote(note.id)}
+                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                              >
+                                <IoTrash className="text-red-400" />
+                              </button>
+                            </div>
+                          </div>
+                          <p className="text-white/80 leading-relaxed whitespace-pre-wrap">{note.note}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </>
@@ -1222,6 +1423,140 @@ const HRPanel = () => {
                   >
                     <IoCheckmark className="text-xl" />
                     {editingWarning ? "Update" : "Save"}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {showNoteForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50"
+            onClick={() => {
+              setShowNoteForm(false);
+              setEditingNote(null);
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-slate-800 rounded-3xl p-8 max-w-lg w-full border border-white/20 max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-zentry font-black">
+                  {editingNote ? "Edit Note" : "Add Player Note"}
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowNoteForm(false);
+                    setEditingNote(null);
+                  }}
+                  className="p-2 hover:bg-white/10 rounded-lg"
+                >
+                  <IoClose className="text-xl" />
+                </button>
+              </div>
+
+              <form onSubmit={editingNote ? handleUpdateNote : handleAddNote}>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-white/60 mb-2">Player Name *</label>
+                      <input
+                        type="text"
+                        value={noteFormData.player_name}
+                        onChange={(e) =>
+                          setNoteFormData({ ...noteFormData, player_name: e.target.value })
+                        }
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:border-slate-400 focus:outline-none transition-colors"
+                        placeholder="Enter player name"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm text-white/60 mb-2">Player ID</label>
+                      <input
+                        type="text"
+                        value={noteFormData.player_id}
+                        onChange={(e) =>
+                          setNoteFormData({ ...noteFormData, player_id: e.target.value })
+                        }
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:border-slate-400 focus:outline-none transition-colors"
+                        placeholder="Enter player ID"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-white/60 mb-2">Category *</label>
+                    <select
+                      value={noteFormData.category}
+                      onChange={(e) =>
+                        setNoteFormData({ ...noteFormData, category: e.target.value })
+                      }
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:border-slate-400 focus:outline-none transition-colors"
+                    >
+                      {NOTE_CATEGORIES.map((cat) => (
+                        <option key={cat.value} value={cat.value} className="bg-slate-800">
+                          {cat.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-white/60 mb-2">Note *</label>
+                    <textarea
+                      value={noteFormData.note}
+                      onChange={(e) =>
+                        setNoteFormData({ ...noteFormData, note: e.target.value })
+                      }
+                      rows={5}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:border-slate-400 focus:outline-none transition-colors resize-none"
+                      placeholder="Enter your note about this player..."
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-white/60 mb-2">Added By *</label>
+                    <input
+                      type="text"
+                      value={noteFormData.added_by}
+                      onChange={(e) =>
+                        setNoteFormData({ ...noteFormData, added_by: e.target.value })
+                      }
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:border-slate-400 focus:outline-none transition-colors"
+                      placeholder="Your name"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-4 mt-8">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowNoteForm(false);
+                      setEditingNote(null);
+                    }}
+                    className="flex-1 py-3 bg-white/10 rounded-xl font-semibold hover:bg-white/20 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 bg-gradient-to-r from-slate-500 to-slate-600 rounded-xl font-bold hover:shadow-lg hover:shadow-slate-500/30 transition-all flex items-center justify-center gap-2"
+                  >
+                    <IoCheckmark className="text-xl" />
+                    {editingNote ? "Update" : "Save"}
                   </button>
                 </div>
               </form>
