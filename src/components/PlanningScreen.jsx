@@ -107,13 +107,22 @@ const PlanningScreen = () => {
 
   const getEventsForDate = (date) => {
     return events.filter((event) => {
-      const eventDate = new Date(event.start_date);
-      const isSameDay =
-        eventDate.getDate() === date.getDate() &&
-        eventDate.getMonth() === date.getMonth() &&
-        eventDate.getFullYear() === date.getFullYear();
-      if (filterCategory === "all") return isSameDay;
-      return isSameDay && event.category === filterCategory;
+      const eventStartDate = new Date(event.start_date);
+      const eventEndDate = event.end_date ? new Date(event.end_date) : eventStartDate;
+
+      const dateToCheck = new Date(date);
+      dateToCheck.setHours(0, 0, 0, 0);
+
+      const startDate = new Date(eventStartDate);
+      startDate.setHours(0, 0, 0, 0);
+
+      const endDate = new Date(eventEndDate);
+      endDate.setHours(0, 0, 0, 0);
+
+      const isInRange = dateToCheck >= startDate && dateToCheck <= endDate;
+
+      if (filterCategory === "all") return isInRange;
+      return isInRange && event.category === filterCategory;
     });
   };
 
