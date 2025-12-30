@@ -202,8 +202,12 @@ const RowLeagueScreen = () => {
         <div className="max-w-7xl mx-auto">
           <AnimatedTitle
             title="Meet the <b>leads</b>"
-            containerClass="mb-16 !text-black text-center"
+            containerClass="mb-8 !text-black text-center"
           />
+
+          <p className="text-center text-black/60 text-lg mb-16 font-general">
+            Will be announced soon
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {teamMembers.map((member, index) => (
