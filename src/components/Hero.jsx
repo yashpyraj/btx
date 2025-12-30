@@ -42,11 +42,11 @@ const Hero = () => {
   });
 
   return (
-    <div className="relative h-dvh w-screen overflow-hidden">
+    <div className="relative h-dvh w-full overflow-hidden">
       {/* Background Video */}
       <div
         id="video-frame"
-        className="relative z-10 h-dvh w-screen overflow-hidden bg-black"
+        className="relative z-10 h-dvh w-full overflow-hidden bg-black"
       >
         <video
           ref={videoRef}
@@ -77,12 +77,12 @@ const Hero = () => {
         )}
 
         {/* Centered Text */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-40 text-center">
-          <h2 className="uppercase font-zentry font-black text-base sm:text-lg text-gray-200 mb-2 tracking-widest">
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-40 text-center px-4">
+          <h2 className="uppercase font-zentry font-black text-sm sm:text-base md:text-lg text-gray-200 mb-2 tracking-widest">
             welcome to
           </h2>
 
-          <h1 className="uppercase font-zentry font-black text-white text-6xl sm:text-8xl md:text-[10rem] lg:text-[14rem] drop-shadow-lg">
+          <h1 className="uppercase font-zentry font-black text-white text-5xl sm:text-6xl md:text-8xl lg:text-[10rem] xl:text-[14rem] drop-shadow-lg">
             <b>BTX</b>
           </h1>
         </div>

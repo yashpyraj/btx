@@ -51,9 +51,9 @@ const DiscordJoinModal = ({ isOpen, onClose }) => {
             animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, x: 100, y: 100 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed bottom-6 right-6 z-50 w-[95%] max-w-md md:max-w-lg"
+            className="fixed bottom-2 right-2 sm:bottom-6 sm:right-6 z-50 w-[95%] max-w-sm md:max-w-md lg:max-w-lg max-h-[90vh] overflow-y-auto"
           >
-            <div className="relative overflow-hidden rounded-3xl border border-violet-500/30 bg-gradient-to-br from-black via-violet-950/20 to-black shadow-2xl shadow-violet-500/20">
+            <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-violet-500/30 bg-gradient-to-br from-black via-violet-950/20 to-black shadow-2xl shadow-violet-500/20">
               {/* Animated Background */}
               <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]" />
@@ -87,13 +87,14 @@ const DiscordJoinModal = ({ isOpen, onClose }) => {
               {/* Close Button */}
               <button
                 onClick={onClose}
-                className="absolute right-4 top-4 z-10 rounded-full bg-white/5 p-2 text-white/60 transition-all hover:bg-white/10 hover:text-white hover:rotate-90"
+                className="absolute right-2 top-2 sm:right-4 sm:top-4 z-10 rounded-full bg-white/5 p-2.5 text-white/60 transition-all hover:bg-white/10 hover:text-white hover:rotate-90 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                aria-label="Close modal"
               >
                 <IoClose size={24} />
               </button>
 
               {/* Content */}
-              <div className="relative z-10 p-8 md:p-12">
+              <div className="relative z-10 p-6 sm:p-8 md:p-12">
                 <AnimatePresence mode="wait">
                   {step === 1 ? (
                     <motion.div
@@ -138,7 +139,7 @@ const DiscordJoinModal = ({ isOpen, onClose }) => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="mb-4 font-zentry text-4xl md:text-5xl font-bold text-white"
+                        className="mb-4 font-zentry text-3xl sm:text-4xl md:text-5xl font-bold text-white"
                       >
                         Join the <span className="bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">Elite</span>
                       </motion.h2>
@@ -257,7 +258,7 @@ const DiscordJoinModal = ({ isOpen, onClose }) => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="mb-4 font-zentry text-4xl md:text-5xl font-bold text-white"
+                        className="mb-4 font-zentry text-3xl sm:text-4xl md:text-5xl font-bold text-white"
                       >
                         Almost <span className="bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">There</span>!
                       </motion.h2>

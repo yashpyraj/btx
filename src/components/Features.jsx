@@ -6,14 +6,14 @@ export const BentoTilt = memo(({ children, className = "" }) => {
   const [transformStyle, setTransformStyle] = useState("");
   const itemRef = useRef(null);
 
-  const handleMouseMove = useCallback((event) => {
+  const calculateTilt = useCallback((clientX, clientY) => {
     if (!itemRef.current) return;
 
     const { left, top, width, height } =
       itemRef.current.getBoundingClientRect();
 
-    const relativeX = (event.clientX - left) / width;
-    const relativeY = (event.clientY - top) / height;
+    const relativeX = (clientX - left) / width;
+    const relativeY = (clientY - top) / height;
 
     const tiltX = (relativeY - 0.5) * 5;
     const tiltY = (relativeX - 0.5) * -5;
@@ -22,7 +22,18 @@ export const BentoTilt = memo(({ children, className = "" }) => {
     setTransformStyle(newTransform);
   }, []);
 
-  const handleMouseLeave = useCallback(() => {
+  const handleMouseMove = useCallback((event) => {
+    calculateTilt(event.clientX, event.clientY);
+  }, [calculateTilt]);
+
+  const handleTouchMove = useCallback((event) => {
+    if (event.touches.length > 0) {
+      const touch = event.touches[0];
+      calculateTilt(touch.clientX, touch.clientY);
+    }
+  }, [calculateTilt]);
+
+  const handleEnd = useCallback(() => {
     setTransformStyle("");
   }, []);
 
@@ -31,7 +42,9 @@ export const BentoTilt = memo(({ children, className = "" }) => {
       ref={itemRef}
       className={className}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseLeave={handleEnd}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleEnd}
       style={{ transform: transformStyle }}
     >
       {children}
@@ -117,7 +130,7 @@ export const BentoCard = memo(({
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setHoverOpacity(1)}
             onMouseLeave={() => setHoverOpacity(0)}
-            className="border-hsla relative flex w-fit cursor-pointer items-center gap-1 overflow-hidden rounded-full bg-violet-600 hover:bg-violet-500 px-5 py-2 text-xs uppercase text-white font-semibold transition-all duration-300 hover:scale-105"
+            className="border-hsla relative flex w-fit cursor-pointer items-center gap-1 overflow-hidden rounded-full bg-violet-600 hover:bg-violet-500 px-5 py-3 text-xs sm:text-sm uppercase text-white font-semibold transition-all duration-300 hover:scale-105 min-h-[44px]"
           >
             {/* Radial gradient hover effect */}
             <span
@@ -140,7 +153,7 @@ export const BentoCard = memo(({
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setHoverOpacity(1)}
             onMouseLeave={() => setHoverOpacity(0)}
-            className="border-hsla relative flex w-fit cursor-pointer items-center gap-1 overflow-hidden rounded-full bg-black px-5 py-2 text-xs uppercase text-white/20"
+            className="border-hsla relative flex w-fit cursor-pointer items-center gap-1 overflow-hidden rounded-full bg-black px-5 py-3 text-xs sm:text-sm uppercase text-white/20 min-h-[44px]"
           >
             {/* Radial gradient hover effect */}
             <span
@@ -165,8 +178,8 @@ const Features = () => {
 
   return (
     <section className="bg-black pb-52">
-      <div className="container mx-auto px-3 md:px-10">
-        <BentoTilt className="border-hsla relative mb-7 h-96 w-full overflow-hidden rounded-md md:h-[65vh]">
+      <div className="container mx-auto px-4 sm:px-6 md:px-10">
+        <BentoTilt className="border-hsla relative mb-4 sm:mb-7 h-80 sm:h-96 w-full overflow-hidden rounded-md md:h-[65vh]">
           <BentoCard
             src="videos/row.mp4"
             title={
@@ -180,7 +193,7 @@ const Features = () => {
           />
         </BentoTilt>
 
-        <div className="grid h-[180vh] w-full grid-cols-2 grid-rows-4 gap-7">
+        <div className="grid w-full grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-7">
           <BentoTilt className="bento-tilt_1 row-span-1 md:col-span-1 md:row-span-1">
             <BentoCard
               src="img/emry.png"
