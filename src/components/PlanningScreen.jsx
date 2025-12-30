@@ -22,6 +22,8 @@ const CATEGORIES = [
   { value: "reminder", label: "Reminder", color: "#f59e0b" },
   { value: "deadline", label: "Deadline", color: "#ef4444" },
   { value: "holiday", label: "Holiday", color: "#8b5cf6" },
+  { value: "hr_activity", label: "HR Activity", color: "#06b6d4" },
+  { value: "hr_warning", label: "HR Warning", color: "#dc2626" },
 ];
 
 const MONTHS = [
@@ -51,16 +53,69 @@ const PlanningScreen = () => {
     const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
 
-    const { data, error } = await supabase
+    const { data: calendarData, error: calendarError } = await supabase
       .from("calendar_events")
       .select("*")
       .gte("start_date", startOfMonth.toISOString())
       .lte("start_date", endOfMonth.toISOString())
       .order("start_date", { ascending: true });
 
-    if (!error && data) {
-      setEvents(data);
+    const { data: hrRecordsData, error: hrRecordsError } = await supabase
+      .from("hr_player_records")
+      .select("*")
+      .or(`start_date.lte.${endOfMonth.toISOString().split('T')[0]},end_date.is.null`)
+      .or(`end_date.gte.${startOfMonth.toISOString().split('T')[0]},end_date.is.null`)
+      .order("start_date", { ascending: true });
+
+    const { data: hrWarningsData, error: hrWarningsError } = await supabase
+      .from("hr_warnings")
+      .select("*")
+      .gte("warning_date", startOfMonth.toISOString().split('T')[0])
+      .lte("warning_date", endOfMonth.toISOString().split('T')[0])
+      .order("warning_date", { ascending: true });
+
+    const allEvents = [];
+
+    if (!calendarError && calendarData) {
+      allEvents.push(...calendarData);
     }
+
+    if (!hrRecordsError && hrRecordsData) {
+      const hrEvents = hrRecordsData.map(record => ({
+        id: `hr_${record.id}`,
+        title: `${record.player_name} - ${record.status}`,
+        start_date: `${record.start_date}T00:00:00`,
+        end_date: record.end_date ? `${record.end_date}T23:59:59` : null,
+        category: "hr_activity",
+        color: "#06b6d4",
+        all_day: true,
+        location: null,
+        description: `Status: ${record.status}\nReason: ${record.reason || 'N/A'}\nNotes: ${record.notes || 'N/A'}\nAdded by: ${record.added_by}`,
+        hr_type: "activity",
+        hr_data: record
+      }));
+      allEvents.push(...hrEvents);
+    }
+
+    if (!hrWarningsError && hrWarningsData) {
+      const warningEvents = hrWarningsData.map(warning => ({
+        id: `warning_${warning.id}`,
+        title: `⚠️ ${warning.player_name} - ${warning.warning_type}`,
+        start_date: `${warning.warning_date}T00:00:00`,
+        end_date: `${warning.warning_date}T23:59:59`,
+        category: "hr_warning",
+        color: "#dc2626",
+        all_day: true,
+        location: null,
+        description: `Warning Type: ${warning.warning_type}\nReason: ${warning.reason}\nNotes: ${warning.notes || 'N/A'}\nIssued by: ${warning.issued_by}`,
+        hr_type: "warning",
+        hr_data: warning
+      }));
+      allEvents.push(...warningEvents);
+    }
+
+    allEvents.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
+    setEvents(allEvents);
     setLoading(false);
   };
 
