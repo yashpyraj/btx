@@ -274,12 +274,12 @@ const Features = () => {
               src="https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg"
               title={
                 <>
-                  <b>HR panel</b>
+                  <b>HR support</b>
                 </>
               }
-              description="Track player activity, absences, and notes. PIN protected for HR team access."
-              ctaText="open panel"
-              onClick={() => navigate("/hr-panel")}
+              description="Submit HR tickets, track status, and get help from our team with any alliance-related matters."
+              ctaText="get support"
+              onClick={() => navigate("/hr")}
             />
           </BentoTilt>
 
