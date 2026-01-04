@@ -10,7 +10,6 @@ import {
   IoCalendar,
   IoPerson,
   IoCheckmark,
-  IoLockClosed,
   IoWarning,
   IoChevronBack,
   IoChevronForward,
@@ -18,8 +17,6 @@ import {
   IoDocumentText,
 } from "react-icons/io5";
 import { supabase } from "../lib/supabase";
-
-const HR_PIN = "1234";
 
 const STATUS_OPTIONS = [
   { value: "away", label: "Away", color: "bg-yellow-500" },
@@ -46,9 +43,6 @@ const NOTE_CATEGORIES = [
 
 const HRPanel = () => {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [pin, setPin] = useState("");
-  const [pinError, setPinError] = useState(false);
   const [records, setRecords] = useState([]);
   const [warnings, setWarnings] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -90,14 +84,12 @@ const HRPanel = () => {
   });
 
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchRecords();
-      fetchWarnings();
-      fetchNotes();
-      fetchTickets();
-      fetchCalendarEvents();
-    }
-  }, [isAuthenticated]);
+    fetchRecords();
+    fetchWarnings();
+    fetchNotes();
+    fetchTickets();
+    fetchCalendarEvents();
+  }, []);
 
   const fetchRecords = async () => {
     setLoading(true);
@@ -153,17 +145,6 @@ const HRPanel = () => {
 
     if (!error && data) {
       setCalendarEvents(data);
-    }
-  };
-
-  const handlePinSubmit = (e) => {
-    e.preventDefault();
-    if (pin === HR_PIN) {
-      setIsAuthenticated(true);
-      setPinError(false);
-    } else {
-      setPinError(true);
-      setPin("");
     }
   };
 
@@ -719,98 +700,6 @@ const HRPanel = () => {
     return Object.values(playerWarnings);
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-6">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 max-w-md w-full"
-        >
-          <div className="text-center mb-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <IoLockClosed className="text-4xl text-white" />
-            </div>
-            <h1 className="text-3xl font-zentry font-black text-white mb-2">
-              HR Panel
-            </h1>
-            <p className="text-white/60">Enter PIN to access</p>
-          </div>
-
-          <form onSubmit={handlePinSubmit}>
-            <div className="flex justify-center gap-3 mb-6">
-              {[0, 1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className={`w-14 h-14 rounded-xl border-2 ${
-                    pin.length > i
-                      ? "border-blue-400 bg-blue-500/20"
-                      : "border-white/20 bg-white/5"
-                  } flex items-center justify-center text-2xl font-bold text-white transition-all`}
-                >
-                  {pin.length > i ? "*" : ""}
-                </div>
-              ))}
-            </div>
-
-            <input
-              type="password"
-              maxLength={4}
-              value={pin}
-              onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
-              className="sr-only"
-              autoFocus
-            />
-
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, "", 0, "del"].map((num, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => {
-                    if (num === "del") {
-                      setPin(pin.slice(0, -1));
-                    } else if (num !== "" && pin.length < 4) {
-                      setPin(pin + num);
-                    }
-                  }}
-                  className={`h-14 rounded-xl font-bold text-xl transition-all ${
-                    num === ""
-                      ? "invisible"
-                      : "bg-white/10 hover:bg-white/20 text-white active:scale-95"
-                  }`}
-                >
-                  {num === "del" ? "DEL" : num}
-                </button>
-              ))}
-            </div>
-
-            {pinError && (
-              <p className="text-red-400 text-center text-sm mb-4">
-                Incorrect PIN. Try again.
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={pin.length !== 4}
-              className="w-full py-4 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl font-bold text-white disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-blue-500/30 transition-all"
-            >
-              Unlock
-            </button>
-          </form>
-
-          <button
-            onClick={() => navigate("/")}
-            className="w-full mt-4 py-3 text-white/60 hover:text-white transition-colors text-sm"
-          >
-            Back to Home
-          </button>
-        </motion.div>
-      </div>
-    );
-  }
-
   const lastWarning = getLastWarning();
   const lastWarningsByPlayer = getLastWarningsByPlayer();
 
@@ -831,13 +720,6 @@ const HRPanel = () => {
               HR PANEL
             </h1>
           </div>
-          <button
-            onClick={() => setIsAuthenticated(false)}
-            className="flex items-center gap-2 text-white/70 hover:text-red-400 transition-all"
-          >
-            <IoLockClosed />
-            <span className="text-sm">Lock</span>
-          </button>
         </div>
       </div>
 
