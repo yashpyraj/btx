@@ -17,6 +17,7 @@ import {
   IoEye,
   IoCloseCircle,
   IoArrowForward,
+  IoSettings,
 } from "react-icons/io5";
 import { supabase } from "../lib/supabase";
 
@@ -684,6 +685,13 @@ const HRScreen = () => {
               </h1>
             </div>
           </div>
+          <button
+            onClick={() => navigate("/hr-admin")}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 border border-purple-500/30 hover:border-purple-400/50 rounded-xl text-purple-300 hover:text-purple-200 transition-all duration-300 font-semibold"
+          >
+            <IoSettings className="text-lg" />
+            <span className="text-sm">Admin Panel</span>
+          </button>
         </div>
       </div>
 
