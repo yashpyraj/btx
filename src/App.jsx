@@ -13,6 +13,7 @@ const BTXTeamsScreen = lazy(() => import("./components/BTXTeamsScreen"));
 const MemoriesScreen = lazy(() => import("./components/MemoriesScreen"));
 const HierarchyTree = lazy(() => import("./components/HierarchyTree"));
 const HRPanel = lazy(() => import("./components/HRPanel"));
+const HRTicketSubmit = lazy(() => import("./components/HRTicketSubmit"));
 const PlanningScreen = lazy(() => import("./components/PlanningScreen"));
 const PlanningAdmin = lazy(() => import("./components/PlanningAdmin"));
 
@@ -94,6 +95,14 @@ function App() {
         element={
           <Suspense fallback={<LoadingFallback />}>
             <HRPanel />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/hr-ticket"
+        element={
+          <Suspense fallback={<LoadingFallback />}>
+            <HRTicketSubmit />
           </Suspense>
         }
       />

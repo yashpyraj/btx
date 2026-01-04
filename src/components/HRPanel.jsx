@@ -52,9 +52,10 @@ const HRPanel = () => {
   const [records, setRecords] = useState([]);
   const [warnings, setWarnings] = useState([]);
   const [notes, setNotes] = useState([]);
+  const [tickets, setTickets] = useState([]);
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("activity");
+  const [activeTab, setActiveTab] = useState("tickets");
   const [showAddForm, setShowAddForm] = useState(false);
   const [showWarningForm, setShowWarningForm] = useState(false);
   const [showNoteForm, setShowNoteForm] = useState(false);
@@ -93,6 +94,7 @@ const HRPanel = () => {
       fetchRecords();
       fetchWarnings();
       fetchNotes();
+      fetchTickets();
       fetchCalendarEvents();
     }
   }, [isAuthenticated]);
@@ -129,6 +131,17 @@ const HRPanel = () => {
 
     if (!error && data) {
       setNotes(data);
+    }
+  };
+
+  const fetchTickets = async () => {
+    const { data, error } = await supabase
+      .from("hr_tickets")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setTickets(data);
     }
   };
 
@@ -289,6 +302,64 @@ const HRPanel = () => {
     }
   };
 
+  const handleUpdateTicketStatus = async (id, newStatus) => {
+    const updateData = {
+      status: newStatus,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (newStatus === "resolved" || newStatus === "closed") {
+      updateData.resolved_at = new Date().toISOString();
+    }
+
+    const { error } = await supabase
+      .from("hr_tickets")
+      .update(updateData)
+      .eq("id", id);
+
+    if (!error) {
+      fetchTickets();
+    }
+  };
+
+  const handleAssignTicket = async (id, assignedTo) => {
+    const { error } = await supabase
+      .from("hr_tickets")
+      .update({
+        assigned_to: assignedTo,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id);
+
+    if (!error) {
+      fetchTickets();
+    }
+  };
+
+  const handleUpdateTicketPriority = async (id, newPriority) => {
+    const { error } = await supabase
+      .from("hr_tickets")
+      .update({
+        priority: newPriority,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id);
+
+    if (!error) {
+      fetchTickets();
+    }
+  };
+
+  const handleDeleteTicket = async (id) => {
+    if (!confirm("Are you sure you want to delete this ticket?")) return;
+
+    const { error } = await supabase.from("hr_tickets").delete().eq("id", id);
+
+    if (!error) {
+      fetchTickets();
+    }
+  };
+
   const resetForm = () => {
     setFormData({
       player_name: "",
@@ -392,6 +463,56 @@ const HRPanel = () => {
         className={`${noteCategory?.color || "bg-gray-500"} px-3 py-1 rounded-full text-xs font-bold text-white`}
       >
         {noteCategory?.label || category}
+      </span>
+    );
+  };
+
+  const getTicketStatusBadge = (status) => {
+    const statusColors = {
+      pending: "bg-yellow-500",
+      reviewing: "bg-blue-500",
+      resolved: "bg-green-500",
+      closed: "bg-slate-500",
+    };
+    return (
+      <span
+        className={`${statusColors[status] || "bg-gray-500"} px-3 py-1 rounded-full text-xs font-bold text-white`}
+      >
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </span>
+    );
+  };
+
+  const getTicketPriorityBadge = (priority) => {
+    const priorityColors = {
+      low: "bg-slate-500",
+      normal: "bg-blue-500",
+      high: "bg-orange-500",
+      urgent: "bg-red-500",
+    };
+    return (
+      <span
+        className={`${priorityColors[priority] || "bg-gray-500"} px-3 py-1 rounded-full text-xs font-bold text-white`}
+      >
+        {priority.charAt(0).toUpperCase() + priority.slice(1)}
+      </span>
+    );
+  };
+
+  const getTicketTypeBadge = (type) => {
+    const typeColors = {
+      report: "bg-red-500",
+      request: "bg-blue-500",
+      concern: "bg-orange-500",
+      feedback: "bg-green-500",
+      appeal: "bg-purple-500",
+      other: "bg-slate-500",
+    };
+    return (
+      <span
+        className={`${typeColors[type] || "bg-gray-500"} px-3 py-1 rounded-full text-xs font-bold text-white`}
+      >
+        {type.charAt(0).toUpperCase() + type.slice(1)}
       </span>
     );
   };
@@ -723,7 +844,27 @@ const HRPanel = () => {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {renderCalendar()}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-2xl p-6 border border-purple-500/30">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
+                <IoDocumentText className="text-2xl" />
+              </div>
+              <div>
+                <p className="text-white/60 text-sm">HR Tickets</p>
+                <p className="text-3xl font-zentry font-black">{tickets.length}</p>
+              </div>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              <span className="text-xs text-white/60">
+                Pending: {tickets.filter((t) => t.status === "pending").length}
+              </span>
+              <span className="text-xs text-white/60">
+                Reviewing: {tickets.filter((t) => t.status === "reviewing").length}
+              </span>
+            </div>
+          </div>
+
           <div className="bg-gradient-to-br from-blue-600/20 to-cyan-600/20 rounded-2xl p-6 border border-blue-500/30">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
@@ -834,7 +975,17 @@ const HRPanel = () => {
           </div>
         )}
 
-        <div className="flex gap-4 mb-6">
+        <div className="flex gap-4 mb-6 flex-wrap">
+          <button
+            onClick={() => setActiveTab("tickets")}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+              activeTab === "tickets"
+                ? "bg-purple-500 text-white"
+                : "bg-white/5 text-white/60 hover:bg-white/10"
+            }`}
+          >
+            HR Tickets
+          </button>
           <button
             onClick={() => setActiveTab("activity")}
             className={`px-6 py-3 rounded-xl font-semibold transition-all ${
@@ -866,6 +1017,127 @@ const HRPanel = () => {
             Player Notes
           </button>
         </div>
+
+        {activeTab === "tickets" && (
+          <>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-zentry font-black">HR Tickets</h2>
+            </div>
+
+            {tickets.length === 0 ? (
+              <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/10">
+                <IoDocumentText className="text-6xl text-white/20 mx-auto mb-4" />
+                <p className="text-white/60">No tickets submitted yet.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {tickets.map((ticket) => (
+                  <div
+                    key={ticket.id}
+                    className="bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors overflow-hidden"
+                  >
+                    <div className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-xl font-zentry font-black text-white">
+                              {ticket.subject}
+                            </h3>
+                            {getTicketTypeBadge(ticket.ticket_type)}
+                            {getTicketPriorityBadge(ticket.priority)}
+                            {getTicketStatusBadge(ticket.status)}
+                          </div>
+                          <div className="flex items-center gap-4 text-sm text-white/60">
+                            <div className="flex items-center gap-2">
+                              <IoPerson />
+                              <span>{ticket.player_name}</span>
+                              {ticket.player_id && (
+                                <span className="text-xs bg-white/10 px-2 py-0.5 rounded">
+                                  ID: {ticket.player_id}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <IoCalendar />
+                              <span>{formatDate(ticket.created_at)}</span>
+                            </div>
+                            {ticket.assigned_to && (
+                              <span className="text-blue-400">
+                                Assigned to: {ticket.assigned_to}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteTicket(ticket.id)}
+                          className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                        >
+                          <IoTrash className="text-red-400" />
+                        </button>
+                      </div>
+
+                      <div className="bg-white/5 rounded-xl p-4 mb-4">
+                        <p className="text-white/80 leading-relaxed whitespace-pre-wrap">
+                          {ticket.description}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-white/60">Status:</span>
+                          <select
+                            value={ticket.status}
+                            onChange={(e) => handleUpdateTicketStatus(ticket.id, e.target.value)}
+                            className="px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg text-sm focus:border-purple-400 focus:outline-none"
+                          >
+                            <option value="pending" className="bg-slate-800">Pending</option>
+                            <option value="reviewing" className="bg-slate-800">Reviewing</option>
+                            <option value="resolved" className="bg-slate-800">Resolved</option>
+                            <option value="closed" className="bg-slate-800">Closed</option>
+                          </select>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-white/60">Priority:</span>
+                          <select
+                            value={ticket.priority}
+                            onChange={(e) => handleUpdateTicketPriority(ticket.id, e.target.value)}
+                            className="px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg text-sm focus:border-purple-400 focus:outline-none"
+                          >
+                            <option value="low" className="bg-slate-800">Low</option>
+                            <option value="normal" className="bg-slate-800">Normal</option>
+                            <option value="high" className="bg-slate-800">High</option>
+                            <option value="urgent" className="bg-slate-800">Urgent</option>
+                          </select>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-white/60">Assign to:</span>
+                          <input
+                            type="text"
+                            value={ticket.assigned_to || ""}
+                            onChange={(e) => handleAssignTicket(ticket.id, e.target.value)}
+                            placeholder="HR member name"
+                            className="px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg text-sm focus:border-purple-400 focus:outline-none w-40"
+                          />
+                        </div>
+
+                        {ticket.resolved_at && (
+                          <div className="flex items-center gap-2 ml-auto">
+                            <IoCheckmark className="text-green-400" />
+                            <span className="text-sm text-white/60">
+                              Resolved: {formatDate(ticket.resolved_at)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
 
         {activeTab === "activity" && (
           <>
