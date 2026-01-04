@@ -41,7 +41,7 @@ const NOTE_CATEGORIES = [
   { value: "concern", label: "Concern", color: "bg-red-500" },
 ];
 
-const HRPanel = () => {
+const HRAdmin = () => {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [warnings, setWarnings] = useState([]);
@@ -717,7 +717,7 @@ const HRPanel = () => {
             </button>
             <div className="h-6 w-px bg-white/20" />
             <h1 className="text-2xl font-zentry font-black text-white">
-              HR PANEL
+              HR ADMIN
             </h1>
           </div>
         </div>
@@ -1722,4 +1722,4 @@ const HRPanel = () => {
   );
 };
 
-export default HRPanel;
+export default HRAdmin;
