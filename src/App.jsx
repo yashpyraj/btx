@@ -13,7 +13,7 @@ const BTXTeamsScreen = lazy(() => import("./components/BTXTeamsScreen"));
 const MemoriesScreen = lazy(() => import("./components/MemoriesScreen"));
 const HierarchyTree = lazy(() => import("./components/HierarchyTree"));
 const HRScreen = lazy(() => import("./components/HRScreen"));
-const HRAdmin = lazy(() => import("./components/HRAdmin"));
+const PINProtectedAdmin = lazy(() => import("./components/PINProtectedAdmin"));
 const PlanningScreen = lazy(() => import("./components/PlanningScreen"));
 const PlanningAdmin = lazy(() => import("./components/PlanningAdmin"));
 
@@ -102,7 +102,7 @@ function App() {
         path="/hr-admin"
         element={
           <Suspense fallback={<LoadingFallback />}>
-            <HRAdmin />
+            <PINProtectedAdmin />
           </Suspense>
         }
       />

@@ -15,6 +15,7 @@ import {
   IoChevronForward,
   IoAlertCircle,
   IoDocumentText,
+  IoLockClosed,
 } from "react-icons/io5";
 import { supabase } from "../lib/supabase";
 
@@ -41,7 +42,7 @@ const NOTE_CATEGORIES = [
   { value: "concern", label: "Concern", color: "bg-red-500" },
 ];
 
-const HRAdmin = () => {
+const HRAdmin = ({ onLogout }) => {
   const navigate = useNavigate();
   const [records, setRecords] = useState([]);
   const [warnings, setWarnings] = useState([]);
@@ -720,6 +721,15 @@ const HRAdmin = () => {
               HR ADMIN
             </h1>
           </div>
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="flex items-center gap-2 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 rounded-xl text-red-400 hover:text-red-300 transition-all duration-300 font-semibold"
+            >
+              <IoLockClosed className="text-lg" />
+              <span className="text-sm">Logout</span>
+            </button>
+          )}
         </div>
       </div>
 
