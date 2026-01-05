@@ -22,51 +22,37 @@ const MemoriesScreen = () => {
   const memories = [
     {
       id: 1,
-      title: "Chapter 1: The Birth of EXP",
-      description: "EXP, originally named 'Ex Parvis Magna,' was founded by the gamer Butcher on the 91 server. In their very first season, EXP took on the entire server, especially their rivals CK, and came out victorious. After winning, everyone merged under the EXP banner.",
+      title: "The Legend of EXP",
+      description: "The complete saga of EXP's rise to greatness.",
       image: "https://images.pexels.com/photos/1309584/pexels-photo-1309584.jpeg",
-      date: "Season 1",
-      type: "Origin",
+      date: "Season 1-6",
+      type: "Saga",
       isComingSoon: false,
+      chapters: [
+        {
+          title: "Chapter 1: The Birth of EXP",
+          content: "EXP, originally named 'Ex Parvis Magna,' was founded by the gamer Butcher on the 91 server. In their very first season, EXP took on the entire server, especially their rivals CK, and came out victorious. After winning, everyone merged under the EXP banner."
+        },
+        {
+          title: "Chapter 2: Rivalry and Respect with BTR",
+          content: "Over the next few seasons, EXP faced a powerful kingdom called BTR, full of top-tier players. To make the season more fun and balanced, BTR insisted for EXP to ally with HY and take them both on a 1v2 fight. Although EXP & HY eventually won, they couldn't completely dominate BTR and push them out of the final zone. This rivalry turned into mutual respect, and both sides admired each other's strength."
+        },
+        {
+          title: "Chapter 3: The OP Merge and Collapse",
+          content: "After this temporary alliance, EXP and HY tried to merge into a new super-alliance called OP. However, the merge didn't go well, and OP fell apart. EXP had to rebuild from scratch, and they became a smaller alliance, but with a strong loyal core that stuck together."
+        },
+        {
+          title: "Chapter 4: Reuniting with BTR as Allies",
+          content: "In a later season, EXP and BTR ended up on the same side, this time forming an alliance rather than fighting each other. Together, they faced a new enemy and grew even closer. This friendship led them to consider a new kind of merge, one built on genuine camaraderie and community rather than just strength."
+        },
+        {
+          title: "Chapter 5: The Birth of BTX",
+          content: "When BTR and EXP decided to merge, the game developers limited migration spots. So they had to do it in two waves—first BTR, then EXP, along with some new recruits from other servers. It took a few months but BTX was finally born—not just a big alliance, but a stable, friendly community of players who valued loyalty and friendship."
+        }
+      ]
     },
     {
       id: 2,
-      title: "Chapter 2: Rivalry and Respect with BTR",
-      description: "Over the next few seasons, EXP faced a powerful kingdom called BTR, full of top-tier players. To make the season more fun and balanced, BTR insisted for EXP to ally with HY and take them both on a 1v2 fight. Although EXP & HY eventually won, they couldn't completely dominate BTR and push them out of the final zone. This rivalry turned into mutual respect, and both sides admired each other's strength.",
-      image: "https://images.pexels.com/photos/1762851/pexels-photo-1762851.jpeg",
-      date: "Season 2-3",
-      type: "Rivalry",
-      isComingSoon: false,
-    },
-    {
-      id: 3,
-      title: "Chapter 3: The OP Merge and Collapse",
-      description: "After this temporary alliance, EXP and HY tried to merge into a new super-alliance called OP. However, the merge didn't go well, and OP fell apart. EXP had to rebuild from scratch, and they became a smaller alliance, but with a strong loyal core that stuck together.",
-      image: "https://images.pexels.com/photos/1420440/pexels-photo-1420440.jpeg",
-      date: "Season 4",
-      type: "Rebuild",
-      isComingSoon: false,
-    },
-    {
-      id: 4,
-      title: "Chapter 4: Reuniting with BTR as Allies",
-      description: "In a later season, EXP and BTR ended up on the same side, this time forming an alliance rather than fighting each other. Together, they faced a new enemy and grew even closer. This friendship led them to consider a new kind of merge, one built on genuine camaraderie and community rather than just strength.",
-      image: "https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg",
-      date: "Season 5",
-      type: "Alliance",
-      isComingSoon: false,
-    },
-    {
-      id: 5,
-      title: "Chapter 5: The Birth of BTX",
-      description: "When BTR and EXP decided to merge, the game developers limited migration spots. So they had to do it in two waves—first BTR, then EXP, along with some new recruits from other servers. It took a few months but BTX was finally born—not just a big alliance, but a stable, friendly community of players who valued loyalty and friendship.",
-      image: "https://images.pexels.com/photos/1591056/pexels-photo-1591056.jpeg",
-      date: "Season 6",
-      type: "Foundation",
-      isComingSoon: false,
-    },
-    {
-      id: 6,
       title: "Larnak's Lost GH",
       description: "The legendary moment when Larnak lost his GH in the most unexpected way. A tale that will be told for generations.",
       image: "https://images.pexels.com/photos/1152854/pexels-photo-1152854.jpeg",
@@ -75,7 +61,7 @@ const MemoriesScreen = () => {
       isComingSoon: false,
     },
     {
-      id: 7,
+      id: 3,
       title: "Midnight Raid Success",
       description: "That 3 AM raid that caught everyone by surprise. Pure chaos and pure victory.",
       image: "https://images.pexels.com/photos/1612461/pexels-photo-1612461.jpeg",
@@ -84,7 +70,7 @@ const MemoriesScreen = () => {
       isComingSoon: true,
     },
     {
-      id: 8,
+      id: 4,
       title: "Championship Win",
       description: "The day we became champions. All the hard work paid off in glory.",
       image: "https://images.pexels.com/photos/1337380/pexels-photo-1337380.jpeg",
@@ -138,13 +124,13 @@ const MemoriesScreen = () => {
       <section className="py-16 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {memories.map((memory) => (
+            {memories.map((memory, idx) => (
               <div
                 key={memory.id}
-                className="group relative bg-gradient-to-br from-white/10 to-white/5 rounded-3xl overflow-hidden border-2 border-white/20 hover:border-violet-400/50 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-violet-500/30"
+                className={`group relative bg-gradient-to-br from-white/10 to-white/5 rounded-3xl overflow-hidden border-2 border-white/20 hover:border-violet-400/50 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-violet-500/30 ${memory.chapters ? 'md:col-span-2 lg:col-span-3' : ''}`}
               >
                 {/* Image */}
-                <div className="relative h-80 overflow-hidden">
+                <div className={`relative ${memory.chapters ? 'h-96' : 'h-80'} overflow-hidden`}>
                   <img
                     src={memory.image}
                     alt={memory.title}
@@ -193,9 +179,29 @@ const MemoriesScreen = () => {
                     </h3>
                   </div>
 
-                  <p className="text-base text-white/80 font-circular-web mb-5 leading-relaxed">
-                    {memory.description}
-                  </p>
+                  {memory.chapters ? (
+                    <div className="space-y-6 mb-5">
+                      <p className="text-base text-white/80 font-circular-web leading-relaxed mb-4">
+                        {memory.description}
+                      </p>
+                      <div className="grid md:grid-cols-2 gap-6">
+                        {memory.chapters.map((chapter, index) => (
+                          <div key={index} className="bg-white/5 rounded-xl p-5 border border-violet-400/30 hover:border-violet-400/60 transition-all duration-300">
+                            <h4 className="text-lg font-zentry font-bold text-violet-300 mb-3">
+                              {chapter.title}
+                            </h4>
+                            <p className="text-sm text-white/70 font-circular-web leading-relaxed">
+                              {chapter.content}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-base text-white/80 font-circular-web mb-5 leading-relaxed">
+                      {memory.description}
+                    </p>
+                  )}
 
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-violet-400 font-bold text-base">{memory.date}</span>
