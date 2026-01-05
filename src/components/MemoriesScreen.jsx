@@ -6,7 +6,7 @@ import AnimatedTitle from "./AnimatedTitle";
 const MemoriesScreen = () => {
   const navigate = useNavigate();
   const [likedMemories, setLikedMemories] = useState(new Set());
-  const [isExpCardExpanded, setIsExpCardExpanded] = useState(true);
+  const [isExpCardExpanded, setIsExpCardExpanded] = useState(false);
 
   const toggleLike = (id) => {
     setLikedMemories((prev) => {
@@ -21,6 +21,24 @@ const MemoriesScreen = () => {
   };
 
   const memories = [
+    {
+      id: 2,
+      title: "Larnak's Lost SLE",
+      description: "The legendary moment when Larnak lost his SLE in the most unexpected way. A tale that will be told for generations.",
+      image: "https://images.pexels.com/photos/1152854/pexels-photo-1152854.jpeg",
+      date: "Season 7",
+      type: "Epic Fail",
+      isComingSoon: false,
+    },
+    {
+      id: 3,
+      title: "Midnight Raid Success",
+      description: "That 3 AM raid that caught everyone by surprise. Pure chaos and pure victory.",
+      image: "https://images.pexels.com/photos/1612461/pexels-photo-1612461.jpeg",
+      date: "Season 8",
+      type: "Raid",
+      isComingSoon: true,
+    },
     {
       id: 1,
       title: "The Legend of EXP",
@@ -51,24 +69,6 @@ const MemoriesScreen = () => {
           content: "When BTR and EXP decided to merge, the game developers limited migration spots. So they had to do it in two waves—first BTR, then EXP, along with some new recruits from other servers. It took a few months but BTX was finally born—not just a big alliance, but a stable, friendly community of players who valued loyalty and friendship."
         }
       ]
-    },
-    {
-      id: 2,
-      title: "Larnak's Lost GH",
-      description: "The legendary moment when Larnak lost his GH in the most unexpected way. A tale that will be told for generations.",
-      image: "https://images.pexels.com/photos/1152854/pexels-photo-1152854.jpeg",
-      date: "Season 7",
-      type: "Epic Fail",
-      isComingSoon: false,
-    },
-    {
-      id: 3,
-      title: "Midnight Raid Success",
-      description: "That 3 AM raid that caught everyone by surprise. Pure chaos and pure victory.",
-      image: "https://images.pexels.com/photos/1612461/pexels-photo-1612461.jpeg",
-      date: "Season 8",
-      type: "Raid",
-      isComingSoon: true,
     },
     {
       id: 4,
