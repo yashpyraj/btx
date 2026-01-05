@@ -73,7 +73,7 @@ const MemoriesScreen = () => {
     {
       id: 4,
       title: "ROW League Tournament",
-      description: "BTX was second in tournament after winning with good coordinated alliance and making the way to finals. We lost to NA but we will come back stronger.",
+      description: "BTX secured second place in the ROW League through exceptional teamwork and strategic alliances, fighting our way to the finals. Though we fell to NA in the championship match, this defeat only fuels our determination to rise stronger.",
       image: "https://images.pexels.com/photos/3621344/pexels-photo-3621344.jpeg",
       date: "Season 10",
       type: "Tournament",
