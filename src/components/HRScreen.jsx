@@ -89,6 +89,14 @@ const HRScreen = () => {
 
     if (!error && data) {
       setSubmittedTicket(data);
+      setFormData({
+        player_name: "",
+        player_id: "",
+        ticket_type: "request",
+        subject: "",
+        description: "",
+        priority: "normal",
+      });
       setActiveView("success");
     }
   };
