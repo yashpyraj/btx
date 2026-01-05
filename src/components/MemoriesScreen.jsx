@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { IoArrowBack, IoClose, IoHeart, IoHeartOutline } from "react-icons/io5";
+import { IoArrowBack, IoClose, IoHeart, IoHeartOutline, IoChevronDown, IoChevronUp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import AnimatedTitle from "./AnimatedTitle";
 
 const MemoriesScreen = () => {
   const navigate = useNavigate();
   const [likedMemories, setLikedMemories] = useState(new Set());
+  const [isExpCardExpanded, setIsExpCardExpanded] = useState(true);
 
   const toggleLike = (id) => {
     setLikedMemories((prev) => {
@@ -177,6 +178,21 @@ const MemoriesScreen = () => {
                     <h3 className="text-2xl font-zentry font-black text-white">
                       {memory.title}
                     </h3>
+                    {memory.chapters && (
+                      <button
+                        onClick={() => setIsExpCardExpanded(!isExpCardExpanded)}
+                        className="flex items-center gap-2 px-4 py-2 bg-violet-600/30 hover:bg-violet-600/50 rounded-full transition-all duration-300 border border-violet-400/50"
+                      >
+                        <span className="text-sm font-semibold text-white">
+                          {isExpCardExpanded ? "Minimize" : "Expand"}
+                        </span>
+                        {isExpCardExpanded ? (
+                          <IoChevronUp className="text-white text-lg" />
+                        ) : (
+                          <IoChevronDown className="text-white text-lg" />
+                        )}
+                      </button>
+                    )}
                   </div>
 
                   {memory.chapters ? (
@@ -184,18 +200,20 @@ const MemoriesScreen = () => {
                       <p className="text-base text-white/80 font-circular-web leading-relaxed mb-4">
                         {memory.description}
                       </p>
-                      <div className="grid md:grid-cols-2 gap-6">
-                        {memory.chapters.map((chapter, index) => (
-                          <div key={index} className="bg-white/5 rounded-xl p-5 border border-violet-400/30 hover:border-violet-400/60 transition-all duration-300">
-                            <h4 className="text-lg font-zentry font-bold text-violet-300 mb-3">
-                              {chapter.title}
-                            </h4>
-                            <p className="text-sm text-white/70 font-circular-web leading-relaxed">
-                              {chapter.content}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
+                      {isExpCardExpanded && (
+                        <div className="grid md:grid-cols-2 gap-6 animate-fadeIn">
+                          {memory.chapters.map((chapter, index) => (
+                            <div key={index} className="bg-white/5 rounded-xl p-5 border border-violet-400/30 hover:border-violet-400/60 transition-all duration-300">
+                              <h4 className="text-lg font-zentry font-bold text-violet-300 mb-3">
+                                {chapter.title}
+                              </h4>
+                              <p className="text-sm text-white/70 font-circular-web leading-relaxed">
+                                {chapter.content}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p className="text-base text-white/80 font-circular-web mb-5 leading-relaxed">
