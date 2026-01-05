@@ -48,7 +48,6 @@ const HRAdmin = ({ onLogout }) => {
   const [warnings, setWarnings] = useState([]);
   const [notes, setNotes] = useState([]);
   const [tickets, setTickets] = useState([]);
-  const [calendarEvents, setCalendarEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("tickets");
   const [showAddForm, setShowAddForm] = useState(false);
@@ -89,7 +88,6 @@ const HRAdmin = ({ onLogout }) => {
     fetchWarnings();
     fetchNotes();
     fetchTickets();
-    fetchCalendarEvents();
   }, []);
 
   const fetchRecords = async () => {
@@ -138,16 +136,6 @@ const HRAdmin = ({ onLogout }) => {
     }
   };
 
-  const fetchCalendarEvents = async () => {
-    const { data, error } = await supabase
-      .from("calendar_events")
-      .select("*")
-      .order("start_date", { ascending: true });
-
-    if (!error && data) {
-      setCalendarEvents(data);
-    }
-  };
 
   const handleAddRecord = async (e) => {
     e.preventDefault();
@@ -543,23 +531,6 @@ const HRAdmin = ({ onLogout }) => {
     return warnings.filter((w) => w.warning_date === dateStr);
   };
 
-  const getCalendarEventsForDate = (date) => {
-    return calendarEvents.filter((event) => {
-      const eventStartDate = new Date(event.start_date);
-      const eventEndDate = event.end_date ? new Date(event.end_date) : eventStartDate;
-
-      const dateToCheck = new Date(date);
-      dateToCheck.setHours(0, 0, 0, 0);
-
-      const startDate = new Date(eventStartDate);
-      startDate.setHours(0, 0, 0, 0);
-
-      const endDate = new Date(eventEndDate);
-      endDate.setHours(0, 0, 0, 0);
-
-      return dateToCheck >= startDate && dateToCheck <= endDate;
-    });
-  };
 
   const renderCalendar = () => {
     const { daysInMonth, startingDay } = getDaysInMonth(currentMonth);
@@ -577,7 +548,6 @@ const HRAdmin = ({ onLogout }) => {
       const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
       const dayRecords = getRecordsForDate(date);
       const dayWarnings = getWarningsForDate(date);
-      const dayCalendarEvents = getCalendarEventsForDate(date);
       const isToday = new Date().toDateString() === date.toDateString();
 
       days.push(
@@ -591,16 +561,7 @@ const HRAdmin = ({ onLogout }) => {
             {day}
           </div>
           <div className="space-y-1">
-            {dayCalendarEvents.slice(0, 1).map((event, idx) => (
-              <div
-                key={`c-${idx}`}
-                className="text-[10px] px-1.5 py-0.5 rounded text-white truncate"
-                style={{ backgroundColor: event.color }}
-              >
-                {event.title}
-              </div>
-            ))}
-            {dayRecords.slice(0, 1).map((record, idx) => {
+            {dayRecords.slice(0, 2).map((record, idx) => {
               const statusOption = STATUS_OPTIONS.find((s) => s.value === record.status);
               return (
                 <div
@@ -620,9 +581,9 @@ const HRAdmin = ({ onLogout }) => {
                 {warning.player_name}
               </div>
             ))}
-            {(dayCalendarEvents.length + dayRecords.length + dayWarnings.length > 3) && (
+            {(dayRecords.length + dayWarnings.length > 3) && (
               <div className="text-[10px] text-white/50">
-                +{dayCalendarEvents.length + dayRecords.length + dayWarnings.length - 3} more
+                +{dayRecords.length + dayWarnings.length - 3} more
               </div>
             )}
           </div>
@@ -667,10 +628,6 @@ const HRAdmin = ({ onLogout }) => {
 
         <div className="flex items-center gap-6 mt-4 pt-4 border-t border-white/10 flex-wrap">
           <div className="text-sm text-white/60">Legend:</div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-blue-500" />
-            <span className="text-xs text-white/60">Calendar Event</span>
-          </div>
           {STATUS_OPTIONS.map((status) => (
             <div key={status.value} className="flex items-center gap-2">
               <div className={`w-3 h-3 rounded ${status.color}`} />
