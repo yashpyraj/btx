@@ -72,6 +72,15 @@ const MemoriesScreen = () => {
     },
     {
       id: 4,
+      title: "ROW League Tournament",
+      description: "BTX was second in tournament after winning with good coordinated alliance and making the way to finals. We lost to NA but we will come back stronger.",
+      image: "https://images.pexels.com/photos/3621344/pexels-photo-3621344.jpeg",
+      date: "Season 10",
+      type: "Tournament",
+      isComingSoon: false,
+    },
+    {
+      id: 5,
       title: "Championship Win",
       description: "The day we became champions. All the hard work paid off in glory.",
       image: "https://images.pexels.com/photos/1337380/pexels-photo-1337380.jpeg",
