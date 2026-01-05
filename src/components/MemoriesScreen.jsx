@@ -31,6 +31,15 @@ const MemoriesScreen = () => {
       isComingSoon: false,
     },
     {
+      id: 4,
+      title: "ROW League Tournament",
+      description: "BTX secured second place in the ROW League through exceptional teamwork and strategic alliances, fighting our way to the finals. Though we fell to NA in the championship match, this defeat only fuels our determination to rise stronger.",
+      image: "https://images.pexels.com/photos/3621344/pexels-photo-3621344.jpeg",
+      date: "Season 10",
+      type: "Tournament",
+      isComingSoon: false,
+    },
+    {
       id: 3,
       title: "Midnight Raid Success",
       description: "That 3 AM raid that caught everyone by surprise. Pure chaos and pure victory.",
@@ -69,15 +78,6 @@ const MemoriesScreen = () => {
           content: "When BTR and EXP decided to merge, the game developers limited migration spots. So they had to do it in two waves—first BTR, then EXP, along with some new recruits from other servers. It took a few months but BTX was finally born—not just a big alliance, but a stable, friendly community of players who valued loyalty and friendship."
         }
       ]
-    },
-    {
-      id: 4,
-      title: "ROW League Tournament",
-      description: "BTX secured second place in the ROW League through exceptional teamwork and strategic alliances, fighting our way to the finals. Though we fell to NA in the championship match, this defeat only fuels our determination to rise stronger.",
-      image: "https://images.pexels.com/photos/3621344/pexels-photo-3621344.jpeg",
-      date: "Season 10",
-      type: "Tournament",
-      isComingSoon: false,
     },
     {
       id: 5,
