@@ -6,7 +6,7 @@ import AnimatedTitle from "./AnimatedTitle";
 const MemoriesScreen = () => {
   const navigate = useNavigate();
   const [likedMemories, setLikedMemories] = useState(new Set());
-  const [isExpCardExpanded, setIsExpCardExpanded] = useState(false);
+  const [expandedCards, setExpandedCards] = useState(new Set());
 
   const toggleLike = (id) => {
     setLikedMemories((prev) => {
@@ -20,7 +20,54 @@ const MemoriesScreen = () => {
     });
   };
 
+  const toggleExpand = (id) => {
+    setExpandedCards((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
   const memories = [
+    {
+      id: 6,
+      title: "BTR: The Complete War Chronicle",
+      description: "From snoozefest beginnings to legendary last stands - the untold story of BTR's most epic battles.",
+      image: "https://images.pexels.com/photos/163431/machine-gun-historic-firearms-163431.jpeg",
+      date: "Season 1-6",
+      type: "War Chronicle",
+      isComingSoon: false,
+      chapters: [
+        {
+          title: "Season 1: The Great Snoozefest",
+          content: "Our legendary debut... was anything but legendary. We started 5 days late (classic BTR punctuality), and honestly? Total snoozefest. But hey, someone had to be first to T5, and Soren said 'fine, I'll do it myself.' The rest of us were just vibing, completely unaware we were about to become war criminals in future seasons."
+        },
+        {
+          title: "Season 2: EDS - The Month-Long Grudge Match",
+          content: "This is where things got SPICY. One full month of non-stop warfare against EDS. They had more T5s, we had more caffeine. Every single zone was contested like it was the last piece of pizza at a party. It could've gone either way, but somehow we clutched it. Plot twist: This season made a bunch of random kingdoms hate BTX forever. Why? No clue. We even gave them dragon zone farming areas and they STILL complained about keep merits. Some people just can't be pleased."
+        },
+        {
+          title: "Season 3: EXP & HY - The Boss Battle",
+          content: "Remember when EXP and HY teamed up? Yeah, that was tough. Like Dark Souls boss fight tough. The map is still burned into our memories (and our nightmares). But you know what they say - what doesn't kill you makes you stronger. Or in our case, what doesn't kill you makes you want to merge with them eventually because respect."
+        },
+        {
+          title: "Season 4: Team Rocket Blasts Off Again",
+          content: "Team Rocket showed up with Soju, Enchantress, and the whole Dragonsis crew. They looked HUGE on paper - like final boss huge. But then the Dragonsis group had some 'creative differences' (aka rage quit), and suddenly the impossible became possible. We actually won this thing. Sometimes your enemies defeat themselves, and we're not too proud to take the W."
+        },
+        {
+          title: "Season 5: Knight in Shining Armor Arc",
+          content: "This was straight out of an anime. EXP was getting absolutely DEMOLISHED by ROG and their goons - like 2v1 gangbanged harder than a raid boss. We rode in during the last Ancient Fortress like knights saving the princess, helped them recover, and the friendship power-up was real. This is probably when everyone realized BTR and EXP were meant to be together. Cue the romantic music."
+        },
+        {
+          title: "Season 6: The Betrayal - This Is Sparta!",
+          content: "THE LEGENDARY SEASON. Picture this: 88 vs EVERYONE. NN, F2P, A2G, and that snake Chinese alliance that backstabbed us (we don't say their name, they know who they are). This was literally 300 Spartans level epic. We went down to ZERO mana. ZERO. Did we give up? HELL NO. Soju and I literally switched to Elf civilization mid-war just to spam Urag, teleporting Tobin in and out of cities like some kind of tactical Uber service. This season was pure chaos, pure pain, and pure glory. If you weren't there, you missed the greatest underdog story in BTX history."
+        }
+      ]
+    },
     {
       id: 2,
       title: "Larnak's Lost SLE",
@@ -189,13 +236,13 @@ const MemoriesScreen = () => {
                     </h3>
                     {memory.chapters && (
                       <button
-                        onClick={() => setIsExpCardExpanded(!isExpCardExpanded)}
+                        onClick={() => toggleExpand(memory.id)}
                         className="flex items-center gap-2 px-4 py-2 bg-violet-600/30 hover:bg-violet-600/50 rounded-full transition-all duration-300 border border-violet-400/50"
                       >
                         <span className="text-sm font-semibold text-white">
-                          {isExpCardExpanded ? "Minimize" : "Expand"}
+                          {expandedCards.has(memory.id) ? "Minimize" : "Expand"}
                         </span>
-                        {isExpCardExpanded ? (
+                        {expandedCards.has(memory.id) ? (
                           <IoChevronUp className="text-white text-lg" />
                         ) : (
                           <IoChevronDown className="text-white text-lg" />
@@ -209,7 +256,7 @@ const MemoriesScreen = () => {
                       <p className="text-base text-white/80 font-circular-web leading-relaxed mb-4">
                         {memory.description}
                       </p>
-                      {isExpCardExpanded && (
+                      {expandedCards.has(memory.id) && (
                         <div className="grid md:grid-cols-2 gap-6 animate-fadeIn">
                           {memory.chapters.map((chapter, index) => (
                             <div key={index} className="bg-white/5 rounded-xl p-5 border border-violet-400/30 hover:border-violet-400/60 transition-all duration-300">
