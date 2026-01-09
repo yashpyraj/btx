@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { IoClose, IoArrowBack } from "react-icons/io5";
 import {
-  GiTrident,
-  GiSkullCrossedBones,
-  GiCrown,
-  GiSwordman,
-  GiShield,
+  GiFlame,
+  GiCrackedMask,
+  GiSparkles,
 } from "react-icons/gi";
 import { FaBolt } from "react-icons/fa";
 import { TiLocationArrow } from "react-icons/ti";
@@ -27,17 +25,17 @@ const BTXTeamsScreen = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const greekTeams = [
+  const btxTeams = [
     {
-      id: "zeus",
-      name: "Team Zeus",
-      title: "Sky Dominators",
+      id: "blaze",
+      name: "Team Blaze",
+      title: "Fire Warriors",
       description:
-        "Masters of lightning and thunder, commanding the heavens with divine power and strategic supremacy.",
-      icon: <FaBolt className="text-4xl text-yellow-400" />,
-      color: "from-yellow-500/30 to-orange-500/30",
-      borderColor: "border-yellow-400",
-      bgGradient: "from-yellow-900/20 via-orange-900/20 to-yellow-900/20",
+        "Fierce fighters with burning passion, wielding flames of determination and unstoppable force.",
+      icon: <GiFlame className="text-4xl text-orange-400" />,
+      color: "from-orange-500/30 to-red-500/30",
+      borderColor: "border-orange-400",
+      bgGradient: "from-orange-900/20 via-red-900/20 to-orange-900/20",
       image:
         "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg",
       members: [
@@ -79,6 +77,27 @@ const BTXTeamsScreen = () => {
         "ᵇᵗˣ Cute Toes Kay",
         "Humble Hypraa",
         "YotaTacoma",
+      ],
+      stats: {
+        victories: 142,
+        winRate: "88%",
+        rank: "Elite Tier",
+        specialty: "Aggressive Offense",
+      },
+    },
+    {
+      id: "ash",
+      name: "Team Ash",
+      title: "Shadow Masters",
+      description:
+        "Silent and deadly, moving through the shadows with precision strikes and tactical brilliance.",
+      icon: <GiCrackedMask className="text-4xl text-gray-400" />,
+      color: "from-gray-500/30 to-slate-500/30",
+      borderColor: "border-gray-400",
+      bgGradient: "from-gray-900/20 via-slate-900/20 to-gray-900/20",
+      image:
+        "https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg",
+      members: [
         "Ｆｌｅｘｉｅ",
         "ˣᴶᴸ",
         "ᵁʷᵁ AryaHornigold",
@@ -91,27 +110,6 @@ const BTXTeamsScreen = () => {
         "Cаstiel",
         "BetterCall grimJJ",
         "ᵘᵒᵘHayulz",
-      ],
-      stats: {
-        victories: 156,
-        winRate: "89%",
-        rank: "Divine Tier",
-        specialty: "Aerial Combat",
-      },
-    },
-    {
-      id: "poseidon",
-      name: "Team Poseidon",
-      title: "Ocean Rulers",
-      description:
-        "Lords of the seas and earthquakes, wielding the power of tsunamis and controlling the depths of battle.",
-      icon: <GiTrident className="text-4xl text-blue-400" />,
-      color: "from-blue-500/30 to-cyan-500/30",
-      borderColor: "border-blue-400",
-      bgGradient: "from-blue-900/20 via-cyan-900/20 to-blue-900/20",
-      image:
-        "https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg",
-      members: [
         "BLIИK",
         "S O R E N",
         "lIIIlIlllIlIllI",
@@ -138,6 +136,27 @@ const BTXTeamsScreen = () => {
         "NolanCAV",
         "ᵂᴸ YAZᴱᴱᴰ气",
         "RadouX",
+      ],
+      stats: {
+        victories: 138,
+        winRate: "85%",
+        rank: "Elite Tier",
+        specialty: "Stealth Operations",
+      },
+    },
+    {
+      id: "nova",
+      name: "Team Nova",
+      title: "Celestial Guardians",
+      description:
+        "Radiant warriors harnessing cosmic energy, shining bright with explosive power and strategic precision.",
+      icon: <GiSparkles className="text-4xl text-cyan-400" />,
+      color: "from-cyan-500/30 to-blue-500/30",
+      borderColor: "border-cyan-400",
+      bgGradient: "from-cyan-900/20 via-blue-900/20 to-cyan-900/20",
+      image:
+        "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg",
+      members: [
         "TheDeeTee",
         "Exquisite94",
         "SNEAK1453",
@@ -163,27 +182,6 @@ const BTXTeamsScreen = () => {
         "NolanINF",
         "Zeidrichsama",
         "ĐặngDanh ᵛᶰ㋡",
-      ],
-      stats: {
-        victories: 142,
-        winRate: "85%",
-        rank: "Divine Tier",
-        specialty: "Naval Warfare",
-      },
-    },
-    {
-      id: "hades",
-      name: "Team Hades",
-      title: "Underworld Champions",
-      description:
-        "Rulers of the underworld and shadows, commanding dark magic and the souls of fallen warriors.",
-      icon: <GiSkullCrossedBones className="text-4xl text-purple-400" />,
-      color: "from-purple-500/30 to-red-500/30",
-      borderColor: "border-purple-400",
-      bgGradient: "from-purple-900/20 via-red-900/20 to-purple-900/20",
-      image:
-        "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg",
-      members: [
         "Humble Soju",
         "Joker7even",
         "Ｌ Ｉ Ａㆆᴗㆆ",
@@ -196,6 +194,27 @@ const BTXTeamsScreen = () => {
         "ᵂᴸSOLO LEVELING",
         "ᵘᵒᵘʟɪʙʀᴀᴅᴇʟ",
         "ᵂᴸDooM",
+      ],
+      stats: {
+        victories: 134,
+        winRate: "84%",
+        rank: "Elite Tier",
+        specialty: "Strategic Control",
+      },
+    },
+    {
+      id: "bolt",
+      name: "Team Bolt",
+      title: "Lightning Strikers",
+      description:
+        "Swift and electrifying, striking with incredible speed and overwhelming power in every battle.",
+      icon: <FaBolt className="text-4xl text-yellow-400" />,
+      color: "from-yellow-500/30 to-amber-500/30",
+      borderColor: "border-yellow-400",
+      bgGradient: "from-yellow-900/20 via-amber-900/20 to-yellow-900/20",
+      image:
+        "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg",
+      members: [
         "ᵂᴸ Slayゝ",
         "Qatarson",
         "boscat",
@@ -237,10 +256,10 @@ const BTXTeamsScreen = () => {
         "SugarWoogy",
       ],
       stats: {
-        victories: 134,
+        victories: 130,
         winRate: "82%",
-        rank: "Divine Tier",
-        specialty: "Psychological Warfare",
+        rank: "Elite Tier",
+        specialty: "Speed Tactics",
       },
     },
   ];
@@ -312,29 +331,33 @@ const BTXTeamsScreen = () => {
 
         <div className="relative z-10 text-center px-4">
           <AnimatedTitle
-            title="<b>Legendary</b> Greek <br /> Mythology <b>Teams</b>"
+            title="<b>Elite</b> Battle <br /> Force <b>Teams</b>"
             containerClass="!text-white mb-8 drop-shadow-2xl"
           />
 
           <div className="flex flex-wrap justify-center gap-4 mb-8">
             <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/30">
               <div className="flex items-center gap-2">
+                <GiFlame className="text-white text-xl" />
+                <span className="text-white font-zentry font-bold">Blaze</span>
+              </div>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/30">
+              <div className="flex items-center gap-2">
+                <GiCrackedMask className="text-white text-xl" />
+                <span className="text-white font-zentry font-bold">Ash</span>
+              </div>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/30">
+              <div className="flex items-center gap-2">
+                <GiSparkles className="text-white text-xl" />
+                <span className="text-white font-zentry font-bold">Nova</span>
+              </div>
+            </div>
+            <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/30">
+              <div className="flex items-center gap-2">
                 <FaBolt className="text-white text-xl" />
-                <span className="text-white font-zentry font-bold">Zeus</span>
-              </div>
-            </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/30">
-              <div className="flex items-center gap-2">
-                <GiTrident className="text-white text-xl" />
-                <span className="text-white font-zentry font-bold">
-                  Poseidon
-                </span>
-              </div>
-            </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 border border-white/30">
-              <div className="flex items-center gap-2">
-                <GiSkullCrossedBones className="text-white text-xl" />
-                <span className="text-white font-zentry font-bold">Hades</span>
+                <span className="text-white font-zentry font-bold">Bolt</span>
               </div>
             </div>
           </div>
@@ -345,7 +368,7 @@ const BTXTeamsScreen = () => {
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="space-y-16">
-            {greekTeams.map((team, index) => (
+            {btxTeams.map((team, index) => (
               <motion.div
                 key={team.id}
                 className={`bg-gradient-to-br ${team.bgGradient} rounded-3xl border-2 ${team.borderColor} overflow-hidden shadow-2xl`}
