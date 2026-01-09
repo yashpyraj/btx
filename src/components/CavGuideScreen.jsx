@@ -503,7 +503,7 @@ const CavGuideScreen = () => {
                             <div className="flex gap-4">
                               <div className="text-center">
                                 <div
-                                  className="w-28 h-28 bg-white/10 rounded-xl border-2 border-white/30 flex items-center justify-center cursor-pointer hover:border-white/60 hover:scale-105 transition-all duration-300 group-hover:shadow-2xl overflow-hidden"
+                                  className="w-28 h-28 lg:w-48 lg:h-48 bg-white/10 rounded-xl border-2 border-white/30 flex items-center justify-center cursor-pointer hover:border-white/60 hover:scale-105 transition-all duration-300 group-hover:shadow-2xl overflow-hidden"
                                   onClick={() =>
                                     setSelectedHero({ ...hero, type: "hero" })
                                   }
@@ -530,7 +530,7 @@ const CavGuideScreen = () => {
 
                               <div className="text-center">
                                 <div
-                                  className="w-28 h-28 bg-white/10 rounded-xl border-2 border-white/30 flex items-center justify-center cursor-pointer hover:border-white/60 hover:scale-105 transition-all duration-300 group-hover:shadow-2xl overflow-hidden"
+                                  className="w-28 h-28 lg:w-48 lg:h-48 bg-white/10 rounded-xl border-2 border-white/30 flex items-center justify-center cursor-pointer hover:border-white/60 hover:scale-105 transition-all duration-300 group-hover:shadow-2xl overflow-hidden"
                                   onClick={() =>
                                     setSelectedHero({ ...hero, type: "talent" })
                                   }
