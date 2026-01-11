@@ -647,11 +647,9 @@ const WeekView = ({ currentDate, events, filterCategory, onEventClick }) => {
 
   const formatEventTime = (dateStr) => {
     const date = new Date(dateStr);
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
   };
 
   return (
