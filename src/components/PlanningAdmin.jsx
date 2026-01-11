@@ -20,6 +20,7 @@ const CATEGORIES = [
   { value: "townhall", label: "town hall", color: "#3b82f6" },
   { value: "passopening", label: "Pass opening", color: "#10b981" },
   { value: "statue", label: "statue", color: "#f59e0b" },
+  { value: "behemoths", label: "behemoths", color: "#8b5cf6" },
 ];
 
 const ADMIN_PIN = "1234";
