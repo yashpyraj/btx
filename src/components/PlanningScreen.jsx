@@ -17,11 +17,10 @@ import {
 } from "lucide-react";
 
 const CATEGORIES = [
-  { value: "event", label: "Event", color: "#3b82f6" },
-  { value: "meeting", label: "Meeting", color: "#10b981" },
-  { value: "reminder", label: "Reminder", color: "#f59e0b" },
-  { value: "deadline", label: "Deadline", color: "#ef4444" },
-  { value: "holiday", label: "Holiday", color: "#8b5cf6" },
+  { value: "row", label: "ROW", color: "#ef4444" },
+  { value: "townhall", label: "town hall", color: "#3b82f6" },
+  { value: "passopening", label: "Pass opening", color: "#10b981" },
+  { value: "statue", label: "statue", color: "#f59e0b" },
 ];
 
 const MONTHS = [
