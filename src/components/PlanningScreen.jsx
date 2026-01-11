@@ -145,8 +145,43 @@ const PlanningScreen = () => {
     );
   };
 
+  const navigateWeek = (direction) => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() + (direction * 7));
+    setCurrentDate(newDate);
+  };
+
+  const handleNavigation = (direction) => {
+    if (viewMode === "week") {
+      navigateWeek(direction);
+    } else {
+      navigateMonth(direction);
+    }
+  };
+
   const goToToday = () => {
     setCurrentDate(new Date());
+  };
+
+  const getDateRangeLabel = () => {
+    if (viewMode === "week") {
+      const start = new Date(currentDate);
+      const day = start.getDay();
+      start.setDate(start.getDate() - day);
+
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+
+      if (start.getMonth() === end.getMonth()) {
+        return `${MONTHS[start.getMonth()]} ${start.getDate()}-${end.getDate()}, ${start.getFullYear()}`;
+      } else if (start.getFullYear() === end.getFullYear()) {
+        return `${MONTHS[start.getMonth()]} ${start.getDate()} - ${MONTHS[end.getMonth()]} ${end.getDate()}, ${start.getFullYear()}`;
+      } else {
+        return `${MONTHS[start.getMonth()]} ${start.getDate()}, ${start.getFullYear()} - ${MONTHS[end.getMonth()]} ${end.getDate()}, ${end.getFullYear()}`;
+      }
+    } else {
+      return `${MONTHS[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+    }
   };
 
   const takeScreenshot = async () => {
@@ -246,20 +281,20 @@ const PlanningScreen = () => {
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => navigateMonth(-1)}
+                          onClick={() => handleNavigation(-1)}
                           className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all"
                         >
                           <ChevronLeft size={20} />
                         </button>
                         <button
-                          onClick={() => navigateMonth(1)}
+                          onClick={() => handleNavigation(1)}
                           className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all"
                         >
                           <ChevronRight size={20} />
                         </button>
                       </div>
                       <h2 className="text-xl md:text-2xl font-bold text-white">
-                        {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
+                        {getDateRangeLabel()}
                       </h2>
                       <button
                         onClick={goToToday}
