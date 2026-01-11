@@ -107,13 +107,18 @@ const PlanningAdmin = () => {
     const startDate = new Date(event.start_date);
     const endDate = event.end_date ? new Date(event.end_date) : null;
 
+    const startHours = startDate.getUTCHours().toString().padStart(2, '0');
+    const startMinutes = startDate.getUTCMinutes().toString().padStart(2, '0');
+    const endHours = endDate ? endDate.getUTCHours().toString().padStart(2, '0') : '';
+    const endMinutes = endDate ? endDate.getUTCMinutes().toString().padStart(2, '0') : '';
+
     setFormData({
       title: event.title,
       description: event.description || "",
       start_date: startDate.toISOString().split("T")[0],
-      start_time: startDate.toTimeString().slice(0, 5),
+      start_time: `${startHours}:${startMinutes}`,
       end_date: endDate ? endDate.toISOString().split("T")[0] : "",
-      end_time: endDate ? endDate.toTimeString().slice(0, 5) : "",
+      end_time: endDate ? `${endHours}:${endMinutes}` : "",
       all_day: event.all_day || false,
       category: event.category || "row",
       color: event.color || "#ef4444",
@@ -128,14 +133,14 @@ const PlanningAdmin = () => {
     setErrorMessage("");
 
     const startDateTime = formData.all_day
-      ? `${formData.start_date}T00:00:00`
-      : `${formData.start_date}T${formData.start_time}:00`;
+      ? `${formData.start_date}T00:00:00Z`
+      : `${formData.start_date}T${formData.start_time}:00Z`;
 
     let endDateTime = null;
     if (formData.end_date) {
       endDateTime = formData.all_day
-        ? `${formData.end_date}T23:59:59`
-        : `${formData.end_date}T${formData.end_time || formData.start_time}:00`;
+        ? `${formData.end_date}T23:59:59Z`
+        : `${formData.end_date}T${formData.end_time || formData.start_time}:00Z`;
     }
 
     const eventData = {
@@ -197,22 +202,20 @@ const PlanningAdmin = () => {
 
   const formatDateTime = (dateStr, allDay) => {
     const date = new Date(dateStr);
-    if (allDay) {
-      return date.toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-    }
-    return date.toLocaleString("en-US", {
+    const dateFormatted = date.toLocaleDateString("en-US", {
       weekday: "short",
       month: "short",
       day: "numeric",
       year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
     });
+
+    if (allDay) {
+      return dateFormatted;
+    }
+
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    return `${dateFormatted} ${hours}:${minutes} UTC`;
   };
 
   if (!isAuthenticated) {
@@ -593,7 +596,7 @@ const PlanningAdmin = () => {
 
                 <div>
                   <label className="block text-sm text-white/60 mb-2">
-                    Start Time {formData.all_day && "(disabled for all-day)"}
+                    Start Time (UTC, 24h) {formData.all_day && "(disabled for all-day)"}
                   </label>
                   <input
                     type="time"
@@ -619,7 +622,7 @@ const PlanningAdmin = () => {
 
                 <div>
                   <label className="block text-sm text-white/60 mb-2">
-                    End Time {formData.all_day && "(disabled for all-day)"}
+                    End Time (UTC, 24h) {formData.all_day && "(disabled for all-day)"}
                   </label>
                   <input
                     type="time"

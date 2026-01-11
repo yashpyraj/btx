@@ -164,11 +164,9 @@ const PlanningScreen = () => {
 
   const formatTime = (dateStr) => {
     const date = new Date(dateStr);
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes} UTC`;
   };
 
   const formatEventDate = (dateStr) => {
@@ -606,10 +604,10 @@ const WeekView = ({ currentDate, events, filterCategory, onEventClick }) => {
 
       const eventDate = new Date(event.start_date);
       const isSameDay =
-        eventDate.getDate() === date.getDate() &&
-        eventDate.getMonth() === date.getMonth() &&
-        eventDate.getFullYear() === date.getFullYear();
-      const isSameHour = eventDate.getHours() === hour;
+        eventDate.getUTCDate() === date.getDate() &&
+        eventDate.getUTCMonth() === date.getMonth() &&
+        eventDate.getUTCFullYear() === date.getFullYear();
+      const isSameHour = eventDate.getUTCHours() === hour;
       if (filterCategory === "all") return isSameDay && isSameHour;
       return isSameDay && isSameHour && event.category === filterCategory;
     });
@@ -710,7 +708,7 @@ const WeekView = ({ currentDate, events, filterCategory, onEventClick }) => {
           {hours.map((hour) => (
             <div key={hour} className="grid grid-cols-8 border-b border-white/5">
               <div className="p-2 text-white/40 text-xs text-right pr-4">
-                {hour === 0 ? "12 AM" : hour < 12 ? `${hour} AM` : hour === 12 ? "12 PM" : `${hour - 12} PM`}
+                {hour.toString().padStart(2, '0')}:00
               </div>
               {weekDays.map((date, i) => {
                 const hourEvents = getEventsForDateAndHour(date, hour);
@@ -750,11 +748,9 @@ const WeekView = ({ currentDate, events, filterCategory, onEventClick }) => {
 const EventModal = ({ event, onClose }) => {
   const formatTime = (dateStr) => {
     const date = new Date(dateStr);
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes} UTC`;
   };
 
   const formatDate = (dateStr) => {
