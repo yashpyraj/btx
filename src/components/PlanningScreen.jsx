@@ -602,6 +602,8 @@ const WeekView = ({ currentDate, events, filterCategory, onEventClick }) => {
 
   const getEventsForDateAndHour = (date, hour) => {
     return events.filter((event) => {
+      if (event.all_day) return false;
+
       const eventDate = new Date(event.start_date);
       const isSameDay =
         eventDate.getDate() === date.getDate() &&
@@ -613,6 +615,29 @@ const WeekView = ({ currentDate, events, filterCategory, onEventClick }) => {
     });
   };
 
+  const getAllDayEventsForDate = (date) => {
+    return events.filter((event) => {
+      if (!event.all_day) return false;
+
+      const eventStartDate = new Date(event.start_date);
+      const eventEndDate = event.end_date ? new Date(event.end_date) : eventStartDate;
+
+      const dateToCheck = new Date(date);
+      dateToCheck.setHours(0, 0, 0, 0);
+
+      const startDate = new Date(eventStartDate);
+      startDate.setHours(0, 0, 0, 0);
+
+      const endDate = new Date(eventEndDate);
+      endDate.setHours(0, 0, 0, 0);
+
+      const isInRange = dateToCheck >= startDate && dateToCheck <= endDate;
+
+      if (filterCategory === "all") return isInRange;
+      return isInRange && event.category === filterCategory;
+    });
+  };
+
   const isToday = (date) => {
     const today = new Date();
     return (
@@ -620,6 +645,15 @@ const WeekView = ({ currentDate, events, filterCategory, onEventClick }) => {
       date.getMonth() === today.getMonth() &&
       date.getFullYear() === today.getFullYear()
     );
+  };
+
+  const formatEventTime = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
   };
 
   return (
@@ -642,6 +676,36 @@ const WeekView = ({ currentDate, events, filterCategory, onEventClick }) => {
           ))}
         </div>
 
+        <div className="grid grid-cols-8 border-b border-white/10 bg-slate-800/50">
+          <div className="p-2 text-white/40 text-xs text-right pr-4">All Day</div>
+          {weekDays.map((date, i) => {
+            const allDayEvents = getAllDayEventsForDate(date);
+            return (
+              <div
+                key={i}
+                className={`p-1 min-h-[40px] border-l border-white/5 ${
+                  isToday(date) ? "bg-blue-500/5" : ""
+                }`}
+              >
+                {allDayEvents.map((event) => (
+                  <button
+                    key={event.id}
+                    onClick={() => onEventClick(event)}
+                    className="w-full text-left px-2 py-1 rounded text-xs font-medium truncate mb-1"
+                    style={{
+                      backgroundColor: `${event.color}30`,
+                      color: event.color,
+                      borderLeft: `2px solid ${event.color}`,
+                    }}
+                  >
+                    {event.title}
+                  </button>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+
         <div>
           {hours.map((hour) => (
             <div key={hour} className="grid grid-cols-8 border-b border-white/5">
@@ -661,14 +725,15 @@ const WeekView = ({ currentDate, events, filterCategory, onEventClick }) => {
                       <button
                         key={event.id}
                         onClick={() => onEventClick(event)}
-                        className="w-full text-left px-2 py-1 rounded text-xs font-medium truncate mb-1"
+                        className="w-full text-left px-2 py-1 rounded text-xs font-medium mb-1 hover:opacity-80 transition-opacity"
                         style={{
                           backgroundColor: `${event.color}30`,
                           color: event.color,
                           borderLeft: `2px solid ${event.color}`,
                         }}
                       >
-                        {event.title}
+                        <div className="font-semibold truncate">{event.title}</div>
+                        <div className="text-[10px] opacity-80">{formatEventTime(event.start_date)}</div>
                       </button>
                     ))}
                   </div>

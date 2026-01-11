@@ -591,18 +591,19 @@ const PlanningAdmin = () => {
                   />
                 </div>
 
-                {!formData.all_day && (
-                  <div>
-                    <label className="block text-sm text-white/60 mb-2">Start Time *</label>
-                    <input
-                      type="time"
-                      required={!formData.all_day}
-                      value={formData.start_time}
-                      onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  </div>
-                )}
+                <div>
+                  <label className="block text-sm text-white/60 mb-2">
+                    Start Time {formData.all_day && "(disabled for all-day)"}
+                  </label>
+                  <input
+                    type="time"
+                    required={!formData.all_day}
+                    value={formData.start_time}
+                    onChange={(e) => setFormData({ ...formData, start_time: e.target.value })}
+                    disabled={formData.all_day}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -616,17 +617,18 @@ const PlanningAdmin = () => {
                   />
                 </div>
 
-                {!formData.all_day && (
-                  <div>
-                    <label className="block text-sm text-white/60 mb-2">End Time</label>
-                    <input
-                      type="time"
-                      value={formData.end_time}
-                      onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  </div>
-                )}
+                <div>
+                  <label className="block text-sm text-white/60 mb-2">
+                    End Time {formData.all_day && "(disabled for all-day)"}
+                  </label>
+                  <input
+                    type="time"
+                    value={formData.end_time}
+                    onChange={(e) => setFormData({ ...formData, end_time: e.target.value })}
+                    disabled={formData.all_day}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-blue-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  />
+                </div>
               </div>
 
               <div>
