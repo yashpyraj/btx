@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Trophy, Swords, Shield, Users, Crown, Search, ChevronUp, ChevronDown, Server } from "lucide-react";
+import { ArrowLeft, Trophy, Swords, Shield, Users, Crown, Search, ChevronUp, ChevronDown, Server, X, Zap, Heart, Skull, Star, Target, TrendingUp, Award, Flame, Activity } from "lucide-react";
 
 const KvKStatsScreen = () => {
   const [allPlayers, setAllPlayers] = useState([]);
@@ -9,6 +9,7 @@ const KvKStatsScreen = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "highest_power", direction: "desc" });
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,17 +19,37 @@ const KvKStatsScreen = () => {
         const lines = text.split("\n");
         const headers = lines[0].split(",");
 
-        const serverIndex = headers.indexOf("home_server");
-        const highestPowerIndex = headers.indexOf("highest_power");
-        const nameIndex = headers.indexOf("name");
-        const allianceTagIndex = headers.indexOf("alliance_tag");
-        const powerIndex = headers.indexOf("power");
-        const unitsKilledIndex = headers.indexOf("units_killed");
-        const factionIndex = headers.indexOf("faction");
-        const killcountT5Index = headers.indexOf("killcount_t5");
-        const manaSpentIndex = headers.indexOf("mana_spent");
-        const unitsDeadIndex = headers.indexOf("units_dead");
-        const unitsHealedIndex = headers.indexOf("units_healed");
+        const columnIndexes = {
+          home_server: headers.indexOf("home_server"),
+          highest_power: headers.indexOf("highest_power"),
+          name: headers.indexOf("name"),
+          alliance_tag: headers.indexOf("alliance_tag"),
+          power: headers.indexOf("power"),
+          units_killed: headers.indexOf("units_killed"),
+          faction: headers.indexOf("faction"),
+          merits: headers.indexOf("merits"),
+          legion_power: headers.indexOf("legion_power"),
+          tech_power: headers.indexOf("tech_power"),
+          building_power: headers.indexOf("building_power"),
+          hero_power: headers.indexOf("hero_power"),
+          units_dead: headers.indexOf("units_dead"),
+          units_healed: headers.indexOf("units_healed"),
+          city_sieges: headers.indexOf("city_sieges"),
+          defeats: headers.indexOf("defeats"),
+          victories: headers.indexOf("victories"),
+          gold_spent: headers.indexOf("gold_spent"),
+          wood_spent: headers.indexOf("wood_spent"),
+          stone_spent: headers.indexOf("stone_spent"),
+          mana_spent: headers.indexOf("mana_spent"),
+          gems_spent: headers.indexOf("gems_spent"),
+          killcount_t5: headers.indexOf("killcount_t5"),
+          killcount_t4: headers.indexOf("killcount_t4"),
+          killcount_t3: headers.indexOf("killcount_t3"),
+          killcount_t2: headers.indexOf("killcount_t2"),
+          killcount_t1: headers.indexOf("killcount_t1"),
+          resources_given: headers.indexOf("resources_given"),
+          helps_given: headers.indexOf("helps_given"),
+        };
 
         const parsedData = [];
         const serverSet = new Set();
@@ -36,20 +57,38 @@ const KvKStatsScreen = () => {
         for (let i = 1; i < lines.length; i++) {
           if (!lines[i].trim()) continue;
           const values = lines[i].split(",");
-          const server = values[serverIndex];
+          const server = values[columnIndexes.home_server];
           if (server) {
             serverSet.add(server);
             parsedData.push({
-              name: values[nameIndex],
-              alliance_tag: values[allianceTagIndex],
-              power: parseInt(values[powerIndex]) || 0,
-              highest_power: parseInt(values[highestPowerIndex]) || 0,
-              units_killed: parseInt(values[unitsKilledIndex]) || 0,
-              faction: values[factionIndex],
-              killcount_t5: parseInt(values[killcountT5Index]) || 0,
-              mana_spent: parseInt(values[manaSpentIndex]) || 0,
-              units_dead: parseInt(values[unitsDeadIndex]) || 0,
-              units_healed: parseInt(values[unitsHealedIndex]) || 0,
+              name: values[columnIndexes.name],
+              alliance_tag: values[columnIndexes.alliance_tag],
+              power: parseInt(values[columnIndexes.power]) || 0,
+              highest_power: parseInt(values[columnIndexes.highest_power]) || 0,
+              units_killed: parseInt(values[columnIndexes.units_killed]) || 0,
+              faction: values[columnIndexes.faction],
+              merits: parseInt(values[columnIndexes.merits]) || 0,
+              legion_power: parseInt(values[columnIndexes.legion_power]) || 0,
+              tech_power: parseInt(values[columnIndexes.tech_power]) || 0,
+              building_power: parseInt(values[columnIndexes.building_power]) || 0,
+              hero_power: parseInt(values[columnIndexes.hero_power]) || 0,
+              units_dead: parseInt(values[columnIndexes.units_dead]) || 0,
+              units_healed: parseInt(values[columnIndexes.units_healed]) || 0,
+              city_sieges: parseInt(values[columnIndexes.city_sieges]) || 0,
+              defeats: parseInt(values[columnIndexes.defeats]) || 0,
+              victories: parseInt(values[columnIndexes.victories]) || 0,
+              gold_spent: parseInt(values[columnIndexes.gold_spent]) || 0,
+              wood_spent: parseInt(values[columnIndexes.wood_spent]) || 0,
+              stone_spent: parseInt(values[columnIndexes.stone_spent]) || 0,
+              mana_spent: parseInt(values[columnIndexes.mana_spent]) || 0,
+              gems_spent: parseInt(values[columnIndexes.gems_spent]) || 0,
+              killcount_t5: parseInt(values[columnIndexes.killcount_t5]) || 0,
+              killcount_t4: parseInt(values[columnIndexes.killcount_t4]) || 0,
+              killcount_t3: parseInt(values[columnIndexes.killcount_t3]) || 0,
+              killcount_t2: parseInt(values[columnIndexes.killcount_t2]) || 0,
+              killcount_t1: parseInt(values[columnIndexes.killcount_t1]) || 0,
+              resources_given: parseInt(values[columnIndexes.resources_given]) || 0,
+              helps_given: parseInt(values[columnIndexes.helps_given]) || 0,
               home_server: server,
             });
           }
@@ -295,7 +334,8 @@ const KvKStatsScreen = () => {
                   {filteredPlayers.map((player, index) => (
                     <tr
                       key={index}
-                      className="hover:bg-slate-700/20 transition-colors"
+                      className="hover:bg-slate-700/20 transition-colors cursor-pointer"
+                      onClick={() => setSelectedPlayer(player)}
                     >
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-center w-8 h-8">
@@ -362,6 +402,258 @@ const KvKStatsScreen = () => {
           </div>
         </div>
       </div>
+
+      {selectedPlayer && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={() => setSelectedPlayer(null)}
+        >
+          <div
+            className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl border border-amber-500/30 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 z-10 bg-gradient-to-r from-amber-500/20 via-slate-800 to-amber-500/20 border-b border-amber-500/30 p-6">
+              <button
+                onClick={() => setSelectedPlayer(null)}
+                className="absolute top-4 right-4 p-2 rounded-full bg-slate-700/50 hover:bg-slate-600/50 text-slate-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-900 text-2xl font-bold">
+                  {selectedPlayer.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-white">{selectedPlayer.name}</h2>
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className="px-3 py-1 bg-amber-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium">
+                      [{selectedPlayer.alliance_tag}]
+                    </span>
+                    <span className="px-3 py-1 bg-cyan-500/20 border border-cyan-500/30 rounded-full text-cyan-400 text-sm font-medium">
+                      Server {selectedPlayer.home_server}
+                    </span>
+                    {selectedPlayer.faction && (
+                      <span className="px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-full text-emerald-400 text-sm font-medium capitalize">
+                        {selectedPlayer.faction}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-xl p-4 border border-blue-500/30">
+                  <div className="flex items-center gap-2 text-blue-400 mb-2">
+                    <Shield className="w-5 h-5" />
+                    <span className="text-xs font-medium uppercase tracking-wide">Highest Power</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">{formatNumber(selectedPlayer.highest_power)}</p>
+                  <p className="text-xs text-slate-400 mt-1">Current: {formatNumber(selectedPlayer.power)}</p>
+                </div>
+                <div className="bg-gradient-to-br from-amber-500/20 to-amber-600/10 rounded-xl p-4 border border-amber-500/30">
+                  <div className="flex items-center gap-2 text-amber-400 mb-2">
+                    <Award className="w-5 h-5" />
+                    <span className="text-xs font-medium uppercase tracking-wide">Merits</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">{formatNumber(selectedPlayer.merits)}</p>
+                </div>
+                <div className="bg-gradient-to-br from-rose-500/20 to-rose-600/10 rounded-xl p-4 border border-rose-500/30">
+                  <div className="flex items-center gap-2 text-rose-400 mb-2">
+                    <Skull className="w-5 h-5" />
+                    <span className="text-xs font-medium uppercase tracking-wide">Units Dead</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">{formatNumber(selectedPlayer.units_dead)}</p>
+                </div>
+                <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 rounded-xl p-4 border border-emerald-500/30">
+                  <div className="flex items-center gap-2 text-emerald-400 mb-2">
+                    <Heart className="w-5 h-5" />
+                    <span className="text-xs font-medium uppercase tracking-wide">Units Healed</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">{formatNumber(selectedPlayer.units_healed)}</p>
+                </div>
+              </div>
+
+              <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <Swords className="w-5 h-5 text-red-400" />
+                  Kill Statistics
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-slate-300 font-medium">Total Units Killed</span>
+                      <span className="text-xl font-bold text-red-400">{formatNumber(selectedPlayer.units_killed)}</span>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-900 font-bold text-sm">T5</div>
+                          <span className="text-slate-300">Tier 5 Kills</span>
+                        </div>
+                        <span className="text-lg font-semibold text-amber-400">{formatNumber(selectedPlayer.killcount_t5)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center text-slate-900 font-bold text-sm">T4</div>
+                          <span className="text-slate-300">Tier 4 Kills</span>
+                        </div>
+                        <span className="text-lg font-semibold text-cyan-400">{formatNumber(selectedPlayer.killcount_t4)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-slate-900 font-bold text-sm">T3</div>
+                          <span className="text-slate-300">Tier 3 Kills</span>
+                        </div>
+                        <span className="text-lg font-semibold text-emerald-400">{formatNumber(selectedPlayer.killcount_t3)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-slate-900 font-bold text-sm">T2</div>
+                          <span className="text-slate-300">Tier 2 Kills</span>
+                        </div>
+                        <span className="text-lg font-semibold text-blue-400">{formatNumber(selectedPlayer.killcount_t2)}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center text-slate-900 font-bold text-sm">T1</div>
+                          <span className="text-slate-300">Tier 1 Kills</span>
+                        </div>
+                        <span className="text-lg font-semibold text-slate-400">{formatNumber(selectedPlayer.killcount_t1)}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <div className="relative w-48 h-48">
+                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                        {(() => {
+                          const total = selectedPlayer.killcount_t5 + selectedPlayer.killcount_t4 + selectedPlayer.killcount_t3 + selectedPlayer.killcount_t2 + selectedPlayer.killcount_t1;
+                          if (total === 0) return null;
+                          const tiers = [
+                            { value: selectedPlayer.killcount_t5, color: "#f59e0b" },
+                            { value: selectedPlayer.killcount_t4, color: "#06b6d4" },
+                            { value: selectedPlayer.killcount_t3, color: "#10b981" },
+                            { value: selectedPlayer.killcount_t2, color: "#3b82f6" },
+                            { value: selectedPlayer.killcount_t1, color: "#64748b" },
+                          ];
+                          let offset = 0;
+                          return tiers.map((tier, i) => {
+                            const pct = (tier.value / total) * 100;
+                            const strokeDasharray = `${pct} ${100 - pct}`;
+                            const strokeDashoffset = -offset;
+                            offset += pct;
+                            return (
+                              <circle
+                                key={i}
+                                cx="50"
+                                cy="50"
+                                r="40"
+                                fill="none"
+                                stroke={tier.color}
+                                strokeWidth="16"
+                                strokeDasharray={strokeDasharray}
+                                strokeDashoffset={strokeDashoffset}
+                                pathLength="100"
+                              />
+                            );
+                          });
+                        })()}
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span className="text-sm text-slate-400">Total</span>
+                        <span className="text-xl font-bold text-white">
+                          {formatNumber(selectedPlayer.killcount_t5 + selectedPlayer.killcount_t4 + selectedPlayer.killcount_t3 + selectedPlayer.killcount_t2 + selectedPlayer.killcount_t1)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 text-cyan-400 mb-2">
+                    <Zap className="w-4 h-4" />
+                    <span className="text-xs font-medium uppercase tracking-wide">Mana Spent</span>
+                  </div>
+                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.mana_spent)}</p>
+                </div>
+                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 text-amber-400 mb-2">
+                    <Star className="w-4 h-4" />
+                    <span className="text-xs font-medium uppercase tracking-wide">Gems Spent</span>
+                  </div>
+                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.gems_spent)}</p>
+                </div>
+                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 text-emerald-400 mb-2">
+                    <Trophy className="w-4 h-4" />
+                    <span className="text-xs font-medium uppercase tracking-wide">Victories</span>
+                  </div>
+                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.victories)}</p>
+                </div>
+                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 text-rose-400 mb-2">
+                    <Target className="w-4 h-4" />
+                    <span className="text-xs font-medium uppercase tracking-wide">Defeats</span>
+                  </div>
+                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.defeats)}</p>
+                </div>
+              </div>
+
+              <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-blue-400" />
+                  Power Breakdown
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-blue-400">{formatNumber(selectedPlayer.legion_power)}</p>
+                    <p className="text-xs text-slate-400 mt-1">Legion Power</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-emerald-400">{formatNumber(selectedPlayer.tech_power)}</p>
+                    <p className="text-xs text-slate-400 mt-1">Tech Power</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-amber-400">{formatNumber(selectedPlayer.building_power)}</p>
+                    <p className="text-xs text-slate-400 mt-1">Building Power</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-cyan-400">{formatNumber(selectedPlayer.hero_power)}</p>
+                    <p className="text-xs text-slate-400 mt-1">Hero Power</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 text-orange-400 mb-2">
+                    <Flame className="w-4 h-4" />
+                    <span className="text-xs font-medium uppercase tracking-wide">City Sieges</span>
+                  </div>
+                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.city_sieges)}</p>
+                </div>
+                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 text-emerald-400 mb-2">
+                    <Activity className="w-4 h-4" />
+                    <span className="text-xs font-medium uppercase tracking-wide">Resources Given</span>
+                  </div>
+                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.resources_given)}</p>
+                </div>
+                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 text-blue-400 mb-2">
+                    <Users className="w-4 h-4" />
+                    <span className="text-xs font-medium uppercase tracking-wide">Helps Given</span>
+                  </div>
+                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.helps_given)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
