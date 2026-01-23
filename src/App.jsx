@@ -16,6 +16,7 @@ const HRScreen = lazy(() => import("./components/HRScreen"));
 const PINProtectedAdmin = lazy(() => import("./components/PINProtectedAdmin"));
 const PlanningScreen = lazy(() => import("./components/PlanningScreen"));
 const PlanningAdmin = lazy(() => import("./components/PlanningAdmin"));
+const KvKStatsScreen = lazy(() => import("./components/KvKStatsScreen"));
 
 const LoadingFallback = () => (
   <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
@@ -119,6 +120,14 @@ function App() {
         element={
           <Suspense fallback={<LoadingFallback />}>
             <PlanningAdmin />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/kvk-stats"
+        element={
+          <Suspense fallback={<LoadingFallback />}>
+            <KvKStatsScreen />
           </Suspense>
         }
       />
