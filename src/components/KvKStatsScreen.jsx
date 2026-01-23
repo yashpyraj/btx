@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Trophy, Swords, Shield, Users, Crown, Search, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowLeft, Trophy, Swords, Shield, Users, Crown, Search, ChevronUp, ChevronDown, Server } from "lucide-react";
 
 const KvKStatsScreen = () => {
-  const [players, setPlayers] = useState([]);
+  const [allPlayers, setAllPlayers] = useState([]);
+  const [servers, setServers] = useState([]);
+  const [selectedServer, setSelectedServer] = useState("all");
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "highest_power", direction: "desc" });
@@ -29,10 +31,14 @@ const KvKStatsScreen = () => {
         const unitsHealedIndex = headers.indexOf("units_healed");
 
         const parsedData = [];
+        const serverSet = new Set();
+
         for (let i = 1; i < lines.length; i++) {
           if (!lines[i].trim()) continue;
           const values = lines[i].split(",");
-          if (values[serverIndex] === "99") {
+          const server = values[serverIndex];
+          if (server) {
+            serverSet.add(server);
             parsedData.push({
               name: values[nameIndex],
               alliance_tag: values[allianceTagIndex],
@@ -44,12 +50,17 @@ const KvKStatsScreen = () => {
               killcount_t4: parseInt(values[killcountT4Index]) || 0,
               units_dead: parseInt(values[unitsDeadIndex]) || 0,
               units_healed: parseInt(values[unitsHealedIndex]) || 0,
+              home_server: server,
             });
           }
         }
 
-        parsedData.sort((a, b) => b.highest_power - a.highest_power);
-        setPlayers(parsedData.slice(0, 200));
+        const sortedServers = Array.from(serverSet).sort((a, b) => parseInt(a) - parseInt(b));
+        setServers(sortedServers);
+        setAllPlayers(parsedData);
+        if (sortedServers.length > 0) {
+          setSelectedServer(sortedServers[0]);
+        }
         setLoading(false);
       } catch (error) {
         console.error("Error loading CSV:", error);
@@ -59,6 +70,15 @@ const KvKStatsScreen = () => {
 
     fetchData();
   }, []);
+
+  const players = useMemo(() => {
+    let filtered = selectedServer === "all"
+      ? allPlayers
+      : allPlayers.filter((p) => p.home_server === selectedServer);
+
+    filtered.sort((a, b) => b.highest_power - a.highest_power);
+    return filtered.slice(0, 200);
+  }, [allPlayers, selectedServer]);
 
   const formatNumber = (num) => {
     if (num >= 1000000000) return (num / 1000000000).toFixed(2) + "B";
@@ -74,18 +94,22 @@ const KvKStatsScreen = () => {
     }));
   };
 
-  const sortedPlayers = [...players].sort((a, b) => {
-    if (sortConfig.direction === "asc") {
-      return a[sortConfig.key] - b[sortConfig.key];
-    }
-    return b[sortConfig.key] - a[sortConfig.key];
-  });
+  const sortedPlayers = useMemo(() => {
+    return [...players].sort((a, b) => {
+      if (sortConfig.direction === "asc") {
+        return a[sortConfig.key] - b[sortConfig.key];
+      }
+      return b[sortConfig.key] - a[sortConfig.key];
+    });
+  }, [players, sortConfig]);
 
-  const filteredPlayers = sortedPlayers.filter(
-    (player) =>
-      player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      player.alliance_tag.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredPlayers = useMemo(() => {
+    return sortedPlayers.filter(
+      (player) =>
+        player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        player.alliance_tag.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [sortedPlayers, searchTerm]);
 
   const totalPower = players.reduce((sum, p) => sum + p.highest_power, 0);
   const totalKills = players.reduce((sum, p) => sum + p.units_killed, 0);
@@ -126,7 +150,7 @@ const KvKStatsScreen = () => {
           </Link>
           <h1 className="text-xl font-bold text-white flex items-center gap-2">
             <Crown className="w-6 h-6 text-amber-400" />
-            KvK Server 99 Stats
+            KvK Stats
           </h1>
           <div className="w-20"></div>
         </div>
@@ -134,11 +158,43 @@ const KvKStatsScreen = () => {
 
       <div className="pt-24 pb-12 px-4">
         <div className="max-w-7xl mx-auto">
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-2">
+              <Server className="w-5 h-5 text-amber-400" />
+              <span className="text-white font-medium">Select Server</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedServer("all")}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  selectedServer === "all"
+                    ? "bg-amber-500 text-slate-900"
+                    : "bg-slate-700/50 text-slate-300 hover:bg-slate-600/50"
+                }`}
+              >
+                All Servers
+              </button>
+              {servers.map((server) => (
+                <button
+                  key={server}
+                  onClick={() => setSelectedServer(server)}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    selectedServer === server
+                      ? "bg-amber-500 text-slate-900"
+                      : "bg-slate-700/50 text-slate-300 hover:bg-slate-600/50"
+                  }`}
+                >
+                  Server {server}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-gradient-to-br from-amber-500/20 to-amber-600/10 rounded-xl p-4 border border-amber-500/30">
               <div className="flex items-center gap-2 text-amber-400 mb-2">
                 <Users className="w-5 h-5" />
-                <span className="text-sm font-medium">Total Players</span>
+                <span className="text-sm font-medium">Players (Top 200)</span>
               </div>
               <p className="text-2xl font-bold text-white">{players.length}</p>
             </div>
@@ -192,6 +248,11 @@ const KvKStatsScreen = () => {
                     <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
                       Alliance
                     </th>
+                    {selectedServer === "all" && (
+                      <th className="px-4 py-3 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        Server
+                      </th>
+                    )}
                     <th
                       className="px-4 py-3 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider cursor-pointer hover:text-amber-400 transition-colors"
                       onClick={() => handleSort("highest_power")}
@@ -263,6 +324,13 @@ const KvKStatsScreen = () => {
                           {player.alliance_tag}
                         </span>
                       </td>
+                      {selectedServer === "all" && (
+                        <td className="px-4 py-3 text-center">
+                          <span className="px-2 py-1 bg-slate-600/50 rounded text-cyan-400 text-sm font-medium">
+                            {player.home_server}
+                          </span>
+                        </td>
+                      )}
                       <td className="px-4 py-3 text-right">
                         <span className="text-blue-400 font-semibold">{formatNumber(player.highest_power)}</span>
                       </td>
@@ -289,7 +357,8 @@ const KvKStatsScreen = () => {
           </div>
 
           <div className="mt-4 text-center text-slate-500 text-sm">
-            Showing top {filteredPlayers.length} players from Server 99 by Highest Power
+            Showing top {filteredPlayers.length} players
+            {selectedServer !== "all" ? ` from Server ${selectedServer}` : " across all servers"} by Highest Power
           </div>
         </div>
       </div>
