@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Trophy, Swords, Shield, Users, Crown, Search, ChevronUp, ChevronDown, Server, X, Zap, Heart, Skull, Star, Target, TrendingUp, Award, Flame, Activity } from "lucide-react";
+import { ArrowLeft, Trophy, Swords, Shield, Users, Crown, Search, ChevronUp, ChevronDown, Server, X } from "lucide-react";
 
 const KvKStatsScreen = () => {
   const [allPlayers, setAllPlayers] = useState([]);
@@ -405,250 +405,86 @@ const KvKStatsScreen = () => {
 
       {selectedPlayer && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80"
           onClick={() => setSelectedPlayer(null)}
         >
           <div
-            className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl border border-amber-500/30 shadow-2xl"
+            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-slate-900 rounded-lg border border-slate-700"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 z-10 bg-gradient-to-r from-amber-500/20 via-slate-800 to-amber-500/20 border-b border-amber-500/30 p-6">
+            <div className="sticky top-0 z-10 bg-slate-800 border-b border-slate-700 px-6 py-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-white">{selectedPlayer.name}</h2>
+                <p className="text-sm text-slate-400">[{selectedPlayer.alliance_tag}] - Server {selectedPlayer.home_server}</p>
+              </div>
               <button
                 onClick={() => setSelectedPlayer(null)}
-                className="absolute top-4 right-4 p-2 rounded-full bg-slate-700/50 hover:bg-slate-600/50 text-slate-400 hover:text-white transition-colors"
+                className="p-2 rounded bg-slate-700 hover:bg-slate-600 text-slate-400 hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-900 text-2xl font-bold">
-                  {selectedPlayer.name.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-white">{selectedPlayer.name}</h2>
-                  <div className="flex items-center gap-3 mt-1">
-                    <span className="px-3 py-1 bg-amber-500/20 border border-amber-500/30 rounded-full text-amber-400 text-sm font-medium">
-                      [{selectedPlayer.alliance_tag}]
-                    </span>
-                    <span className="px-3 py-1 bg-cyan-500/20 border border-cyan-500/30 rounded-full text-cyan-400 text-sm font-medium">
-                      Server {selectedPlayer.home_server}
-                    </span>
-                    {selectedPlayer.faction && (
-                      <span className="px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-full text-emerald-400 text-sm font-medium capitalize">
-                        {selectedPlayer.faction}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
             </div>
 
-            <div className="p-6 space-y-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 rounded-xl p-4 border border-blue-500/30">
-                  <div className="flex items-center gap-2 text-blue-400 mb-2">
-                    <Shield className="w-5 h-5" />
-                    <span className="text-xs font-medium uppercase tracking-wide">Highest Power</span>
-                  </div>
-                  <p className="text-2xl font-bold text-white">{formatNumber(selectedPlayer.highest_power)}</p>
-                  <p className="text-xs text-slate-400 mt-1">Current: {formatNumber(selectedPlayer.power)}</p>
-                </div>
-                <div className="bg-gradient-to-br from-amber-500/20 to-amber-600/10 rounded-xl p-4 border border-amber-500/30">
-                  <div className="flex items-center gap-2 text-amber-400 mb-2">
-                    <Award className="w-5 h-5" />
-                    <span className="text-xs font-medium uppercase tracking-wide">Merits</span>
-                  </div>
-                  <p className="text-2xl font-bold text-white">{formatNumber(selectedPlayer.merits)}</p>
-                </div>
-                <div className="bg-gradient-to-br from-rose-500/20 to-rose-600/10 rounded-xl p-4 border border-rose-500/30">
-                  <div className="flex items-center gap-2 text-rose-400 mb-2">
-                    <Skull className="w-5 h-5" />
-                    <span className="text-xs font-medium uppercase tracking-wide">Units Dead</span>
-                  </div>
-                  <p className="text-2xl font-bold text-white">{formatNumber(selectedPlayer.units_dead)}</p>
-                </div>
-                <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 rounded-xl p-4 border border-emerald-500/30">
-                  <div className="flex items-center gap-2 text-emerald-400 mb-2">
-                    <Heart className="w-5 h-5" />
-                    <span className="text-xs font-medium uppercase tracking-wide">Units Healed</span>
-                  </div>
-                  <p className="text-2xl font-bold text-white">{formatNumber(selectedPlayer.units_healed)}</p>
-                </div>
-              </div>
+            <div className="p-6">
+              <table className="w-full text-sm">
+                <tbody className="divide-y divide-slate-700">
+                  <tr>
+                    <td className="py-3 text-slate-400">Highest Power</td>
+                    <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.highest_power)}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 text-slate-400">Current Power</td>
+                    <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.power)}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 text-slate-400">Merits</td>
+                    <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.merits)}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 text-slate-400">Units Dead</td>
+                    <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.units_dead)}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 text-slate-400">Units Healed</td>
+                    <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.units_healed)}</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 text-slate-400">Mana Spent</td>
+                    <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.mana_spent)}</td>
+                  </tr>
+                </tbody>
+              </table>
 
-              <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <Swords className="w-5 h-5 text-red-400" />
-                  Kill Statistics
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-slate-300 font-medium">Total Units Killed</span>
-                      <span className="text-xl font-bold text-red-400">{formatNumber(selectedPlayer.units_killed)}</span>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-900 font-bold text-sm">T5</div>
-                          <span className="text-slate-300">Tier 5 Kills</span>
-                        </div>
-                        <span className="text-lg font-semibold text-amber-400">{formatNumber(selectedPlayer.killcount_t5)}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center text-slate-900 font-bold text-sm">T4</div>
-                          <span className="text-slate-300">Tier 4 Kills</span>
-                        </div>
-                        <span className="text-lg font-semibold text-cyan-400">{formatNumber(selectedPlayer.killcount_t4)}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-slate-900 font-bold text-sm">T3</div>
-                          <span className="text-slate-300">Tier 3 Kills</span>
-                        </div>
-                        <span className="text-lg font-semibold text-emerald-400">{formatNumber(selectedPlayer.killcount_t3)}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-slate-900 font-bold text-sm">T2</div>
-                          <span className="text-slate-300">Tier 2 Kills</span>
-                        </div>
-                        <span className="text-lg font-semibold text-blue-400">{formatNumber(selectedPlayer.killcount_t2)}</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center text-slate-900 font-bold text-sm">T1</div>
-                          <span className="text-slate-300">Tier 1 Kills</span>
-                        </div>
-                        <span className="text-lg font-semibold text-slate-400">{formatNumber(selectedPlayer.killcount_t1)}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-center">
-                    <div className="relative w-48 h-48">
-                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                        {(() => {
-                          const total = selectedPlayer.killcount_t5 + selectedPlayer.killcount_t4 + selectedPlayer.killcount_t3 + selectedPlayer.killcount_t2 + selectedPlayer.killcount_t1;
-                          if (total === 0) return null;
-                          const tiers = [
-                            { value: selectedPlayer.killcount_t5, color: "#f59e0b" },
-                            { value: selectedPlayer.killcount_t4, color: "#06b6d4" },
-                            { value: selectedPlayer.killcount_t3, color: "#10b981" },
-                            { value: selectedPlayer.killcount_t2, color: "#3b82f6" },
-                            { value: selectedPlayer.killcount_t1, color: "#64748b" },
-                          ];
-                          let offset = 0;
-                          return tiers.map((tier, i) => {
-                            const pct = (tier.value / total) * 100;
-                            const strokeDasharray = `${pct} ${100 - pct}`;
-                            const strokeDashoffset = -offset;
-                            offset += pct;
-                            return (
-                              <circle
-                                key={i}
-                                cx="50"
-                                cy="50"
-                                r="40"
-                                fill="none"
-                                stroke={tier.color}
-                                strokeWidth="16"
-                                strokeDasharray={strokeDasharray}
-                                strokeDashoffset={strokeDashoffset}
-                                pathLength="100"
-                              />
-                            );
-                          });
-                        })()}
-                      </svg>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-sm text-slate-400">Total</span>
-                        <span className="text-xl font-bold text-white">
-                          {formatNumber(selectedPlayer.killcount_t5 + selectedPlayer.killcount_t4 + selectedPlayer.killcount_t3 + selectedPlayer.killcount_t2 + selectedPlayer.killcount_t1)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
-                  <div className="flex items-center gap-2 text-cyan-400 mb-2">
-                    <Zap className="w-4 h-4" />
-                    <span className="text-xs font-medium uppercase tracking-wide">Mana Spent</span>
-                  </div>
-                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.mana_spent)}</p>
-                </div>
-                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
-                  <div className="flex items-center gap-2 text-amber-400 mb-2">
-                    <Star className="w-4 h-4" />
-                    <span className="text-xs font-medium uppercase tracking-wide">Gems Spent</span>
-                  </div>
-                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.gems_spent)}</p>
-                </div>
-                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
-                  <div className="flex items-center gap-2 text-emerald-400 mb-2">
-                    <Trophy className="w-4 h-4" />
-                    <span className="text-xs font-medium uppercase tracking-wide">Victories</span>
-                  </div>
-                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.victories)}</p>
-                </div>
-                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
-                  <div className="flex items-center gap-2 text-rose-400 mb-2">
-                    <Target className="w-4 h-4" />
-                    <span className="text-xs font-medium uppercase tracking-wide">Defeats</span>
-                  </div>
-                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.defeats)}</p>
-                </div>
-              </div>
-
-              <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-blue-400" />
-                  Power Breakdown
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-blue-400">{formatNumber(selectedPlayer.legion_power)}</p>
-                    <p className="text-xs text-slate-400 mt-1">Legion Power</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-emerald-400">{formatNumber(selectedPlayer.tech_power)}</p>
-                    <p className="text-xs text-slate-400 mt-1">Tech Power</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-amber-400">{formatNumber(selectedPlayer.building_power)}</p>
-                    <p className="text-xs text-slate-400 mt-1">Building Power</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-cyan-400">{formatNumber(selectedPlayer.hero_power)}</p>
-                    <p className="text-xs text-slate-400 mt-1">Hero Power</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
-                  <div className="flex items-center gap-2 text-orange-400 mb-2">
-                    <Flame className="w-4 h-4" />
-                    <span className="text-xs font-medium uppercase tracking-wide">City Sieges</span>
-                  </div>
-                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.city_sieges)}</p>
-                </div>
-                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
-                  <div className="flex items-center gap-2 text-emerald-400 mb-2">
-                    <Activity className="w-4 h-4" />
-                    <span className="text-xs font-medium uppercase tracking-wide">Resources Given</span>
-                  </div>
-                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.resources_given)}</p>
-                </div>
-                <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
-                  <div className="flex items-center gap-2 text-blue-400 mb-2">
-                    <Users className="w-4 h-4" />
-                    <span className="text-xs font-medium uppercase tracking-wide">Helps Given</span>
-                  </div>
-                  <p className="text-xl font-bold text-white">{formatNumber(selectedPlayer.helps_given)}</p>
-                </div>
+              <div className="mt-6 pt-4 border-t border-slate-700">
+                <h3 className="text-white font-semibold mb-3">Kill Statistics</h3>
+                <table className="w-full text-sm">
+                  <tbody className="divide-y divide-slate-700">
+                    <tr>
+                      <td className="py-3 text-slate-400">Total Units Killed</td>
+                      <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.units_killed)}</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 text-slate-400">T5 Kills</td>
+                      <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.killcount_t5)}</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 text-slate-400">T4 Kills</td>
+                      <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.killcount_t4)}</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 text-slate-400">T3 Kills</td>
+                      <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.killcount_t3)}</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 text-slate-400">T2 Kills</td>
+                      <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.killcount_t2)}</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 text-slate-400">T1 Kills</td>
+                      <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.killcount_t1)}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
