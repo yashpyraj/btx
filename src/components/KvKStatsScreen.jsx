@@ -26,7 +26,7 @@ const KvKStatsScreen = () => {
         const unitsKilledIndex = headers.indexOf("units_killed");
         const factionIndex = headers.indexOf("faction");
         const killcountT5Index = headers.indexOf("killcount_t5");
-        const killcountT4Index = headers.indexOf("killcount_t4");
+        const manaSpentIndex = headers.indexOf("mana_spent");
         const unitsDeadIndex = headers.indexOf("units_dead");
         const unitsHealedIndex = headers.indexOf("units_healed");
 
@@ -47,7 +47,7 @@ const KvKStatsScreen = () => {
               units_killed: parseInt(values[unitsKilledIndex]) || 0,
               faction: values[factionIndex],
               killcount_t5: parseInt(values[killcountT5Index]) || 0,
-              killcount_t4: parseInt(values[killcountT4Index]) || 0,
+              mana_spent: parseInt(values[manaSpentIndex]) || 0,
               units_dead: parseInt(values[unitsDeadIndex]) || 0,
               units_healed: parseInt(values[unitsHealedIndex]) || 0,
               home_server: server,
@@ -114,7 +114,7 @@ const KvKStatsScreen = () => {
   const totalPower = players.reduce((sum, p) => sum + p.highest_power, 0);
   const totalKills = players.reduce((sum, p) => sum + p.units_killed, 0);
   const totalT5Kills = players.reduce((sum, p) => sum + p.killcount_t5, 0);
-  const totalT4Kills = players.reduce((sum, p) => sum + p.killcount_t4, 0);
+  const totalManaSpent = players.reduce((sum, p) => sum + p.mana_spent, 0);
 
   const SortIcon = ({ columnKey }) => {
     if (sortConfig.key !== columnKey) return null;
@@ -215,9 +215,9 @@ const KvKStatsScreen = () => {
             <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 rounded-xl p-4 border border-emerald-500/30">
               <div className="flex items-center gap-2 text-emerald-400 mb-2">
                 <Trophy className="w-5 h-5" />
-                <span className="text-sm font-medium">T5 + T4 Kills</span>
+                <span className="text-sm font-medium">Total Mana Spent</span>
               </div>
-              <p className="text-2xl font-bold text-white">{formatNumber(totalT5Kills + totalT4Kills)}</p>
+              <p className="text-2xl font-bold text-white">{formatNumber(totalManaSpent)}</p>
             </div>
           </div>
 
@@ -279,9 +279,9 @@ const KvKStatsScreen = () => {
                     </th>
                     <th
                       className="px-4 py-3 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider cursor-pointer hover:text-amber-400 transition-colors"
-                      onClick={() => handleSort("killcount_t4")}
+                      onClick={() => handleSort("mana_spent")}
                     >
-                      T4 Kills <SortIcon columnKey="killcount_t4" />
+                      Mana Spent <SortIcon columnKey="mana_spent" />
                     </th>
                     <th
                       className="px-4 py-3 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider cursor-pointer hover:text-amber-400 transition-colors"
@@ -344,7 +344,7 @@ const KvKStatsScreen = () => {
                         <span className="text-emerald-400">{formatNumber(player.killcount_t5)}</span>
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <span className="text-cyan-400">{formatNumber(player.killcount_t4)}</span>
+                        <span className="text-cyan-400">{formatNumber(player.mana_spent)}</span>
                       </td>
                       <td className="px-4 py-3 text-right">
                         <span className="text-rose-400">{formatNumber(player.units_dead)}</span>
