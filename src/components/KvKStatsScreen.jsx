@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search, ChevronUp, ChevronDown, X } from "lucide-react";
+import { ArrowLeft, Search, ChevronUp, ChevronDown, X, Sun, Moon } from "lucide-react";
 
 const KvKStatsScreen = () => {
   const [allPlayers, setAllPlayers] = useState([]);
@@ -10,6 +10,7 @@ const KvKStatsScreen = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: "highest_power", direction: "desc" });
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -166,7 +167,7 @@ const KvKStatsScreen = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+      <div className={`min-h-screen flex items-center justify-center ${isDark ? "bg-slate-900" : "bg-gray-100"}`}>
         <div className="three-body">
           <div className="three-body__dot"></div>
           <div className="three-body__dot"></div>
@@ -177,32 +178,37 @@ const KvKStatsScreen = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
-      <div className="fixed top-0 left-0 right-0 z-50 bg-slate-900 border-b border-slate-700">
+    <div className={`min-h-screen ${isDark ? "bg-slate-900" : "bg-gray-50"}`}>
+      <div className={`fixed top-0 left-0 right-0 z-50 border-b ${isDark ? "bg-slate-900 border-slate-700" : "bg-white border-gray-200"}`}>
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link
             to="/"
-            className="flex items-center gap-2 text-slate-300 hover:text-white"
+            className={`flex items-center gap-2 ${isDark ? "text-slate-300 hover:text-white" : "text-gray-600 hover:text-gray-900"}`}
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="font-medium">Back</span>
           </Link>
-          <h1 className="text-xl font-bold text-white">KvK Stats</h1>
-          <div className="w-20"></div>
+          <h1 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>KvK Stats</h1>
+          <button
+            onClick={() => setIsDark(!isDark)}
+            className={`p-2 rounded-lg ${isDark ? "bg-slate-800 text-yellow-400 hover:bg-slate-700" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+          >
+            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
         </div>
       </div>
 
       <div className="pt-24 pb-12 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="mb-6">
-            <p className="text-slate-400 text-sm mb-2">Select Server</p>
+            <p className={`text-sm mb-2 ${isDark ? "text-slate-400" : "text-gray-500"}`}>Select Server</p>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedServer("all")}
                 className={`px-4 py-2 rounded font-medium ${
                   selectedServer === "all"
-                    ? "bg-white text-slate-900"
-                    : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                    ? isDark ? "bg-white text-slate-900" : "bg-gray-900 text-white"
+                    : isDark ? "bg-slate-800 text-slate-300 hover:bg-slate-700" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
                 }`}
               >
                 All
@@ -213,8 +219,8 @@ const KvKStatsScreen = () => {
                   onClick={() => setSelectedServer(server)}
                   className={`px-4 py-2 rounded font-medium ${
                     selectedServer === server
-                      ? "bg-white text-slate-900"
-                      : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                      ? isDark ? "bg-white text-slate-900" : "bg-gray-900 text-white"
+                      : isDark ? "bg-slate-800 text-slate-300 hover:bg-slate-700" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
                   }`}
                 >
                   {server}
@@ -224,113 +230,117 @@ const KvKStatsScreen = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-slate-800 rounded-lg p-4">
-              <p className="text-slate-400 text-sm">Players</p>
-              <p className="text-xl font-bold text-white">{players.length}</p>
+            <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800" : "bg-white border border-gray-200"}`}>
+              <p className={`text-sm ${isDark ? "text-slate-400" : "text-gray-500"}`}>Players</p>
+              <p className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{players.length}</p>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4">
-              <p className="text-slate-400 text-sm">Total Power</p>
-              <p className="text-xl font-bold text-white">{formatNumber(totalPower)}</p>
+            <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800" : "bg-white border border-gray-200"}`}>
+              <p className={`text-sm ${isDark ? "text-slate-400" : "text-gray-500"}`}>Total Power</p>
+              <p className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(totalPower)}</p>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4">
-              <p className="text-slate-400 text-sm">Total Kills</p>
-              <p className="text-xl font-bold text-white">{formatNumber(totalKills)}</p>
+            <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800" : "bg-white border border-gray-200"}`}>
+              <p className={`text-sm ${isDark ? "text-slate-400" : "text-gray-500"}`}>Total Kills</p>
+              <p className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(totalKills)}</p>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4">
-              <p className="text-slate-400 text-sm">Total Mana Spent</p>
-              <p className="text-xl font-bold text-white">{formatNumber(totalManaSpent)}</p>
+            <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800" : "bg-white border border-gray-200"}`}>
+              <p className={`text-sm ${isDark ? "text-slate-400" : "text-gray-500"}`}>Total Mana Spent</p>
+              <p className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(totalManaSpent)}</p>
             </div>
           </div>
 
           <div className="mb-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 ${isDark ? "text-slate-500" : "text-gray-400"}`} />
               <input
                 type="text"
                 placeholder="Search by name or alliance..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg py-2.5 pl-10 pr-4 text-white placeholder-slate-500 focus:outline-none focus:border-slate-600"
+                className={`w-full rounded-lg py-2.5 pl-10 pr-4 focus:outline-none ${
+                  isDark
+                    ? "bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:border-slate-600"
+                    : "bg-white border border-gray-200 text-gray-900 placeholder-gray-400 focus:border-gray-300"
+                }`}
               />
             </div>
           </div>
 
-          <div className="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
+          <div className={`rounded-lg border overflow-hidden ${isDark ? "bg-slate-800 border-slate-700" : "bg-white border-gray-200"}`}>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-700">
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase">
+                  <tr className={`border-b ${isDark ? "border-slate-700" : "border-gray-200"}`}>
+                    <th className={`px-4 py-3 text-left text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-gray-500"}`}>
                       #
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase">
+                    <th className={`px-4 py-3 text-left text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-gray-500"}`}>
                       Player
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase">
+                    <th className={`px-4 py-3 text-left text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-gray-500"}`}>
                       Alliance
                     </th>
                     {selectedServer === "all" && (
-                      <th className="px-4 py-3 text-center text-xs font-medium text-slate-400 uppercase">
+                      <th className={`px-4 py-3 text-center text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-gray-500"}`}>
                         Server
                       </th>
                     )}
                     <th
-                      className="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase cursor-pointer hover:text-white"
+                      className={`px-4 py-3 text-right text-xs font-medium uppercase cursor-pointer ${isDark ? "text-slate-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}
                       onClick={() => handleSort("highest_power")}
                     >
                       Highest Power <SortIcon columnKey="highest_power" />
                     </th>
                     <th
-                      className="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase cursor-pointer hover:text-white"
+                      className={`px-4 py-3 text-right text-xs font-medium uppercase cursor-pointer ${isDark ? "text-slate-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}
                       onClick={() => handleSort("power")}
                     >
                       Current <SortIcon columnKey="power" />
                     </th>
                     <th
-                      className="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase cursor-pointer hover:text-white"
+                      className={`px-4 py-3 text-right text-xs font-medium uppercase cursor-pointer ${isDark ? "text-slate-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}
                       onClick={() => handleSort("units_killed")}
                     >
                       Kills <SortIcon columnKey="units_killed" />
                     </th>
                     <th
-                      className="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase cursor-pointer hover:text-white"
+                      className={`px-4 py-3 text-right text-xs font-medium uppercase cursor-pointer ${isDark ? "text-slate-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}
                       onClick={() => handleSort("killcount_t5")}
                     >
                       T5 <SortIcon columnKey="killcount_t5" />
                     </th>
                     <th
-                      className="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase cursor-pointer hover:text-white"
+                      className={`px-4 py-3 text-right text-xs font-medium uppercase cursor-pointer ${isDark ? "text-slate-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}
                       onClick={() => handleSort("mana_spent")}
                     >
                       Mana <SortIcon columnKey="mana_spent" />
                     </th>
                     <th
-                      className="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase cursor-pointer hover:text-white"
+                      className={`px-4 py-3 text-right text-xs font-medium uppercase cursor-pointer ${isDark ? "text-slate-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`}
                       onClick={() => handleSort("units_dead")}
                     >
                       Dead <SortIcon columnKey="units_dead" />
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-700">
+                <tbody className={`divide-y ${isDark ? "divide-slate-700" : "divide-gray-100"}`}>
                   {filteredPlayers.map((player, index) => (
                     <tr
                       key={index}
-                      className="hover:bg-slate-700/50 cursor-pointer"
+                      className={`cursor-pointer ${isDark ? "hover:bg-slate-700/50" : "hover:bg-gray-50"}`}
                       onClick={() => setSelectedPlayer(player)}
                     >
-                      <td className="px-4 py-3 text-slate-400">{index + 1}</td>
-                      <td className="px-4 py-3 text-white font-medium">{player.name}</td>
-                      <td className="px-4 py-3 text-slate-300">{player.alliance_tag}</td>
+                      <td className={`px-4 py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>{index + 1}</td>
+                      <td className={`px-4 py-3 font-medium ${isDark ? "text-white" : "text-gray-900"}`}>{player.name}</td>
+                      <td className={`px-4 py-3 ${isDark ? "text-slate-300" : "text-gray-600"}`}>{player.alliance_tag}</td>
                       {selectedServer === "all" && (
-                        <td className="px-4 py-3 text-center text-slate-400">{player.home_server}</td>
+                        <td className={`px-4 py-3 text-center ${isDark ? "text-slate-400" : "text-gray-500"}`}>{player.home_server}</td>
                       )}
-                      <td className="px-4 py-3 text-right text-white font-medium">{formatNumber(player.highest_power)}</td>
-                      <td className="px-4 py-3 text-right text-slate-300">{formatNumber(player.power)}</td>
-                      <td className="px-4 py-3 text-right text-slate-300">{formatNumber(player.units_killed)}</td>
-                      <td className="px-4 py-3 text-right text-slate-300">{formatNumber(player.killcount_t5)}</td>
-                      <td className="px-4 py-3 text-right text-slate-300">{formatNumber(player.mana_spent)}</td>
-                      <td className="px-4 py-3 text-right text-slate-300">{formatNumber(player.units_dead)}</td>
+                      <td className={`px-4 py-3 text-right font-medium ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(player.highest_power)}</td>
+                      <td className={`px-4 py-3 text-right ${isDark ? "text-slate-300" : "text-gray-600"}`}>{formatNumber(player.power)}</td>
+                      <td className={`px-4 py-3 text-right ${isDark ? "text-slate-300" : "text-gray-600"}`}>{formatNumber(player.units_killed)}</td>
+                      <td className={`px-4 py-3 text-right ${isDark ? "text-slate-300" : "text-gray-600"}`}>{formatNumber(player.killcount_t5)}</td>
+                      <td className={`px-4 py-3 text-right ${isDark ? "text-slate-300" : "text-gray-600"}`}>{formatNumber(player.mana_spent)}</td>
+                      <td className={`px-4 py-3 text-right ${isDark ? "text-slate-300" : "text-gray-600"}`}>{formatNumber(player.units_dead)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -338,7 +348,7 @@ const KvKStatsScreen = () => {
             </div>
           </div>
 
-          <p className="mt-4 text-center text-slate-500 text-sm">
+          <p className={`mt-4 text-center text-sm ${isDark ? "text-slate-500" : "text-gray-500"}`}>
             Showing top {filteredPlayers.length} players
             {selectedServer !== "all" ? ` from Server ${selectedServer}` : " across all servers"}
           </p>
@@ -347,21 +357,21 @@ const KvKStatsScreen = () => {
 
       {selectedPlayer && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80"
+          className={`fixed inset-0 z-[100] flex items-center justify-center p-4 ${isDark ? "bg-black/80" : "bg-black/50"}`}
           onClick={() => setSelectedPlayer(null)}
         >
           <div
-            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-slate-900 rounded-lg border border-slate-700"
+            className={`relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg border ${isDark ? "bg-slate-900 border-slate-700" : "bg-white border-gray-200"}`}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 z-10 bg-slate-800 border-b border-slate-700 px-6 py-4 flex items-center justify-between">
+            <div className={`sticky top-0 z-10 border-b px-6 py-4 flex items-center justify-between ${isDark ? "bg-slate-800 border-slate-700" : "bg-gray-50 border-gray-200"}`}>
               <div>
-                <h2 className="text-xl font-bold text-white">{selectedPlayer.name}</h2>
-                <p className="text-sm text-slate-400">[{selectedPlayer.alliance_tag}] - Server {selectedPlayer.home_server}</p>
+                <h2 className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{selectedPlayer.name}</h2>
+                <p className={`text-sm ${isDark ? "text-slate-400" : "text-gray-500"}`}>[{selectedPlayer.alliance_tag}] - Server {selectedPlayer.home_server}</p>
               </div>
               <button
                 onClick={() => setSelectedPlayer(null)}
-                className="p-2 rounded bg-slate-700 hover:bg-slate-600 text-slate-400 hover:text-white"
+                className={`p-2 rounded ${isDark ? "bg-slate-700 hover:bg-slate-600 text-slate-400 hover:text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-500 hover:text-gray-700"}`}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -369,61 +379,61 @@ const KvKStatsScreen = () => {
 
             <div className="p-6">
               <table className="w-full text-sm">
-                <tbody className="divide-y divide-slate-700">
+                <tbody className={`divide-y ${isDark ? "divide-slate-700" : "divide-gray-100"}`}>
                   <tr>
-                    <td className="py-3 text-slate-400">Highest Power</td>
-                    <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.highest_power)}</td>
+                    <td className={`py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>Highest Power</td>
+                    <td className={`py-3 text-right font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(selectedPlayer.highest_power)}</td>
                   </tr>
                   <tr>
-                    <td className="py-3 text-slate-400">Current Power</td>
-                    <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.power)}</td>
+                    <td className={`py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>Current Power</td>
+                    <td className={`py-3 text-right font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(selectedPlayer.power)}</td>
                   </tr>
                   <tr>
-                    <td className="py-3 text-slate-400">Merits</td>
-                    <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.merits)}</td>
+                    <td className={`py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>Merits</td>
+                    <td className={`py-3 text-right font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(selectedPlayer.merits)}</td>
                   </tr>
                   <tr>
-                    <td className="py-3 text-slate-400">Units Dead</td>
-                    <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.units_dead)}</td>
+                    <td className={`py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>Units Dead</td>
+                    <td className={`py-3 text-right font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(selectedPlayer.units_dead)}</td>
                   </tr>
                   <tr>
-                    <td className="py-3 text-slate-400">Units Healed</td>
-                    <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.units_healed)}</td>
+                    <td className={`py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>Units Healed</td>
+                    <td className={`py-3 text-right font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(selectedPlayer.units_healed)}</td>
                   </tr>
                   <tr>
-                    <td className="py-3 text-slate-400">Mana Spent</td>
-                    <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.mana_spent)}</td>
+                    <td className={`py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>Mana Spent</td>
+                    <td className={`py-3 text-right font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(selectedPlayer.mana_spent)}</td>
                   </tr>
                 </tbody>
               </table>
 
-              <div className="mt-6 pt-4 border-t border-slate-700">
-                <h3 className="text-white font-semibold mb-3">Kill Statistics</h3>
+              <div className={`mt-6 pt-4 border-t ${isDark ? "border-slate-700" : "border-gray-200"}`}>
+                <h3 className={`font-semibold mb-3 ${isDark ? "text-white" : "text-gray-900"}`}>Kill Statistics</h3>
                 <table className="w-full text-sm">
-                  <tbody className="divide-y divide-slate-700">
+                  <tbody className={`divide-y ${isDark ? "divide-slate-700" : "divide-gray-100"}`}>
                     <tr>
-                      <td className="py-3 text-slate-400">Total Units Killed</td>
-                      <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.units_killed)}</td>
+                      <td className={`py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>Total Units Killed</td>
+                      <td className={`py-3 text-right font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(selectedPlayer.units_killed)}</td>
                     </tr>
                     <tr>
-                      <td className="py-3 text-slate-400">T5 Kills</td>
-                      <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.killcount_t5)}</td>
+                      <td className={`py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>T5 Kills</td>
+                      <td className={`py-3 text-right font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(selectedPlayer.killcount_t5)}</td>
                     </tr>
                     <tr>
-                      <td className="py-3 text-slate-400">T4 Kills</td>
-                      <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.killcount_t4)}</td>
+                      <td className={`py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>T4 Kills</td>
+                      <td className={`py-3 text-right font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(selectedPlayer.killcount_t4)}</td>
                     </tr>
                     <tr>
-                      <td className="py-3 text-slate-400">T3 Kills</td>
-                      <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.killcount_t3)}</td>
+                      <td className={`py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>T3 Kills</td>
+                      <td className={`py-3 text-right font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(selectedPlayer.killcount_t3)}</td>
                     </tr>
                     <tr>
-                      <td className="py-3 text-slate-400">T2 Kills</td>
-                      <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.killcount_t2)}</td>
+                      <td className={`py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>T2 Kills</td>
+                      <td className={`py-3 text-right font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(selectedPlayer.killcount_t2)}</td>
                     </tr>
                     <tr>
-                      <td className="py-3 text-slate-400">T1 Kills</td>
-                      <td className="py-3 text-right text-white font-semibold">{formatNumber(selectedPlayer.killcount_t1)}</td>
+                      <td className={`py-3 ${isDark ? "text-slate-400" : "text-gray-500"}`}>T1 Kills</td>
+                      <td className={`py-3 text-right font-semibold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(selectedPlayer.killcount_t1)}</td>
                     </tr>
                   </tbody>
                 </table>
