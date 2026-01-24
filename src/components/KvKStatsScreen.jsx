@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search, ChevronUp, ChevronDown, X, Sun, Moon, Calendar, Settings, BarChart3, Users, Trophy } from "lucide-react";
+import { ArrowLeft, Search, ChevronUp, ChevronDown, X, Sun, Moon, Settings, BarChart3, Users, Trophy, TrendingUp, TrendingDown } from "lucide-react";
 import { supabase } from "../lib/supabase";
 
 const STAT_OPTIONS = [
@@ -16,7 +16,8 @@ const STAT_OPTIONS = [
 ];
 
 const KvKStatsScreen = () => {
-  const [allPlayers, setAllPlayers] = useState([]);
+  const [startDatePlayers, setStartDatePlayers] = useState([]);
+  const [endDatePlayers, setEndDatePlayers] = useState([]);
   const [servers, setServers] = useState([]);
   const [selectedServer, setSelectedServer] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -26,9 +27,9 @@ const KvKStatsScreen = () => {
   const [isDark, setIsDark] = useState(true);
 
   const [availableDates, setAvailableDates] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("");
-  const [dateRange, setDateRange] = useState({ start: "", end: "" });
-  const [showDateRange, setShowDateRange] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [compareMode, setCompareMode] = useState(false);
 
   const [activeTab, setActiveTab] = useState("leaderboard");
   const [compareServers, setCompareServers] = useState([]);
@@ -40,12 +41,21 @@ const KvKStatsScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedDate) {
-      fetchData(selectedDate);
+    if (startDate) {
+      fetchStartDateData();
     }
-  }, [selectedDate]);
+  }, [startDate]);
+
+  useEffect(() => {
+    if (compareMode && endDate) {
+      fetchEndDateData();
+    } else {
+      setEndDatePlayers([]);
+    }
+  }, [compareMode, endDate]);
 
   const fetchAvailableDates = async () => {
+    setLoading(true);
     try {
       const { data: uploads, error } = await supabase
         .from("kvk_uploads")
@@ -56,20 +66,22 @@ const KvKStatsScreen = () => {
 
       if (uploads && uploads.length > 0) {
         setAvailableDates(uploads);
-        setSelectedDate(uploads[0].upload_date);
-      } else {
-        setLoading(false);
+        setStartDate(uploads[0].upload_date);
+        if (uploads.length > 1) {
+          setEndDate(uploads[1].upload_date);
+        }
       }
     } catch (error) {
       console.error("Error fetching dates:", error);
+    } finally {
       setLoading(false);
     }
   };
 
-  const fetchData = async (date) => {
+  const fetchStartDateData = async () => {
     setLoading(true);
     try {
-      const upload = availableDates.find(u => u.upload_date === date);
+      const upload = availableDates.find(u => u.upload_date === startDate);
       if (!upload) return;
 
       const { data: players, error } = await supabase
@@ -84,14 +96,34 @@ const KvKStatsScreen = () => {
       const sortedServers = Array.from(serverSet).sort((a, b) => parseInt(a) - parseInt(b));
 
       setServers(sortedServers);
-      setAllPlayers(players);
+      setStartDatePlayers(players);
       setSelectedServer("all");
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching start date data:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  const fetchEndDateData = async () => {
+    try {
+      const upload = availableDates.find(u => u.upload_date === endDate);
+      if (!upload) return;
+
+      const { data: players, error } = await supabase
+        .from("kvk_player_stats")
+        .select("*")
+        .eq("upload_id", upload.id);
+
+      if (error) throw error;
+
+      setEndDatePlayers(players);
+    } catch (error) {
+      console.error("Error fetching end date data:", error);
+    }
+  };
+
+  const allPlayers = compareMode && endDatePlayers.length > 0 ? endDatePlayers : startDatePlayers;
 
   const filteredByServer = useMemo(() => {
     if (selectedServer === "all") return allPlayers;
@@ -99,12 +131,38 @@ const KvKStatsScreen = () => {
   }, [allPlayers, selectedServer]);
 
   const rankedPlayers = useMemo(() => {
-    const sorted = [...filteredByServer].sort((a, b) => b[sortConfig.key] - a[sortConfig.key]);
-    return sorted.map((player, index) => ({
-      ...player,
-      rank: index + 1,
-    }));
-  }, [filteredByServer, sortConfig.key]);
+    if (!compareMode || endDatePlayers.length === 0) {
+      const sorted = [...filteredByServer].sort((a, b) => b[sortConfig.key] - a[sortConfig.key]);
+      return sorted.map((player, index) => ({
+        ...player,
+        rank: index + 1,
+      }));
+    }
+
+    const endFiltered = selectedServer === "all" ? endDatePlayers : endDatePlayers.filter(p => p.home_server === selectedServer);
+    const startFiltered = selectedServer === "all" ? startDatePlayers : startDatePlayers.filter(p => p.home_server === selectedServer);
+
+    const sorted = [...endFiltered].sort((a, b) => b[sortConfig.key] - a[sortConfig.key]);
+
+    return sorted.map((player, index) => {
+      const oldPlayer = startFiltered.find(p => p.lord_id === player.lord_id);
+      const statDiff = oldPlayer ? player[sortConfig.key] - oldPlayer[sortConfig.key] : 0;
+
+      let oldRank = null;
+      if (oldPlayer) {
+        const oldSorted = [...startFiltered].sort((a, b) => b[sortConfig.key] - a[sortConfig.key]);
+        oldRank = oldSorted.findIndex(p => p.lord_id === player.lord_id) + 1;
+      }
+
+      return {
+        ...player,
+        rank: index + 1,
+        oldRank,
+        statDiff,
+        isNew: !oldPlayer,
+      };
+    });
+  }, [filteredByServer, endDatePlayers, startDatePlayers, selectedServer, sortConfig.key, compareMode]);
 
   const sortedPlayers = useMemo(() => {
     return [...rankedPlayers].sort((a, b) => {
@@ -134,6 +192,8 @@ const KvKStatsScreen = () => {
     const stats = {};
     servers.forEach(server => {
       const serverPlayers = allPlayers.filter(p => p.home_server === server);
+      const startServerPlayers = startDatePlayers.filter(p => p.home_server === server);
+
       stats[server] = {
         playerCount: serverPlayers.length,
         totalPower: serverPlayers.reduce((sum, p) => sum + p.highest_power, 0),
@@ -142,19 +202,43 @@ const KvKStatsScreen = () => {
         totalMana: serverPlayers.reduce((sum, p) => sum + p.mana_spent, 0),
         avgPower: serverPlayers.length > 0 ? serverPlayers.reduce((sum, p) => sum + p.highest_power, 0) / serverPlayers.length : 0,
       };
+
+      if (compareMode && endDatePlayers.length > 0) {
+        const oldTotalPower = startServerPlayers.reduce((sum, p) => sum + p.highest_power, 0);
+        const oldTotalKills = startServerPlayers.reduce((sum, p) => sum + p.units_killed, 0);
+        stats[server].powerDiff = stats[server].totalPower - oldTotalPower;
+        stats[server].killsDiff = stats[server].totalKills - oldTotalKills;
+      }
     });
     return stats;
-  }, [allPlayers, servers]);
+  }, [allPlayers, startDatePlayers, endDatePlayers, servers, compareMode]);
 
   const serverRankings = useMemo(() => {
     const rankings = servers.map(server => {
       const serverPlayers = allPlayers.filter(p => p.home_server === server);
       const total = serverPlayers.reduce((sum, p) => sum + (p[serverRankingStat] || 0), 0);
       const avg = serverPlayers.length > 0 ? total / serverPlayers.length : 0;
-      return { server, total, avg, playerCount: serverPlayers.length };
+
+      let oldRank = null;
+      let totalDiff = 0;
+      if (compareMode && endDatePlayers.length > 0) {
+        const startServerPlayers = startDatePlayers.filter(p => p.home_server === server);
+        const oldTotal = startServerPlayers.reduce((sum, p) => sum + (p[serverRankingStat] || 0), 0);
+        totalDiff = total - oldTotal;
+
+        const oldRankings = servers.map(s => {
+          const sPlayers = startDatePlayers.filter(p => p.home_server === s);
+          const sTotal = sPlayers.reduce((sum, p) => sum + (p[serverRankingStat] || 0), 0);
+          return { server: s, total: sTotal };
+        });
+        oldRankings.sort((a, b) => b.total - a.total);
+        oldRank = oldRankings.findIndex(r => r.server === server) + 1;
+      }
+
+      return { server, total, avg, playerCount: serverPlayers.length, oldRank, totalDiff };
     });
     return rankings.sort((a, b) => b.total - a.total);
-  }, [allPlayers, servers, serverRankingStat]);
+  }, [allPlayers, startDatePlayers, endDatePlayers, servers, serverRankingStat, compareMode]);
 
   const formatNumber = (num) => {
     if (num >= 1000000000) return (num / 1000000000).toFixed(2) + "B";
@@ -184,7 +268,6 @@ const KvKStatsScreen = () => {
 
   const totalPower = filteredByServer.reduce((sum, p) => sum + p.highest_power, 0);
   const totalKills = filteredByServer.reduce((sum, p) => sum + p.units_killed, 0);
-  const totalT5Kills = filteredByServer.reduce((sum, p) => sum + p.killcount_t5, 0);
   const totalManaSpent = filteredByServer.reduce((sum, p) => sum + p.mana_spent, 0);
 
   const SortIcon = ({ columnKey }) => {
@@ -196,7 +279,7 @@ const KvKStatsScreen = () => {
     );
   };
 
-  if (loading) {
+  if (loading && availableDates.length === 0) {
     return (
       <div className={`min-h-screen flex items-center justify-center ${isDark ? "bg-slate-900" : "bg-gray-100"}`}>
         <div className="three-body">
@@ -285,21 +368,67 @@ const KvKStatsScreen = () => {
           </div>
 
           <div className="mb-6">
-            <p className={`text-sm mb-2 ${isDark ? "text-slate-400" : "text-gray-500"}`}>Select Date</p>
-            <div className="flex flex-wrap gap-2">
-              {availableDates.map((upload) => (
-                <button
-                  key={upload.upload_date}
-                  onClick={() => setSelectedDate(upload.upload_date)}
-                  className={`px-4 py-2 rounded font-medium ${
-                    selectedDate === upload.upload_date
-                      ? isDark ? "bg-emerald-600 text-white" : "bg-emerald-600 text-white"
-                      : isDark ? "bg-slate-800 text-slate-300 hover:bg-slate-700" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
-                  }`}
-                >
-                  {new Date(upload.upload_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                </button>
-              ))}
+            <div className="flex items-center gap-3 mb-3">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={compareMode}
+                  onChange={(e) => setCompareMode(e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300"
+                />
+                <span className={`text-sm font-medium ${isDark ? "text-slate-300" : "text-gray-700"}`}>
+                  Compare between dates
+                </span>
+              </label>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className={`text-sm mb-2 ${isDark ? "text-slate-400" : "text-gray-500"}`}>
+                  {compareMode ? "Start Date" : "Select Date"}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {availableDates.map((upload) => (
+                    <button
+                      key={upload.upload_date}
+                      onClick={() => setStartDate(upload.upload_date)}
+                      className={`px-4 py-2 rounded font-medium ${
+                        startDate === upload.upload_date
+                          ? "bg-emerald-600 text-white"
+                          : isDark ? "bg-slate-800 text-slate-300 hover:bg-slate-700" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
+                      }`}
+                    >
+                      {new Date(upload.upload_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {compareMode && (
+                <div>
+                  <p className={`text-sm mb-2 ${isDark ? "text-slate-400" : "text-gray-500"}`}>
+                    End Date
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {availableDates.map((upload) => (
+                      <button
+                        key={upload.upload_date}
+                        onClick={() => setEndDate(upload.upload_date)}
+                        disabled={upload.upload_date === startDate}
+                        className={`px-4 py-2 rounded font-medium ${
+                          endDate === upload.upload_date
+                            ? "bg-blue-600 text-white"
+                            : upload.upload_date === startDate
+                            ? "bg-slate-700 text-slate-500 cursor-not-allowed"
+                            : isDark ? "bg-slate-800 text-slate-300 hover:bg-slate-700" : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
+                        }`}
+                      >
+                        {new Date(upload.upload_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -334,7 +463,7 @@ const KvKStatsScreen = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                 <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800" : "bg-white border border-gray-200"}`}>
                   <p className={`text-sm ${isDark ? "text-slate-400" : "text-gray-500"}`}>Players</p>
                   <p className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{filteredByServer.length}</p>
@@ -346,10 +475,6 @@ const KvKStatsScreen = () => {
                 <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800" : "bg-white border border-gray-200"}`}>
                   <p className={`text-sm ${isDark ? "text-slate-400" : "text-gray-500"}`}>Total Kills</p>
                   <p className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(totalKills)}</p>
-                </div>
-                <div className={`rounded-lg p-4 ${isDark ? "bg-slate-800" : "bg-white border border-gray-200"}`}>
-                  <p className={`text-sm ${isDark ? "text-slate-400" : "text-gray-500"}`}>Total Mana Spent</p>
-                  <p className={`text-xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(totalManaSpent)}</p>
                 </div>
               </div>
 
@@ -382,10 +507,7 @@ const KvKStatsScreen = () => {
                           <th className={`px-4 py-3 text-center text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-gray-500"}`}>Server</th>
                         )}
                         <th className={`px-4 py-3 text-right text-xs font-medium uppercase cursor-pointer ${isDark ? "text-slate-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`} onClick={() => handleSort("highest_power")}>
-                          Highest Power <SortIcon columnKey="highest_power" />
-                        </th>
-                        <th className={`px-4 py-3 text-right text-xs font-medium uppercase cursor-pointer ${isDark ? "text-slate-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`} onClick={() => handleSort("power")}>
-                          Current <SortIcon columnKey="power" />
+                          Power <SortIcon columnKey="highest_power" />
                         </th>
                         <th className={`px-4 py-3 text-right text-xs font-medium uppercase cursor-pointer ${isDark ? "text-slate-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`} onClick={() => handleSort("units_killed")}>
                           Kills <SortIcon columnKey="units_killed" />
@@ -396,26 +518,48 @@ const KvKStatsScreen = () => {
                         <th className={`px-4 py-3 text-right text-xs font-medium uppercase cursor-pointer ${isDark ? "text-slate-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`} onClick={() => handleSort("mana_spent")}>
                           Mana <SortIcon columnKey="mana_spent" />
                         </th>
-                        <th className={`px-4 py-3 text-right text-xs font-medium uppercase cursor-pointer ${isDark ? "text-slate-400 hover:text-white" : "text-gray-500 hover:text-gray-900"}`} onClick={() => handleSort("units_dead")}>
-                          Dead <SortIcon columnKey="units_dead" />
-                        </th>
+                        {compareMode && endDatePlayers.length > 0 && (
+                          <th className={`px-4 py-3 text-center text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-gray-500"}`}>Change</th>
+                        )}
                       </tr>
                     </thead>
                     <tbody className={`divide-y ${isDark ? "divide-slate-700" : "divide-gray-100"}`}>
                       {filteredPlayers.slice(0, 200).map((player) => (
                         <tr key={player.id} className={`cursor-pointer ${isDark ? "hover:bg-slate-700/50" : "hover:bg-gray-50"}`} onClick={() => setSelectedPlayer(player)}>
-                          <td className={`px-4 py-3 font-medium ${isDark ? "text-emerald-400" : "text-emerald-600"}`}>#{player.rank}</td>
+                          <td className={`px-4 py-3 ${isDark ? "text-emerald-400" : "text-emerald-600"}`}>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">#{player.rank}</span>
+                              {compareMode && player.oldRank && (
+                                <span className={`text-xs ${player.rank < player.oldRank ? "text-green-400" : player.rank > player.oldRank ? "text-red-400" : "text-slate-500"}`}>
+                                  {player.rank < player.oldRank ? `↑${player.oldRank - player.rank}` : player.rank > player.oldRank ? `↓${player.rank - player.oldRank}` : "−"}
+                                </span>
+                              )}
+                              {compareMode && player.isNew && (
+                                <span className="text-xs text-blue-400">NEW</span>
+                              )}
+                            </div>
+                          </td>
                           <td className={`px-4 py-3 font-medium ${isDark ? "text-white" : "text-gray-900"}`}>{player.name}</td>
                           <td className={`px-4 py-3 ${isDark ? "text-slate-300" : "text-gray-600"}`}>{player.alliance_tag}</td>
                           {selectedServer === "all" && (
                             <td className={`px-4 py-3 text-center ${isDark ? "text-slate-400" : "text-gray-500"}`}>{player.home_server}</td>
                           )}
                           <td className={`px-4 py-3 text-right font-medium ${isDark ? "text-white" : "text-gray-900"}`}>{formatNumber(player.highest_power)}</td>
-                          <td className={`px-4 py-3 text-right ${isDark ? "text-slate-300" : "text-gray-600"}`}>{formatNumber(player.power)}</td>
                           <td className={`px-4 py-3 text-right ${isDark ? "text-slate-300" : "text-gray-600"}`}>{formatNumber(player.units_killed)}</td>
                           <td className={`px-4 py-3 text-right ${isDark ? "text-slate-300" : "text-gray-600"}`}>{formatNumber(player.killcount_t5)}</td>
                           <td className={`px-4 py-3 text-right ${isDark ? "text-slate-300" : "text-gray-600"}`}>{formatNumber(player.mana_spent)}</td>
-                          <td className={`px-4 py-3 text-right ${isDark ? "text-slate-300" : "text-gray-600"}`}>{formatNumber(player.units_dead)}</td>
+                          {compareMode && endDatePlayers.length > 0 && (
+                            <td className="px-4 py-3 text-center">
+                              {player.statDiff !== 0 ? (
+                                <div className={`flex items-center justify-center gap-1 ${player.statDiff > 0 ? "text-green-400" : "text-red-400"}`}>
+                                  {player.statDiff > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                                  <span className="text-xs font-medium">{formatNumber(Math.abs(player.statDiff))}</span>
+                                </div>
+                              ) : (
+                                <span className="text-xs text-slate-500">−</span>
+                              )}
+                            </td>
+                          )}
                         </tr>
                       ))}
                     </tbody>
@@ -523,18 +667,42 @@ const KvKStatsScreen = () => {
                       <th className={`px-4 py-3 text-right text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-gray-500"}`}>Players</th>
                       <th className={`px-4 py-3 text-right text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-gray-500"}`}>Total {STAT_OPTIONS.find(o => o.key === serverRankingStat)?.label}</th>
                       <th className={`px-4 py-3 text-right text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-gray-500"}`}>Average</th>
+                      {compareMode && endDatePlayers.length > 0 && (
+                        <th className={`px-4 py-3 text-center text-xs font-medium uppercase ${isDark ? "text-slate-400" : "text-gray-500"}`}>Change</th>
+                      )}
                     </tr>
                   </thead>
                   <tbody className={`divide-y ${isDark ? "divide-slate-700" : "divide-gray-100"}`}>
                     {serverRankings.map((item, index) => (
                       <tr key={item.server} className={isDark ? "hover:bg-slate-700/50" : "hover:bg-gray-50"}>
-                        <td className={`px-4 py-3 font-medium ${index < 3 ? (isDark ? "text-yellow-400" : "text-yellow-600") : (isDark ? "text-slate-400" : "text-gray-500")}`}>
-                          {index === 0 ? "1st" : index === 1 ? "2nd" : index === 2 ? "3rd" : `${index + 1}th`}
+                        <td className={`px-4 py-3 ${index < 3 ? (isDark ? "text-yellow-400" : "text-yellow-600") : (isDark ? "text-slate-400" : "text-gray-500")}`}>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">
+                              {index === 0 ? "1st" : index === 1 ? "2nd" : index === 2 ? "3rd" : `${index + 1}th`}
+                            </span>
+                            {compareMode && item.oldRank && (
+                              <span className={`text-xs ${index + 1 < item.oldRank ? "text-green-400" : index + 1 > item.oldRank ? "text-red-400" : "text-slate-500"}`}>
+                                {index + 1 < item.oldRank ? `↑${item.oldRank - (index + 1)}` : index + 1 > item.oldRank ? `↓${(index + 1) - item.oldRank}` : "−"}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className={`px-4 py-3 font-medium ${isDark ? "text-white" : "text-gray-900"}`}>Server {item.server}</td>
                         <td className={`px-4 py-3 text-right ${isDark ? "text-slate-300" : "text-gray-600"}`}>{item.playerCount}</td>
                         <td className={`px-4 py-3 text-right font-medium ${isDark ? "text-emerald-400" : "text-emerald-600"}`}>{formatNumber(item.total)}</td>
                         <td className={`px-4 py-3 text-right ${isDark ? "text-slate-300" : "text-gray-600"}`}>{formatNumber(Math.round(item.avg))}</td>
+                        {compareMode && endDatePlayers.length > 0 && (
+                          <td className="px-4 py-3 text-center">
+                            {item.totalDiff !== 0 ? (
+                              <div className={`flex items-center justify-center gap-1 ${item.totalDiff > 0 ? "text-green-400" : "text-red-400"}`}>
+                                {item.totalDiff > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+                                <span className="text-xs font-medium">{formatNumber(Math.abs(item.totalDiff))}</span>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-slate-500">−</span>
+                            )}
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>
